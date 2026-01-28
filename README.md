@@ -53,33 +53,22 @@ Path parameters stay as `{id}`.
 
 ---
 
-## Running with Docker
+## Using Makefile
+
+The repository includes a `Makefile` with common targets:
 
 ```bash
-docker compose up -d
-```
-or build and run with docker:
+make build         # Build the emulator binary (e.g., into ./bin/)
+make test          # Run unit tests
+make cover         # Run unit tests with coverage report
+make lint          # Run linters and format the code
+make fmt           # Format code
+make clean         # Clean bin directory
 
-```bash
- docker compose up --build
-```
-
-Minimal `docker-compose.yml` example:
-
-```yaml
-services:
-  emulator:
-    image: openapi-sample-emulator:local
-    ports:
-      - "8086:8086"
-    environment:
-      - SERVER_PORT=8086
-      - SPEC_PATH=/work/swagger.json
-      - SAMPLES_DIR=/work/sample
-      - FALLBACK_MODE=openapi_examples
-      - VALIDATION_MODE=required
-    volumes:
-      - ./examples/demo:/work:ro
+make docker-build  # Build the Docker image
+make docker-run    # Start via docker container remove when stopped
+make compose-up    # Start via docker compose
+make compose-down  # Stop docker compose
 ```
 
 ---
