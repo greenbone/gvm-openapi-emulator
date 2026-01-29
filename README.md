@@ -89,7 +89,14 @@ VALIDATION_MODE=required
 
 Currently supported:
 
-* Required request body (Swagger 2.0 `required: true` body parameters)
+Required request body
+If the API spec marks the request body as required, the emulator rejects requests with an empty body and returns HTTP 400.
+
+Supported spec formats:
+
+OpenAPI 3.x: `requestBody.required: true`
+
+Swagger 2.0: `in: body` parameter with `required: true` (supported via Swagger 2 to OpenAPI 3 conversion using kin-openapi)
 
 ---
 
