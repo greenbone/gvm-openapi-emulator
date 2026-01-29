@@ -16,6 +16,7 @@ func main() {
 		SamplesDir:     cfg.SamplesDir,
 		FallbackMode:   cfg.FallbackMode,
 		ValidationMode: cfg.ValidationMode,
+		Layout:         cfg.Layout,
 	})
 	if err != nil {
 		log.Fatalf("failed to init server: %v", err)

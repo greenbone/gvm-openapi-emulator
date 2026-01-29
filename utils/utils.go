@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -27,4 +28,22 @@ func WriteJSON(w http.ResponseWriter, status int, obj any) {
 	w.WriteHeader(status)
 	b, _ := json.Marshal(obj)
 	_, _ = w.Write(b)
+}
+
+func GetEnvAsInt(key string, fallback int) int {
+	if value, ok := os.LookupEnv(key); ok {
+		i, err := strconv.Atoi(value)
+		if err != nil {
+			return fallback
+		}
+
+		return i
+	}
+
+	return fallback
+}
+
+func FileExists(path string) bool {
+	st, err := os.Stat(path)
+	return err == nil && !st.IsDir()
 }

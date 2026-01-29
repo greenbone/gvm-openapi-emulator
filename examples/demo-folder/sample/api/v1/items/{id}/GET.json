@@ -1,0 +1,7 @@
+{
+  "id": "item-1",
+  "name": "Demo item",
+  "enabled": true,
+  "tags": ["demo"],
+  "updated_at": "2026-01-28T10:00:00Z"
+}

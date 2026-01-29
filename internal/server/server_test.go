@@ -22,6 +22,7 @@ func TestNew_LoadsSpecAndBuildsRoutes(t *testing.T) {
 		SamplesDir:     dir,
 		FallbackMode:   config.FallbackOpenAPIExample,
 		ValidationMode: config.ValidationRequired,
+		Layout:         config.LayoutFolders,
 	})
 	if err != nil {
 		t.Fatalf("New: %v", err)
@@ -138,6 +139,7 @@ func TestHandle_SampleMissing_FallbackOpenAPIExample_200(t *testing.T) {
 		SamplesDir:     dir, // empty: no sample files
 		FallbackMode:   config.FallbackOpenAPIExample,
 		ValidationMode: config.ValidationRequired,
+		Layout:         config.LayoutFolders,
 	})
 	if err != nil {
 		t.Fatalf("New: %v", err)
@@ -170,6 +172,7 @@ func TestHandle_SampleMissing_NoFallback_501(t *testing.T) {
 		SamplesDir:     dir, // empty: no samples
 		FallbackMode:   config.FallbackNone,
 		ValidationMode: config.ValidationRequired,
+		Layout:         config.LayoutFolders,
 	})
 	if err != nil {
 		t.Fatalf("New: %v", err)
@@ -185,11 +188,19 @@ func TestHandle_SampleMissing_NoFallback_501(t *testing.T) {
 	}
 	var m map[string]any
 	_ = json.Unmarshal(rr.Body.Bytes(), &m)
+
 	if m["error"] != "No sample file for route" {
 		t.Fatalf("unexpected: %v", m)
 	}
-	if _, ok := m["expectedSampleFile"]; !ok {
-		t.Fatalf("expectedSampleFile missing: %v", m)
+
+	if m["swaggerPath"] != "/items/{id}" {
+		t.Fatalf("expected swaggerPath=/items/{id}, got %v", m["swaggerPath"])
+	}
+	if _, ok := m["legacyFlatFilename"]; !ok {
+		t.Fatalf("legacyFlatFilename missing: %v", m)
+	}
+	if m["layout"] != string(config.LayoutFolders) {
+		t.Fatalf("expected layout=%q, got %v", string(config.LayoutFolders), m["layout"])
 	}
 }
 
@@ -200,8 +211,10 @@ func TestDebugRoutes_NotEmptyAndContainsMappings(t *testing.T) {
 	if out == "" {
 		t.Fatalf("expected non-empty debug routes")
 	}
-
 	if !strings.Contains(out, "GET /items/{id} ->") {
+		t.Fatalf("unexpected DebugRoutes output:\n%s", out)
+	}
+	if !strings.Contains(out, "POST /items ->") {
 		t.Fatalf("unexpected DebugRoutes output:\n%s", out)
 	}
 }
@@ -212,13 +225,13 @@ func newTestServer(t *testing.T, validation config.ValidationMode, fallback conf
 	dir := t.TempDir()
 	specPath := writeFile(t, dir, "spec.json", minimalSpec())
 
-	writeFile(t, dir, "GET__items_{id}.json", `{
+	writeFileWithDirs(t, dir, filepath.Join("items", "{id}", "GET.json"), `{
 	  "status": 200,
 	  "headers": {"content-type":"application/json","x-sample":"1"},
 	  "body": {"id":"123"}
 	}`)
 
-	writeFile(t, dir, "POST__items.json", `{"status":201,"body":{"created":true}}`)
+	writeFileWithDirs(t, dir, filepath.Join("items", "POST.json"), `{"status":201,"body":{"created":true}}`)
 
 	s, err := New(Config{
 		Port:           "0",
@@ -226,6 +239,7 @@ func newTestServer(t *testing.T, validation config.ValidationMode, fallback conf
 		SamplesDir:     dir,
 		FallbackMode:   fallback,
 		ValidationMode: validation,
+		Layout:         config.LayoutFolders, // deterministic: use folder samples
 	})
 	if err != nil {
 		t.Fatalf("New: %v", err)
@@ -236,6 +250,18 @@ func newTestServer(t *testing.T, validation config.ValidationMode, fallback conf
 func writeFile(t *testing.T, dir, name, content string) string {
 	t.Helper()
 	p := filepath.Join(dir, name)
+	if err := os.WriteFile(p, []byte(content), 0o600); err != nil {
+		t.Fatalf("write %s: %v", p, err)
+	}
+	return p
+}
+
+func writeFileWithDirs(t *testing.T, dir, name, content string) string {
+	t.Helper()
+	p := filepath.Join(dir, name)
+	if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+		t.Fatalf("mkdir %s: %v", filepath.Dir(p), err)
+	}
 	if err := os.WriteFile(p, []byte(content), 0o600); err != nil {
 		t.Fatalf("write %s: %v", p, err)
 	}
