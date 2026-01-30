@@ -68,7 +68,7 @@ func ResolveSamplePath(
 		}
 	}
 
-	log.WithField("path", actualPath).Warn("no candidates found")
+	log.WithField("path", actualPath).Info("no candidates found, spec example will return")
 	return "", fmt.Errorf("no sample file found (tried: %v)", relCandidates)
 }
 
