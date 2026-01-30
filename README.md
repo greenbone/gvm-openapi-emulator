@@ -55,13 +55,13 @@ The recommended layout is **folder-based**, mirroring the API path structure:
 
 ```
 SAMPLES_DIR/
-└── api/
-    └── v1/
-        └── items/
-            ├── GET.json
-            ├── POST.json
-            └── {id}/
-                └── GET.json
+|___ api/
+     v1/
+        |___ items/
+            |___ GET.json
+            |___POST.json
+            |___{id}/
+                |___ GET.json
 ```
 
 ### Naming rules
