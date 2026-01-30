@@ -16,7 +16,7 @@ Defaults are shown in parentheses.
 | `RUNNING_ENV`     | `docker`             | Runtime environment (`docker`, `k8s`, `local`).                             |
 | `VALIDATION_MODE` | `required`           | Request validation mode (`none`, `required`).                               |
 | `FALLBACK_MODE`   | `openapi_examples`   | Fallback behavior if a sample file is missing (`none`, `openapi_examples`). |
-| `DEBUG_ROUTES`    | `false`              | If `true`, prints resolved route → sample mappings on startup.              |
+| `DEBUG_ROUTES`    | `false`              | If `true`, prints resolved route - sample mappings on startup.              |
 | `LAYOUT_MODE`     | `auto`               | Sample file layout mode (`auto`, `folders`, `flat`).                        |
 
 ---
@@ -50,7 +50,7 @@ Scenarios are evaluated **per endpoint and per key** (e.g. `{id}`).
 
 Controls how non-scenario sample files are resolved:
 
-* `auto` (default): **folder-based → legacy flat**
+* `auto` (default): **folder-based - legacy flat**
 * `folders`: only folder-based layout
 * `flat`: only legacy flat filenames
 
@@ -62,9 +62,9 @@ SAMPLES_DIR/<path>/<METHOD>[.<state>].json
 
 Examples:
 
-* `GET /api/v1/items` → `api/v1/items/GET.json`
-* `GET /api/v1/items/{id}` → `api/v1/items/{id}/GET.json`
-* Stateful sample → `GET.running.1.json`
+* `GET /api/v1/items` - `api/v1/items/GET.json`
+* `GET /api/v1/items/{id}` - `api/v1/items/{id}/GET.json`
+* Stateful sample - `GET.running.1.json`
 
 Legacy flat samples:
 
