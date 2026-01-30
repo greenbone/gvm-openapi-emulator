@@ -306,7 +306,6 @@ func TestResolveSamplePath_ScenarioEnabled_ResolveError(t *testing.T) {
 	actualPath := "/api/v1/items"
 	scenarioFilename := "scenario.json"
 
-	// Write a valid scenario file (whatever LoadScenario expects; update content if needed)
 	scPath := ScenarioPathForSwagger(baseDir, swaggerTpl, scenarioFilename)
 	writeFileWithDirs(t, filepath.Dir(scPath), filepath.Base(scPath), `{}`)
 
