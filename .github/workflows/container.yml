@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build:
-    if: ${{ github.repository == 'ozgen/openapi-sample-simulator' }}
+    if: ${{ github.repository == 'ozgen/openapi-sample-emulator' }}
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +45,7 @@ jobs:
   # notify:
   #   needs:
   #     - build
-  #   if: ${{ !cancelled() && github.event_name != 'pull_request' && github.repository == 'ozgen/openapi-sample-simulator' }}
+  #   if: ${{ !cancelled() && github.event_name != 'pull_request' && github.repository == 'ozgen/openapi-sample-emulator' }}
   #   uses: greenbone/workflows/.github/workflows/notify-mattermost-2nd-gen.yml@main
   #   with:
   #     status: ${{ contains(needs.*.result, 'failure') && 'failure' || 'success' }}
