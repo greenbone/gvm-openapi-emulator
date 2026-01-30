@@ -23,6 +23,7 @@ VALIDATION_MODE ?= required
 DEBUG_ROUTES ?= false
 STATE_FLOW?= requested,running*4,succeeded
 STATE_RESET_ON_LAST?= true
+STATE_STEP_CALLS?=1
 
 .PHONY: all
 all: test build
@@ -42,6 +43,7 @@ run: build
 	DEBUG_ROUTES=$(DEBUG_ROUTES) \
 	STATE_FLOW=$(STATE_FLOW) \
 	STATE_RESET_ON_LAST=$(STATE_RESET_ON_LAST) \
+	STATE_STEP_CALLS=$(STATE_STEP_CALLS) \
 	./$(BIN_DIR)/$(APP_NAME)
 
 .PHONY: test
@@ -93,6 +95,7 @@ docker-run:
 		-e DEBUG_ROUTES=$(DEBUG_ROUTES) \
 		-e STATE_FLOW=$(STATE_FLOW) \
 		-e STATE_RESET_ON_LAST=$(STATE_RESET_ON_LAST) \
+		-e STATE_STEP_CALLS=$(STATE_STEP_CALLS) \
 		-v "./examples/openvasd:/work:ro" \
 		$(IMAGE_NAME)
 

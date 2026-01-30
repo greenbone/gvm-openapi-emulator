@@ -16,6 +16,7 @@ services:
       - FALLBACK_MODE=openapi_examples
       - STATE_FLOW=requested,running*4,succeeded
       - STATE_RESET_ON_LAST=true
+      - STATE_STEP_CALLS=1
     volumes:
 
       - ./examples/openvasd:/work:ro # change the folder path for other examples
