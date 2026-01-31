@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/sirupsen/logrus"
 )
 
 func TestLoadSpec_OpenAPI3_OK(t *testing.T) {
@@ -38,18 +39,15 @@ func TestLoadSpec_OpenAPI3_OK(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 
-	s, err := LoadSpec(p)
+	provider, err := NewSpecProvider(p, logrus.New())
 	if err != nil {
-		t.Fatalf("LoadSpec: %v", err)
+		t.Fatalf("NewSpecProvider: %v", err)
 	}
-	if s == nil || s.Doc3 == nil {
-		t.Fatalf("expected Doc3, got %#v", s)
-	}
-	if s.Doc2 != nil {
-		t.Fatalf("expected Doc2 nil for OAS3, got %#v", s.Doc2)
+	if provider == nil {
+		t.Fatalf("expected provider, got nil")
 	}
 
-	op := findOperation(s, "/health", "get")
+	op := provider.FindOperation("/health", "get")
 	if op == nil {
 		t.Fatalf("expected operation")
 	}
@@ -78,16 +76,17 @@ func TestLoadSpec_Swagger2_OK(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 
-	s, err := LoadSpec(p)
+	provider, err := NewSpecProvider(p, logrus.New())
 	if err != nil {
-		t.Fatalf("LoadSpec: %v", err)
+		t.Fatalf("NewSpecProvider: %v", err)
 	}
-	if s == nil || s.Doc2 == nil || s.Doc3 == nil {
-		t.Fatalf("expected Doc2 and Doc3, got %#v", s)
+	if provider == nil {
+		t.Fatalf("expected provider, got nil")
 	}
 
-	if s.Doc3.Paths.Find("/health") == nil {
-		t.Fatalf("expected /health in converted Doc3")
+	op := provider.FindOperation("/health", "get")
+	if op == nil {
+		t.Fatalf("expected /health GET operation in converted doc3")
 	}
 }
 
@@ -98,27 +97,29 @@ func TestLoadSpec_InvalidJSON(t *testing.T) {
 		t.Fatalf("write: %v", err)
 	}
 
-	_, err := LoadSpec(p)
+	_, err := NewSpecProvider(p, logrus.New())
 	if err == nil {
 		t.Fatalf("expected error")
 	}
 }
 
 func TestLoadSpec_MissingFile(t *testing.T) {
-	_, err := LoadSpec("/no/such/file/openapi.json")
+	_, err := NewSpecProvider("/no/such/file/openapi.json", logrus.New())
 	if err == nil {
 		t.Fatalf("expected error")
 	}
 }
 
 func TestPickBestResponseRef_Prefers200Then201202204(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resps := openapi3.NewResponses()
 	resps.Set("201", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("created")}})
 	resps.Set("200", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("ok")}})
 	resps.Set("202", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("accepted")}})
 	resps.Set("204", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("nocontent")}})
 
-	got := pickBestResponseRef(resps)
+	got := p.pickBestResponseRef(resps)
 	if got == nil || got.Value == nil || got.Value.Description == nil || *got.Value.Description != "ok" {
 		t.Fatalf("expected 200, got %#v", got)
 	}
@@ -126,32 +127,36 @@ func TestPickBestResponseRef_Prefers200Then201202204(t *testing.T) {
 	resps = openapi3.NewResponses()
 	resps.Set("201", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("created")}})
 	resps.Set("202", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("accepted")}})
-	got = pickBestResponseRef(resps)
+	got = p.pickBestResponseRef(resps)
 	if got == nil || got.Value == nil || got.Value.Description == nil || *got.Value.Description != "created" {
 		t.Fatalf("expected 201, got %#v", got)
 	}
 }
 
 func TestPickBestResponseRef_PicksLowest2xx(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resps := openapi3.NewResponses()
 	resps.Set("299", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("299")}})
 	resps.Set("250", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("250")}})
 	resps.Set("210", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("210")}})
 
-	got := pickBestResponseRef(resps)
+	got := p.pickBestResponseRef(resps)
 	if got == nil || got.Value == nil || got.Value.Description == nil || *got.Value.Description != "210" {
 		t.Fatalf("expected lowest 2xx=210, got %#v", got)
 	}
 }
 
 func TestExtractExampleFromResponse_Example(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resp := &openapi3.Response{
 		Content: openapi3.Content{
 			"application/json": &openapi3.MediaType{Example: map[string]any{"id": 1}},
 		},
 	}
 
-	b, ok := extractExampleFromResponse(resp)
+	b, ok := p.extractExampleFromResponse(resp)
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -164,6 +169,8 @@ func TestExtractExampleFromResponse_Example(t *testing.T) {
 }
 
 func TestExtractExampleFromResponse_ExamplesMap(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resp := &openapi3.Response{
 		Content: openapi3.Content{
 			"application/problem+json": &openapi3.MediaType{
@@ -174,7 +181,7 @@ func TestExtractExampleFromResponse_ExamplesMap(t *testing.T) {
 		},
 	}
 
-	b, ok := extractExampleFromResponse(resp)
+	b, ok := p.extractExampleFromResponse(resp)
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -186,41 +193,47 @@ func TestExtractExampleFromResponse_ExamplesMap(t *testing.T) {
 }
 
 func TestExtractExampleFromResponse_NoJSONContent(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resp := &openapi3.Response{
 		Content: openapi3.Content{
 			"text/plain": &openapi3.MediaType{Example: "hi"},
 		},
 	}
-	_, ok := extractExampleFromResponse(resp)
+	_, ok := p.extractExampleFromResponse(resp)
 	if ok {
 		t.Fatalf("expected false for non-json content types")
 	}
 }
 
 func TestExtractExampleFromResponse_NilGuards(t *testing.T) {
-	if _, ok := extractExampleFromResponse(nil); ok {
+	p := &SpecProvider{log: logrus.New()}
+
+	if _, ok := p.extractExampleFromResponse(nil); ok {
 		t.Fatalf("expected false")
 	}
-	if _, ok := extractExampleFromResponse(&openapi3.Response{}); ok {
+	if _, ok := p.extractExampleFromResponse(&openapi3.Response{}); ok {
 		t.Fatalf("expected false")
 	}
 }
 
 func TestGenerateFromResponseSchema_JSON(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resp := &openapi3.Response{
 		Content: openapi3.Content{
 			"application/json": &openapi3.MediaType{
 				Schema: &openapi3.SchemaRef{Value: &openapi3.Schema{
 					Type: &openapi3.Types{"object"},
 					Properties: openapi3.Schemas{
-						"name": &openapi3.SchemaRef{Value: &openapi3.Schema{Type: &openapi3.Types{"string"}}},
+						"name": {Value: &openapi3.Schema{Type: &openapi3.Types{"string"}}},
 					},
 				}},
 			},
 		},
 	}
 
-	b, ok := generateFromResponseSchema(resp)
+	b, ok := p.generateFromResponseSchema(resp)
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -232,6 +245,8 @@ func TestGenerateFromResponseSchema_JSON(t *testing.T) {
 }
 
 func TestGenerateFromResponseSchema_ProblemJSON(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resp := &openapi3.Response{
 		Content: openapi3.Content{
 			"application/problem+json": &openapi3.MediaType{
@@ -239,7 +254,7 @@ func TestGenerateFromResponseSchema_ProblemJSON(t *testing.T) {
 			},
 		},
 	}
-	b, ok := generateFromResponseSchema(resp)
+	b, ok := p.generateFromResponseSchema(resp)
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -251,6 +266,8 @@ func TestGenerateFromResponseSchema_ProblemJSON(t *testing.T) {
 }
 
 func TestGenerateFromResponseSchema_StarStar(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resp := &openapi3.Response{
 		Content: openapi3.Content{
 			"*/*": &openapi3.MediaType{
@@ -258,7 +275,7 @@ func TestGenerateFromResponseSchema_StarStar(t *testing.T) {
 			},
 		},
 	}
-	b, ok := generateFromResponseSchema(resp)
+	b, ok := p.generateFromResponseSchema(resp)
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -270,28 +287,34 @@ func TestGenerateFromResponseSchema_StarStar(t *testing.T) {
 }
 
 func TestGenerateFromResponseSchema_NoSchema(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	resp := &openapi3.Response{
 		Content: openapi3.Content{
 			"application/json": &openapi3.MediaType{},
 		},
 	}
-	_, ok := generateFromResponseSchema(resp)
+	_, ok := p.generateFromResponseSchema(resp)
 	if ok {
 		t.Fatalf("expected false")
 	}
 }
 
 func TestGenerateFromResponseSchema_NilGuards(t *testing.T) {
-	if _, ok := generateFromResponseSchema(nil); ok {
+	p := &SpecProvider{log: logrus.New()}
+
+	if _, ok := p.generateFromResponseSchema(nil); ok {
 		t.Fatalf("expected false")
 	}
-	if _, ok := generateFromResponseSchema(&openapi3.Response{}); ok {
+	if _, ok := p.generateFromResponseSchema(&openapi3.Response{}); ok {
 		t.Fatalf("expected false")
 	}
 }
 
 func TestGenFromSchemaRef_EnumWins(t *testing.T) {
-	v := genFromSchemaRef(&openapi3.SchemaRef{Value: &openapi3.Schema{
+	p := &SpecProvider{log: logrus.New()}
+
+	v := p.genFromSchemaRef(&openapi3.SchemaRef{Value: &openapi3.Schema{
 		Enum: []any{"a", "b"},
 	}}, map[string]bool{}, 0)
 
@@ -301,6 +324,8 @@ func TestGenFromSchemaRef_EnumWins(t *testing.T) {
 }
 
 func TestGenFromSchemaRef_Primitives(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	tests := []struct {
 		name string
 		s    *openapi3.Schema
@@ -315,7 +340,7 @@ func TestGenFromSchemaRef_Primitives(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := genFromSchemaRef(&openapi3.SchemaRef{Value: tc.s}, map[string]bool{}, 0)
+			got := p.genFromSchemaRef(&openapi3.SchemaRef{Value: tc.s}, map[string]bool{}, 0)
 			if got != tc.want {
 				t.Fatalf("got %#v want %#v", got, tc.want)
 			}
@@ -324,7 +349,9 @@ func TestGenFromSchemaRef_Primitives(t *testing.T) {
 }
 
 func TestGenFromSchemaRef_Array(t *testing.T) {
-	got := genFromSchemaRef(&openapi3.SchemaRef{Value: &openapi3.Schema{
+	p := &SpecProvider{log: logrus.New()}
+
+	got := p.genFromSchemaRef(&openapi3.SchemaRef{Value: &openapi3.Schema{
 		Type:  &openapi3.Types{"array"},
 		Items: &openapi3.SchemaRef{Value: &openapi3.Schema{Type: &openapi3.Types{"string"}}},
 	}}, map[string]bool{}, 0)
@@ -336,11 +363,13 @@ func TestGenFromSchemaRef_Array(t *testing.T) {
 }
 
 func TestGenFromSchemaRef_ObjectProperties(t *testing.T) {
-	got := genFromSchemaRef(&openapi3.SchemaRef{Value: &openapi3.Schema{
+	p := &SpecProvider{log: logrus.New()}
+
+	got := p.genFromSchemaRef(&openapi3.SchemaRef{Value: &openapi3.Schema{
 		Type: &openapi3.Types{"object"},
 		Properties: openapi3.Schemas{
-			"id":   &openapi3.SchemaRef{Value: &openapi3.Schema{Type: &openapi3.Types{"integer"}}},
-			"name": &openapi3.SchemaRef{Value: &openapi3.Schema{Type: &openapi3.Types{"string"}}},
+			"id":   {Value: &openapi3.Schema{Type: &openapi3.Types{"integer"}}},
+			"name": {Value: &openapi3.Schema{Type: &openapi3.Types{"string"}}},
 		},
 	}}, map[string]bool{}, 0)
 
@@ -351,12 +380,14 @@ func TestGenFromSchemaRef_ObjectProperties(t *testing.T) {
 }
 
 func TestGenObject_AdditionalPropertiesSchema(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	s := &openapi3.Schema{}
 	s.AdditionalProperties.Schema = &openapi3.SchemaRef{
 		Value: &openapi3.Schema{Type: &openapi3.Types{"string"}},
 	}
 
-	got := genObject(s, map[string]bool{}, 0)
+	got := p.genObject(s, map[string]bool{}, 0)
 	m, ok := got.(map[string]any)
 	if !ok || m["key"] != "string" {
 		t.Fatalf("unexpected: %#v", got)
@@ -364,15 +395,17 @@ func TestGenObject_AdditionalPropertiesSchema(t *testing.T) {
 }
 
 func TestGenObject_AdditionalPropertiesTrue(t *testing.T) {
+	p := &SpecProvider{log: logrus.New()}
+
 	s := &openapi3.Schema{
 		Properties: openapi3.Schemas{
-			"a": &openapi3.SchemaRef{Value: &openapi3.Schema{Type: &openapi3.Types{"integer"}}},
+			"a": {Value: &openapi3.Schema{Type: &openapi3.Types{"integer"}}},
 		},
 	}
 	b := true
 	s.AdditionalProperties.Has = &b
 
-	got := genObject(s, map[string]bool{}, 0)
+	got := p.genObject(s, map[string]bool{}, 0)
 	m, ok := got.(map[string]any)
 	if !ok {
 		t.Fatalf("unexpected: %#v", got)
@@ -386,9 +419,12 @@ func TestGenObject_AdditionalPropertiesTrue(t *testing.T) {
 }
 
 func TestGenFromSchemaRef_DepthLimit(t *testing.T) {
-	got := genFromSchemaRef(&openapi3.SchemaRef{Value: &openapi3.Schema{
+	p := &SpecProvider{log: logrus.New()}
+
+	got := p.genFromSchemaRef(&openapi3.SchemaRef{Value: &openapi3.Schema{
 		Type: &openapi3.Types{"object"},
 	}}, map[string]bool{}, 7)
+
 	m, ok := got.(map[string]any)
 	if !ok || len(m) != 0 {
 		t.Fatalf("expected empty map due to depth limit, got %#v", got)
@@ -396,20 +432,26 @@ func TestGenFromSchemaRef_DepthLimit(t *testing.T) {
 }
 
 func TestGenFromSchemaRef_NilGuards(t *testing.T) {
-	got := genFromSchemaRef(nil, map[string]bool{}, 0)
+	p := &SpecProvider{log: logrus.New()}
+
+	got := p.genFromSchemaRef(nil, map[string]bool{}, 0)
 	if _, ok := got.(map[string]any); !ok {
 		t.Fatalf("expected map fallback, got %#v", got)
 	}
 
-	got = genFromSchemaRef(&openapi3.SchemaRef{Value: nil}, map[string]bool{}, 0)
+	got = p.genFromSchemaRef(&openapi3.SchemaRef{Value: nil}, map[string]bool{}, 0)
 	if _, ok := got.(map[string]any); !ok {
 		t.Fatalf("expected map fallback, got %#v", got)
 	}
 }
 
 func TestTryGetExampleBody_NoOperation(t *testing.T) {
-	spec := &Spec{Doc3: &openapi3.T{}}
-	_, ok := TryGetExampleBody(spec, "/missing", "get")
+	p := &SpecProvider{
+		spec: &Spec{Doc3: &openapi3.T{}},
+		log:  logrus.New(),
+	}
+
+	_, ok := p.TryGetExampleBody("/missing", "get")
 	if ok {
 		t.Fatalf("expected false when operation not found or responses nil")
 	}
@@ -427,11 +469,14 @@ func TestTryGetExampleBody_ResponseMissingValue_FallbackOK(t *testing.T) {
 		},
 	})
 
-	doc := &openapi3.T{}
-	doc.Paths = paths
+	doc := &openapi3.T{Paths: paths}
 
-	spec := &Spec{Doc3: doc}
-	b, ok := TryGetExampleBody(spec, "/x", "get")
+	p := &SpecProvider{
+		spec: &Spec{Doc3: doc},
+		log:  logrus.New(),
+	}
+
+	b, ok := p.TryGetExampleBody("/x", "get")
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -463,11 +508,14 @@ func TestTryGetExampleBody_ExplicitExampleWins(t *testing.T) {
 		},
 	})
 
-	doc := &openapi3.T{}
-	doc.Paths = paths
+	doc := &openapi3.T{Paths: paths}
 
-	spec := &Spec{Doc3: doc}
-	b, ok := TryGetExampleBody(spec, "/x", "get")
+	p := &SpecProvider{
+		spec: &Spec{Doc3: doc},
+		log:  logrus.New(),
+	}
+
+	b, ok := p.TryGetExampleBody("/x", "get")
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -492,7 +540,7 @@ func TestTryGetExampleBody_SchemaGeneratedWhenNoExample(t *testing.T) {
 								Schema: &openapi3.SchemaRef{Value: &openapi3.Schema{
 									Type: &openapi3.Types{"object"},
 									Properties: openapi3.Schemas{
-										"id": &openapi3.SchemaRef{Value: &openapi3.Schema{Type: &openapi3.Types{"integer"}}},
+										"id": {Value: &openapi3.Schema{Type: &openapi3.Types{"integer"}}},
 									},
 								}},
 							},
@@ -504,11 +552,14 @@ func TestTryGetExampleBody_SchemaGeneratedWhenNoExample(t *testing.T) {
 		},
 	})
 
-	doc := &openapi3.T{}
-	doc.Paths = paths
+	doc := &openapi3.T{Paths: paths}
 
-	spec := &Spec{Doc3: doc}
-	b, ok := TryGetExampleBody(spec, "/x", "get")
+	p := &SpecProvider{
+		spec: &Spec{Doc3: doc},
+		log:  logrus.New(),
+	}
+
+	b, ok := p.TryGetExampleBody("/x", "get")
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -520,67 +571,6 @@ func TestTryGetExampleBody_SchemaGeneratedWhenNoExample(t *testing.T) {
 	}
 }
 
-func TestPickBestResponseRef_Prefers200(t *testing.T) {
-	resps := openapi3.NewResponses()
-	resps.Set("404", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("nope")}})
-	resps.Set("200", &openapi3.ResponseRef{Value: &openapi3.Response{Description: ptr("ok")}})
-
-	got := pickBestResponseRef(resps)
-	if got == nil || got.Value == nil || got.Value.Description == nil || *got.Value.Description != "ok" {
-		t.Fatalf("expected 200 response, got %#v", got)
-	}
-}
-
-func TestExtractExampleFromResponse_MediaTypeExample(t *testing.T) {
-	resp := &openapi3.Response{
-		Content: openapi3.Content{
-			"application/json": &openapi3.MediaType{
-				Example: map[string]any{"id": 1},
-			},
-		},
-	}
-
-	b, ok := extractExampleFromResponse(resp)
-	if !ok {
-		t.Fatalf("expected ok")
-	}
-
-	var m map[string]any
-	_ = json.Unmarshal(b, &m)
-
-	if m["id"] != float64(1) {
-		t.Fatalf("unexpected: %#v", m)
-	}
-}
-
-func TestGenerateFromResponseSchema_Array(t *testing.T) {
-	resp := &openapi3.Response{
-		Content: openapi3.Content{
-			"application/json": &openapi3.MediaType{
-				Schema: &openapi3.SchemaRef{
-					Value: &openapi3.Schema{
-						Type:  &openapi3.Types{"array"},
-						Items: &openapi3.SchemaRef{Value: &openapi3.Schema{Type: &openapi3.Types{"string"}}},
-					},
-				},
-			},
-		},
-	}
-
-	b, ok := generateFromResponseSchema(resp)
-	if !ok {
-		t.Fatalf("expected ok")
-	}
-
-	var v []any
-	if err := json.Unmarshal(b, &v); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if len(v) != 1 || v[0] != "string" {
-		t.Fatalf("unexpected: %#v", v)
-	}
-}
-
 func TestTryGetExampleBody_FallbackOk(t *testing.T) {
 	paths := openapi3.NewPaths()
 	paths.Set("/health", &openapi3.PathItem{
@@ -588,13 +578,14 @@ func TestTryGetExampleBody_FallbackOk(t *testing.T) {
 			Responses: openapi3.NewResponses(),
 		},
 	})
+	doc := &openapi3.T{Paths: paths}
 
-	doc := &openapi3.T{}
-	doc.Paths = paths
+	p := &SpecProvider{
+		spec: &Spec{Doc3: doc},
+		log:  logrus.New(),
+	}
 
-	spec := &Spec{Doc3: doc}
-
-	b, ok := TryGetExampleBody(spec, "/health", "get")
+	b, ok := p.TryGetExampleBody("/health", "get")
 	if !ok {
 		t.Fatalf("expected ok")
 	}
@@ -603,6 +594,47 @@ func TestTryGetExampleBody_FallbackOk(t *testing.T) {
 	_ = json.Unmarshal(b, &m)
 	if m["ok"] != true {
 		t.Fatalf("unexpected: %#v", m)
+	}
+}
+
+func TestNewSpecProvider_GetSpec_OpenAPI3(t *testing.T) {
+	dir := t.TempDir()
+	p := filepath.Join(dir, "oas3.json")
+
+	specJSON := `{
+	  "openapi":"3.0.3",
+	  "info":{"title":"t","version":"1"},
+	  "paths":{
+		"/health":{
+		  "get":{
+			"responses":{
+			  "200":{"description":"ok"}
+			}
+		  }
+		}
+	  }
+	}`
+
+	if err := os.WriteFile(p, []byte(specJSON), 0o600); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	provider, err := NewSpecProvider(p, logrus.New())
+	if err != nil {
+		t.Fatalf("NewSpecProvider: %v", err)
+	}
+
+	sp, ok := provider.(*SpecProvider)
+	if !ok {
+		t.Fatalf("expected *SpecProvider, got %T", provider)
+	}
+
+	spec := sp.GetSpec()
+	if spec == nil || spec.Doc3 == nil {
+		t.Fatalf("expected Doc3, got %#v", spec)
+	}
+	if spec.Doc2 != nil {
+		t.Fatalf("expected Doc2 nil for OAS3, got %#v", spec.Doc2)
 	}
 }
 

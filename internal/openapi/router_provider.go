@@ -6,14 +6,11 @@ import (
 	"strings"
 )
 
-type Route struct {
-	Method     string
-	Swagger    string
-	Regex      *regexp.Regexp
-	SampleFile string
+type RouterProvider struct {
+	routes []Route
 }
 
-func BuildRoutes(spec *Spec) []Route {
+func NewRouterProvider(spec *Spec) IRouterProvider {
 	if spec == nil || spec.Doc3 == nil || spec.Doc3.Paths == nil {
 		return nil
 	}
@@ -34,18 +31,22 @@ func BuildRoutes(spec *Spec) []Route {
 			})
 		}
 	}
-	return out
+	return &RouterProvider{routes: out}
 }
 
-func FindRoute(routes []Route, method, path string) *Route {
+func (p *RouterProvider) FindRoute(method, path string) *Route {
 	method = strings.ToUpper(method)
-	for i := range routes {
-		r := &routes[i]
+	for i := range p.routes {
+		r := &p.routes[i]
 		if r.Method == method && r.Regex.MatchString(path) {
 			return r
 		}
 	}
 	return nil
+}
+
+func (p *RouterProvider) GetRoutes() []Route {
+	return p.routes
 }
 
 func swaggerPathToSampleName(method, swaggerPath string) string {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -16,17 +17,13 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
-type Spec struct {
-	Doc3 *openapi3.T
-	Doc2 *openapi2.T
+type SpecProvider struct {
+	path string
+	spec *Spec
+	log  *logrus.Logger
 }
 
-type versionProbe struct {
-	Swagger string `json:"swagger"`
-	OpenAPI string `json:"openapi"`
-}
-
-func LoadSpec(path string) (*Spec, error) {
+func NewSpecProvider(path string, log *logrus.Logger) (ISpecProvider, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("read spec: %w", err)
@@ -50,48 +47,66 @@ func LoadSpec(path string) (*Spec, error) {
 
 		doc3, err := openapi2conv.ToV3WithLoader(&doc2, loader, loc)
 		if err != nil {
+			log.WithError(err).Warn("failed to convert swagger to v3")
 			return nil, fmt.Errorf("convert swagger2 -> oas3: %w", err)
 		}
 
 		if err := loader.ResolveRefsIn(doc3, loc); err != nil {
+			log.WithError(err).Warn("failed to resolve swagger to v3")
 			return nil, fmt.Errorf("resolve refs: %w", err)
 		}
 
-		_ = doc3.Validate(context.Background())
+		if err := doc3.Validate(context.Background()); err != nil {
+			log.WithError(err).Warn("openapi spec validation failed")
+		}
 
-		return &Spec{Doc2: &doc2, Doc3: doc3}, nil
+		return &SpecProvider{
+			path: path,
+			spec: &Spec{Doc2: &doc2, Doc3: doc3},
+			log:  log,
+		}, nil
 	}
 
 	// OpenAPI 3.x
 	var doc3 openapi3.T
 	if err := json.Unmarshal(b, &doc3); err != nil {
+		log.WithError(err).Warn("failed to convert swagger to v3")
 		return nil, fmt.Errorf("parse openapi3 json: %w", err)
 	}
 	if err := loader.ResolveRefsIn(&doc3, loc); err != nil {
+		log.WithError(err).Warn("failed to resolve swagger to v3")
 		return nil, fmt.Errorf("resolve refs: %w", err)
 	}
 	_ = doc3.Validate(context.Background())
 
-	return &Spec{Doc3: &doc3}, nil
+	return &SpecProvider{
+		path: path,
+		spec: &Spec{Doc3: &doc3},
+		log:  log,
+	}, nil
 }
 
-func TryGetExampleBody(spec *Spec, swaggerPath, method string) ([]byte, bool) {
-	op := findOperation(spec, swaggerPath, method)
+func (sp *SpecProvider) GetSpec() *Spec {
+	return sp.spec
+}
+
+func (p *SpecProvider) TryGetExampleBody(swaggerPath, method string) ([]byte, bool) {
+	op := p.FindOperation(swaggerPath, method)
 	if op == nil || op.Responses == nil {
 		return nil, false
 	}
 
-	respRef := pickBestResponseRef(op.Responses)
+	respRef := p.pickBestResponseRef(op.Responses)
 	if respRef == nil || respRef.Value == nil {
 		b, _ := json.Marshal(map[string]any{"ok": true})
 		return b, true
 	}
 
-	if b, ok := extractExampleFromResponse(respRef.Value); ok {
+	if b, ok := p.extractExampleFromResponse(respRef.Value); ok {
 		return b, true
 	}
 
-	if b, ok := generateFromResponseSchema(respRef.Value); ok {
+	if b, ok := p.generateFromResponseSchema(respRef.Value); ok {
 		return b, true
 	}
 
@@ -99,18 +114,18 @@ func TryGetExampleBody(spec *Spec, swaggerPath, method string) ([]byte, bool) {
 	return b, true
 }
 
-func findOperation(spec *Spec, swaggerPath, method string) *openapi3.Operation {
-	if spec == nil || spec.Doc3 == nil {
+func (p *SpecProvider) FindOperation(swaggerPath, method string) *openapi3.Operation {
+	if p.spec == nil || p.spec.Doc3 == nil {
 		return nil
 	}
-	item := spec.Doc3.Paths.Find(swaggerPath)
+	item := p.spec.Doc3.Paths.Find(swaggerPath)
 	if item == nil {
 		return nil
 	}
 	return item.GetOperation(strings.ToUpper(method))
 }
 
-func pickBestResponseRef(resps *openapi3.Responses) *openapi3.ResponseRef {
+func (p *SpecProvider) pickBestResponseRef(resps *openapi3.Responses) *openapi3.ResponseRef {
 	if resps == nil {
 		return nil
 	}
@@ -150,7 +165,7 @@ func pickBestResponseRef(resps *openapi3.Responses) *openapi3.ResponseRef {
 	return nil
 }
 
-func extractExampleFromResponse(resp *openapi3.Response) ([]byte, bool) {
+func (p *SpecProvider) extractExampleFromResponse(resp *openapi3.Response) ([]byte, bool) {
 	if resp == nil || resp.Content == nil {
 		return nil, false
 	}
@@ -186,7 +201,7 @@ func extractExampleFromResponse(resp *openapi3.Response) ([]byte, bool) {
 	return nil, false
 }
 
-func generateFromResponseSchema(resp *openapi3.Response) ([]byte, bool) {
+func (p *SpecProvider) generateFromResponseSchema(resp *openapi3.Response) ([]byte, bool) {
 	if resp == nil || resp.Content == nil {
 		return nil, false
 	}
@@ -197,7 +212,7 @@ func generateFromResponseSchema(resp *openapi3.Response) ([]byte, bool) {
 			continue
 		}
 
-		val := genFromSchemaRef(mt.Schema, map[string]bool{}, 0)
+		val := p.genFromSchemaRef(mt.Schema, map[string]bool{}, 0)
 		b, err := json.Marshal(val)
 		return b, err == nil
 	}
@@ -205,7 +220,7 @@ func generateFromResponseSchema(resp *openapi3.Response) ([]byte, bool) {
 	return nil, false
 }
 
-func genFromSchemaRef(ref *openapi3.SchemaRef, visiting map[string]bool, depth int) any {
+func (p *SpecProvider) genFromSchemaRef(ref *openapi3.SchemaRef, visiting map[string]bool, depth int) any {
 	if depth > 6 || ref == nil || ref.Value == nil {
 		return map[string]any{}
 	}
@@ -222,12 +237,12 @@ func genFromSchemaRef(ref *openapi3.SchemaRef, visiting map[string]bool, depth i
 		if s.Items == nil {
 			return []any{}
 		}
-		return []any{genFromSchemaRef(s.Items, visiting, depth+1)}
+		return []any{p.genFromSchemaRef(s.Items, visiting, depth+1)}
 	}
 
 	// OBJECT
 	if (s.Type != nil && s.Type.Is("object")) || len(s.Properties) > 0 || s.AdditionalProperties.Schema != nil {
-		return genObject(s, visiting, depth)
+		return p.genObject(s, visiting, depth)
 	}
 
 	// PRIMITIVES
@@ -251,12 +266,12 @@ func genFromSchemaRef(ref *openapi3.SchemaRef, visiting map[string]bool, depth i
 	return map[string]any{"ok": true}
 }
 
-func genObject(s *openapi3.Schema, visiting map[string]bool, depth int) any {
+func (p *SpecProvider) genObject(s *openapi3.Schema, visiting map[string]bool, depth int) any {
 	out := map[string]any{}
 
 	// additionalProperties: schema form
 	if s.AdditionalProperties.Schema != nil {
-		out["key"] = genFromSchemaRef(s.AdditionalProperties.Schema, visiting, depth+1)
+		out["key"] = p.genFromSchemaRef(s.AdditionalProperties.Schema, visiting, depth+1)
 		return out
 	}
 
@@ -266,7 +281,7 @@ func genObject(s *openapi3.Schema, visiting map[string]bool, depth int) any {
 
 	// properties
 	for name, prop := range s.Properties {
-		out[name] = genFromSchemaRef(prop, visiting, depth+1)
+		out[name] = p.genFromSchemaRef(prop, visiting, depth+1)
 	}
 
 	return out
