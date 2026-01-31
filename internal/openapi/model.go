@@ -1,9 +1,10 @@
 package openapi
 
 import (
+	"regexp"
+
 	"github.com/getkin/kin-openapi/openapi2"
 	"github.com/getkin/kin-openapi/openapi3"
-	"regexp"
 )
 
 type Route struct {

@@ -1,10 +1,11 @@
 package samples
 
 import (
-	"github.com/ozgen/openapi-sample-emulator/logger"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/ozgen/openapi-sample-emulator/logger"
 
 	"github.com/ozgen/openapi-sample-emulator/config"
 	"github.com/stretchr/testify/mock"

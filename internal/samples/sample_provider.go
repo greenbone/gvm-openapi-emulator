@@ -3,11 +3,12 @@ package samples
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ozgen/openapi-sample-emulator/utils"
-	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/ozgen/openapi-sample-emulator/utils"
+	"github.com/sirupsen/logrus"
 
 	"github.com/ozgen/openapi-sample-emulator/config"
 )

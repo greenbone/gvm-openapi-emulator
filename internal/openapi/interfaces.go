@@ -1,8 +1,9 @@
 package openapi
 
 import (
-	"github.com/getkin/kin-openapi/openapi3"
 	"net/http"
+
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 type IRouterProvider interface {

@@ -3,12 +3,13 @@ package openapi
 import (
 	"bytes"
 	"errors"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
 	"io"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 
 	"github.com/getkin/kin-openapi/openapi3"
 )
@@ -123,7 +124,8 @@ func TestValidator_IsEmptyBody_EmptyBytesIsEmptyAndRewindable(t *testing.T) {
 	m := new(MockSpecProvider)
 	v := NewValidator(m)
 
-	req, _ := http.NewRequest("POST", "http://example.com", io.NopCloser(bytes.NewReader([]byte{})))
+	req, _ := http.NewRequest("POST", "http://example.com",
+		io.NopCloser(bytes.NewReader([]byte{})))
 
 	empty, err := v.IsEmptyBody(req)
 	require.NoError(t, err)
