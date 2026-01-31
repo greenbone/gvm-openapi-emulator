@@ -13,6 +13,8 @@ import (
 )
 
 func TestNew_LoadsSpecAndBuildsRoutes(t *testing.T) {
+	disableScenarioForTests()
+
 	dir := t.TempDir()
 	specPath := writeFile(t, dir, "spec.json", minimalSpec())
 
@@ -27,10 +29,24 @@ func TestNew_LoadsSpecAndBuildsRoutes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
-	if s == nil || s.spec == nil {
-		t.Fatalf("expected server with spec")
+	if s == nil {
+		t.Fatalf("expected server, got nil")
 	}
-	if len(s.routes) == 0 {
+	if s.specProvider == nil {
+		t.Fatalf("expected specProvider")
+	}
+	if s.routerProvider == nil {
+		t.Fatalf("expected routerProvider")
+	}
+	if s.validator == nil {
+		t.Fatalf("expected validator")
+	}
+	if s.sampleProvider == nil {
+		t.Fatalf("expected sampleProvider")
+	}
+
+	routes := s.routerProvider.GetRoutes()
+	if len(routes) == 0 {
 		t.Fatalf("expected routes, got none")
 	}
 }
@@ -130,6 +146,8 @@ func TestHandle_SampleFound_WritesHeadersStatusBody(t *testing.T) {
 }
 
 func TestHandle_SampleMissing_FallbackOpenAPIExample_200(t *testing.T) {
+	disableScenarioForTests()
+
 	dir := t.TempDir()
 	specPath := writeFile(t, dir, "spec.json", minimalSpec())
 
@@ -156,13 +174,14 @@ func TestHandle_SampleMissing_FallbackOpenAPIExample_200(t *testing.T) {
 	if rr.Header().Get("content-type") != "application/json" {
 		t.Fatalf("expected application/json")
 	}
-
 	if strings.TrimSpace(rr.Body.String()) != `{"id":"example"}` {
 		t.Fatalf("unexpected body: %q", rr.Body.String())
 	}
 }
 
 func TestHandle_SampleMissing_NoFallback_501(t *testing.T) {
+	disableScenarioForTests()
+
 	dir := t.TempDir()
 	specPath := writeFile(t, dir, "spec.json", minimalSpec())
 
@@ -192,7 +211,6 @@ func TestHandle_SampleMissing_NoFallback_501(t *testing.T) {
 	if m["error"] != "No sample file for route" {
 		t.Fatalf("unexpected: %v", m)
 	}
-
 	if m["swaggerPath"] != "/items/{id}" {
 		t.Fatalf("expected swaggerPath=/items/{id}, got %v", m["swaggerPath"])
 	}
@@ -221,6 +239,7 @@ func TestDebugRoutes_NotEmptyAndContainsMappings(t *testing.T) {
 
 func newTestServer(t *testing.T, validation config.ValidationMode, fallback config.FallbackMode) *Server {
 	t.Helper()
+	disableScenarioForTests()
 
 	dir := t.TempDir()
 	specPath := writeFile(t, dir, "spec.json", minimalSpec())
@@ -246,6 +265,13 @@ func newTestServer(t *testing.T, validation config.ValidationMode, fallback conf
 		t.Fatalf("New: %v", err)
 	}
 	return s
+}
+
+func disableScenarioForTests() {
+	config.Envs.Scenario.Enabled = false
+	if strings.TrimSpace(config.Envs.Scenario.Filename) == "" {
+		config.Envs.Scenario.Filename = "scenario.json"
+	}
 }
 
 func writeFile(t *testing.T, dir, name, content string) string {

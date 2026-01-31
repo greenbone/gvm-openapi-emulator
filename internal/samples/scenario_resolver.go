@@ -13,69 +13,21 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ScenarioResolver interface {
-	ResolveScenarioFile(
-		sc *Scenario,
-		method string,
-		swaggerTpl string,
-		actualPath string,
-	) (file string, state string, err error)
-}
-
-type Scenario struct {
-	Version int    `json:"version"`
-	Mode    string `json:"mode"` // "step" | "time"
-
-	Key struct {
-		PathParam string `json:"pathParam"`
-	} `json:"key"`
-
-	// step mode
-	Sequence []ScenarioEntry `json:"sequence,omitempty"`
-
-	// time mode
-	Timeline []TimelineEntry `json:"timeline,omitempty"`
-
-	Behavior Behavior `json:"behavior"`
-}
-
-type ScenarioEntry struct {
-	State string `json:"state"`
-	File  string `json:"file"`
-}
-
-type TimelineEntry struct {
-	AfterSec int64  `json:"afterSec"`
-	State    string `json:"state"`
-	File     string `json:"file"`
-}
-
-type Behavior struct {
-	AdvanceOn  []MatchRule `json:"advanceOn,omitempty"`
-	ResetOn    []MatchRule `json:"resetOn,omitempty"`
-	StartOn    []MatchRule `json:"startOn,omitempty"`
-	RepeatLast bool        `json:"repeatLast"`
-	Loop       bool        `json:"loop,omitempty"`
-}
-
-type MatchRule struct {
-	Method string `json:"method"`
-	Path   string `json:"path,omitempty"`
-}
-
 // ScenarioEngine holds runtime state (in-memory).
 type ScenarioEngine struct {
-	mu        sync.Mutex
-	stepIndex map[string]int
-	startedAt map[string]time.Time
-	log       *logrus.Logger
+	mu         sync.Mutex
+	stepIndex  map[string]int
+	startedAt  map[string]time.Time
+	resetRules map[string][]ResetRule
+	log        *logrus.Logger
 }
 
-func NewScenarioEngine() *ScenarioEngine {
+func NewScenarioEngine() IScenarioResolver {
 	return &ScenarioEngine{
-		stepIndex: map[string]int{},
-		startedAt: map[string]time.Time{},
-		log:       logger.GetLogger(),
+		stepIndex:  map[string]int{},
+		startedAt:  map[string]time.Time{},
+		resetRules: map[string][]ResetRule{},
+		log:        logger.GetLogger(),
 	}
 }
 
@@ -155,18 +107,18 @@ func (e *ScenarioEngine) ResolveScenarioFile(
 
 	k := scenarioRuntimeKey(swaggerTpl, keyVal)
 
-	if matchesAny(sc.Behavior.ResetOn, method, actualPath) {
-		e.mu.Lock()
-		delete(e.stepIndex, k)
-		delete(e.startedAt, k)
-		e.mu.Unlock()
-
-		e.log.WithFields(logrus.Fields{
-			"key":        k,
-			"actualPath": actualPath,
-			"method":     method,
-		}).Debug("scenario state reset")
+	e.mu.Lock()
+	if _, ok := e.resetRules[k]; !ok {
+		var rules []ResetRule
+		for _, r := range sc.Behavior.ResetOn {
+			rules = append(rules, ResetRule{
+				Method:  strings.ToUpper(strings.TrimSpace(r.Method)),
+				PathTpl: strings.TrimSpace(r.Path),
+			})
+		}
+		e.resetRules[k] = rules
 	}
+	e.mu.Unlock()
 
 	switch sc.Mode {
 	case "step":
@@ -176,6 +128,28 @@ func (e *ScenarioEngine) ResolveScenarioFile(
 	default:
 		return "", "", fmt.Errorf("unsupported mode %q", sc.Mode)
 	}
+}
+
+func (e *ScenarioEngine) TryResetByRequest(method, actualPath string) bool {
+	method = strings.ToUpper(method)
+
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	for k, rules := range e.resetRules {
+		for _, r := range rules {
+			if r.Method != method {
+				continue
+			}
+			if r.PathTpl == "" || matchTemplatePath(r.PathTpl, actualPath) {
+				delete(e.stepIndex, k)
+				delete(e.startedAt, k)
+				delete(e.resetRules, k)
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func (e *ScenarioEngine) resolveStep(k string, sc *Scenario, method string) (string, string, error) {
@@ -276,14 +250,36 @@ func matchesAny(rules []MatchRule, method string, actualPath string) bool {
 		if p == "" {
 			return true
 		}
-		if matchTemplatePath(p, actualPath) {
+		logger.GetLogger().Info("matching rule", "path", p, "method", method, "actualPath", actualPath)
+		if matchTemplatePathSuffix(p, actualPath) {
 			return true
 		}
 	}
 	return false
 }
 
-// matchTemplatePath supports "/scans/{id}" matching "/scans/123"
+func matchTemplatePathSuffix(tpl, actual string) bool {
+	tplParts := strings.Split(strings.Trim(tpl, "/"), "/")
+	actParts := strings.Split(strings.Trim(actual, "/"), "/")
+	if len(actParts) < len(tplParts) {
+		return false
+	}
+
+	actParts = actParts[len(actParts)-len(tplParts):]
+
+	for i := range tplParts {
+		t := tplParts[i]
+		a := actParts[i]
+		if strings.HasPrefix(t, "{") && strings.HasSuffix(t, "}") {
+			continue
+		}
+		if t != a {
+			return false
+		}
+	}
+	return true
+}
+
 func matchTemplatePath(tpl, actual string) bool {
 	tplParts := strings.Split(strings.Trim(tpl, "/"), "/")
 	actParts := strings.Split(strings.Trim(actual, "/"), "/")

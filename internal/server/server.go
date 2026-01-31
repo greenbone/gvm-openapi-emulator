@@ -28,19 +28,26 @@ type Server struct {
 	specProvider   openapi.ISpecProvider
 	routerProvider openapi.IRouterProvider
 	validator      openapi.IValidator
+	sampleProvider samples.ISampleProvider
 	log            *logrus.Logger
 
-	scenario samples.ScenarioResolver
+	scenario samples.IScenarioResolver
 }
 
 func New(cfg Config) (*Server, error) {
 	log := logger.GetLogger()
+
 	specProvider, err := openapi.NewSpecProvider(cfg.SpecPath, log)
 	if err != nil {
 		return nil, err
 	}
 
-	routeProvider := openapi.NewRouterProvider(specProvider.GetSpec())
+	sp, ok := specProvider.(*openapi.SpecProvider)
+	if !ok {
+		return nil, fmt.Errorf("unexpected spec provider type: %T", specProvider)
+	}
+
+	routeProvider := openapi.NewRouterProvider(sp.GetSpec())
 	validator := openapi.NewValidator(specProvider)
 
 	if strings.TrimSpace(string(cfg.Layout)) == "" {
@@ -55,9 +62,19 @@ func New(cfg Config) (*Server, error) {
 		log:            log,
 	}
 
+	providerCfg := samples.ProviderConfig{
+		BaseDir:          cfg.SamplesDir,
+		Layout:           cfg.Layout,
+		ScenarioEnabled:  config.Envs.Scenario.Enabled,
+		ScenarioFilename: config.Envs.Scenario.Filename,
+	}
+
 	if config.Envs.Scenario.Enabled {
 		s.scenario = samples.NewScenarioEngine()
+		providerCfg.Engine = s.scenario
 	}
+
+	s.sampleProvider = samples.NewSampleProvider(providerCfg, log)
 
 	return s, nil
 }
@@ -124,16 +141,11 @@ func (s *Server) handle(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	resp, err := samples.LoadResolved(
-		s.cfg.SamplesDir,
+	resp, err := s.sampleProvider.ResolveAndLoad(
 		method,
 		rt.Swagger,
 		path,
 		rt.SampleFile,
-		s.cfg.Layout,
-		config.Envs.Scenario.Enabled,
-		config.Envs.Scenario.Filename,
-		s.scenario,
 	)
 	if err != nil {
 		if s.cfg.FallbackMode == config.FallbackOpenAPIExample {

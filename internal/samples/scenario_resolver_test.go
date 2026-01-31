@@ -3,6 +3,7 @@ package samples
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -268,7 +269,7 @@ func TestScenarioEngine_ResolveScenarioFile_Time_RequiresNonEmptyTimeline(t *tes
 	}
 }
 
-func TestScenarioEngine_ResolveScenarioFile_ResetOn_ClearsState(t *testing.T) {
+func TestScenarioEngine_ResetOn_ClearsState_ViaTryResetByRequest(t *testing.T) {
 	e := NewScenarioEngine()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
@@ -282,22 +283,22 @@ func TestScenarioEngine_ResolveScenarioFile_ResetOn_ClearsState(t *testing.T) {
 	sc.Behavior.RepeatLast = true
 
 	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
-	file2, _, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
-	if file2 != "b.json" {
-		t.Fatalf("expected b.json after advancing, got %q", file2)
+	f2, _, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	if f2 != "b.json" {
+		t.Fatalf("expected b.json after advancing, got %q", f2)
 	}
 
-	_, _, err := e.ResolveScenarioFile(sc, "POST", "/api/v1/items/{id}", "/api/v1/items/1")
-	if err != nil {
-		t.Fatalf("ResolveScenarioFile(POST reset): %v", err)
+	reset := e.TryResetByRequest("POST", "/api/v1/items/1")
+	if !reset {
+		t.Fatalf("expected reset=true")
 	}
 
-	fileAfterReset, _, err := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	fAfter, _, err := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
 	if err != nil {
 		t.Fatalf("ResolveScenarioFile(after reset): %v", err)
 	}
-	if fileAfterReset != "a.json" {
-		t.Fatalf("expected a.json after reset, got %q", fileAfterReset)
+	if fAfter != "a.json" {
+		t.Fatalf("expected a.json after reset, got %q", fAfter)
 	}
 }
 
@@ -386,6 +387,347 @@ func TestScenarioEngine_Time_RepeatLast_SticksToLast(t *testing.T) {
 	f3, s3, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/5")
 	if f3 != "t1.json" || s3 != "t1" {
 		t.Fatalf("expected sticky t1.json/t1 got %q/%q", f3, s3)
+	}
+}
+
+func TestLoadScenario_Time_RejectsUnsortedTimeline(t *testing.T) {
+	dir := t.TempDir()
+	p := filepath.Join(dir, "scenario.json")
+
+	writeF(t, p, `{
+	  "version": 1,
+	  "mode": "time",
+	  "key": {"pathParam":"id"},
+	  "timeline": [
+		{"afterSec": 2, "state":"t2", "file":"t2.json"},
+		{"afterSec": 1, "state":"t1", "file":"t1.json"}
+	  ],
+	  "behavior": {"repeatLast": true}
+	}`)
+
+	_, err := LoadScenario(p)
+	if err == nil {
+		t.Fatalf("expected error")
+	}
+}
+
+func TestLoadScenario_Step_RequiresNonEmptySequence(t *testing.T) {
+	dir := t.TempDir()
+	p := filepath.Join(dir, "scenario.json")
+
+	writeF(t, p, `{
+	  "version": 1,
+	  "mode": "step",
+	  "key": {"pathParam":"id"},
+	  "behavior": {"repeatLast": true}
+	}`)
+
+	_, err := LoadScenario(p)
+	if err == nil {
+		t.Fatalf("expected error")
+	}
+	if !strings.Contains(err.Error(), "step mode requires non-empty sequence") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestLoadScenario_Time_RequiresNonEmptyTimeline(t *testing.T) {
+	dir := t.TempDir()
+	p := filepath.Join(dir, "scenario.json")
+
+	writeF(t, p, `{
+	  "version": 1,
+	  "mode": "time",
+	  "key": {"pathParam":"id"},
+	  "behavior": {"repeatLast": true}
+	}`)
+
+	_, err := LoadScenario(p)
+	if err == nil {
+		t.Fatalf("expected error")
+	}
+	if !strings.Contains(err.Error(), "time mode requires non-empty timeline") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestScenarioEngine_Step_WhenPastEnd_ClampsToLastEvenWithoutRepeatLast(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "step"}
+	sc.Key.PathParam = "id"
+	sc.Sequence = []ScenarioEntry{
+		{State: "s1", File: "a.json"},
+		{State: "s2", File: "b.json"},
+	}
+	sc.Behavior.AdvanceOn = []MatchRule{{Method: "GET"}}
+	sc.Behavior.RepeatLast = false
+	sc.Behavior.Loop = false
+
+	f1, _, err := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	if err != nil {
+		t.Fatalf("unexpected err: %v", err)
+	}
+
+	f2, _, err := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	if err != nil {
+		t.Fatalf("unexpected err: %v", err)
+	}
+
+	f3, _, err := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	if err != nil {
+		t.Fatalf("unexpected err: %v", err)
+	}
+
+	if f1 != "a.json" || f2 != "b.json" || f3 != "b.json" {
+		t.Fatalf("expected a,b,b got %q,%q,%q", f1, f2, f3)
+	}
+}
+
+func TestScenarioEngine_Step_AdvanceOn_MethodMatchIsCaseInsensitive(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "step"}
+	sc.Key.PathParam = "id"
+	sc.Sequence = []ScenarioEntry{
+		{State: "s1", File: "a.json"},
+		{State: "s2", File: "b.json"},
+	}
+	sc.Behavior.AdvanceOn = []MatchRule{{Method: "get"}} // lowercase
+	sc.Behavior.RepeatLast = true
+
+	f1, _, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	f2, _, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+
+	if f1 != "a.json" || f2 != "b.json" {
+		t.Fatalf("expected a then b, got %q then %q", f1, f2)
+	}
+}
+
+func TestScenarioEngine_ResetOn_PathMismatch_DoesNotReset(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "step"}
+	sc.Key.PathParam = "id"
+	sc.Sequence = []ScenarioEntry{
+		{State: "s1", File: "a.json"},
+		{State: "s2", File: "b.json"},
+	}
+	sc.Behavior.AdvanceOn = []MatchRule{{Method: "GET"}}
+	sc.Behavior.ResetOn = []MatchRule{{Method: "POST", Path: "/api/v1/other/{id}"}}
+	sc.Behavior.RepeatLast = true
+
+	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	f2, _, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	if f2 != "b.json" {
+		t.Fatalf("expected b.json after advancing, got %q", f2)
+	}
+
+	_, _, err := e.ResolveScenarioFile(sc, "POST", "/api/v1/items/{id}", "/api/v1/items/1")
+	if err != nil {
+		t.Fatalf("unexpected err: %v", err)
+	}
+
+	fAfter, _, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	if fAfter != "b.json" {
+		t.Fatalf("expected still b.json (no reset), got %q", fAfter)
+	}
+}
+
+func TestScenarioEngine_Time_Loop_Wraps(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "time"}
+	sc.Key.PathParam = "id"
+	sc.Timeline = []TimelineEntry{
+		{AfterSec: 0, State: "t0", File: "t0.json"},
+		{AfterSec: 1, State: "t1", File: "t1.json"},
+	}
+	sc.Behavior.Loop = true
+	sc.Behavior.RepeatLast = false
+
+	f1, s1, err := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/5")
+	if err != nil {
+		t.Fatalf("unexpected err: %v", err)
+	}
+	if f1 != "t0.json" || s1 != "t0" {
+		t.Fatalf("expected t0 first, got %q/%q", f1, s1)
+	}
+
+	time.Sleep(1100 * time.Millisecond)
+	f2, s2, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/5")
+	if f2 != "t1.json" || s2 != "t1" {
+		t.Fatalf("expected t1 after ~1s, got %q/%q", f2, s2)
+	}
+
+	time.Sleep(1200 * time.Millisecond)
+	f3, s3, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/5")
+	if f3 != "t0.json" || s3 != "t0" {
+		t.Fatalf("expected wrap to t0, got %q/%q", f3, s3)
+	}
+}
+
+func TestScenarioEngine_Time_StateIsolation_ByID(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "time"}
+	sc.Key.PathParam = "id"
+	sc.Timeline = []TimelineEntry{
+		{AfterSec: 0, State: "t0", File: "t0.json"},
+		{AfterSec: 1, State: "t1", File: "t1.json"},
+	}
+	sc.Behavior.RepeatLast = true
+
+	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	time.Sleep(1100 * time.Millisecond)
+
+	f1, _, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/1")
+	if f1 != "t1.json" {
+		t.Fatalf("expected id=1 to be t1.json, got %q", f1)
+	}
+
+	f2, _, _ := e.ResolveScenarioFile(sc, "GET", "/api/v1/items/{id}", "/api/v1/items/2")
+	if f2 != "t0.json" {
+		t.Fatalf("expected id=2 to start at t0.json, got %q", f2)
+	}
+}
+
+func TestMatchTemplatePathSuffix(t *testing.T) {
+	cases := []struct {
+		tpl   string
+		act   string
+		match bool
+	}{
+		{"/scans/{id}", "/scans/123", true},
+		{"/scans/{id}", "/api/v1/scans/123", true},
+		{"/scans/{id}/status", "/scans/123/status", true},
+		{"/scans/{id}/status", "/x/y/scans/123/status", true},
+		{"/scans/{id}", "/scans", false},
+		{"/scans/{id}", "/scans/123/status", false},
+		{"/scans/{id}/status", "/scans/123/results", false},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+		t.Run(tc.tpl+"->"+tc.act, func(t *testing.T) {
+			got := matchTemplatePathSuffix(tc.tpl, tc.act)
+			if got != tc.match {
+				t.Fatalf("expected %v, got %v", tc.match, got)
+			}
+		})
+	}
+}
+
+func TestScenarioEngine_RegistersResetRules_OnFirstResolve(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "step"}
+	sc.Key.PathParam = "id"
+	sc.Sequence = []ScenarioEntry{{State: "s1", File: "a.json"}}
+	sc.Behavior.ResetOn = []MatchRule{
+		{Method: "DELETE", Path: "/scans/{id}"},
+	}
+
+	_, _, err := e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
+	if err != nil {
+		t.Fatalf("unexpected err: %v", err)
+	}
+
+	eng := e.(*ScenarioEngine)
+	eng.mu.Lock()
+	defer eng.mu.Unlock()
+
+	k := scenarioRuntimeKey("/scans/{id}", "1")
+	rules := eng.resetRules[k]
+	if len(rules) != 1 {
+		t.Fatalf("expected 1 reset rule registered, got %d", len(rules))
+	}
+	if rules[0].Method != "DELETE" || rules[0].PathTpl != "/scans/{id}" {
+		t.Fatalf("unexpected rule: %#v", rules[0])
+	}
+}
+
+func TestScenarioEngine_TryResetByRequest_ResetsRunningScenario(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "step"}
+	sc.Key.PathParam = "id"
+	sc.Sequence = []ScenarioEntry{
+		{State: "s1", File: "a.json"},
+		{State: "s2", File: "b.json"},
+	}
+	sc.Behavior.AdvanceOn = []MatchRule{{Method: "GET"}}
+	sc.Behavior.ResetOn = []MatchRule{{Method: "DELETE", Path: "/scans/{id}"}}
+	sc.Behavior.RepeatLast = true
+
+	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
+	f2, _, _ := e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
+	if f2 != "b.json" {
+		t.Fatalf("expected b.json after advancing, got %q", f2)
+	}
+
+	reset := e.TryResetByRequest("DELETE", "/scans/1")
+	if !reset {
+		t.Fatalf("expected reset=true")
+	}
+
+	fAfter, _, _ := e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
+	if fAfter != "a.json" {
+		t.Fatalf("expected a.json after reset, got %q", fAfter)
+	}
+}
+
+func TestScenarioEngine_TryResetByRequest_WrongMethod_DoesNotReset(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "step"}
+	sc.Key.PathParam = "id"
+	sc.Sequence = []ScenarioEntry{
+		{State: "s1", File: "a.json"},
+		{State: "s2", File: "b.json"},
+	}
+	sc.Behavior.AdvanceOn = []MatchRule{{Method: "GET"}}
+	sc.Behavior.ResetOn = []MatchRule{{Method: "DELETE", Path: "/scans/{id}"}}
+	sc.Behavior.RepeatLast = true
+
+	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
+	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1") // now at b
+
+	reset := e.TryResetByRequest("POST", "/scans/1")
+	if reset {
+		t.Fatalf("expected reset=false")
+	}
+
+	fAfter, _, _ := e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
+	if fAfter != "b.json" {
+		t.Fatalf("expected still b.json (no reset), got %q", fAfter)
+	}
+}
+
+func TestScenarioEngine_TryResetByRequest_PathMismatch_DoesNotReset(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "step"}
+	sc.Key.PathParam = "id"
+	sc.Sequence = []ScenarioEntry{
+		{State: "s1", File: "a.json"},
+		{State: "s2", File: "b.json"},
+	}
+	sc.Behavior.AdvanceOn = []MatchRule{{Method: "GET"}}
+	sc.Behavior.ResetOn = []MatchRule{{Method: "DELETE", Path: "/scans/{id}"}}
+	sc.Behavior.RepeatLast = true
+
+	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
+	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1") // now at b
+
+	reset := e.TryResetByRequest("DELETE", "/other/1")
+	if reset {
+		t.Fatalf("expected reset=false")
+	}
+
+	fAfter, _, _ := e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
+	if fAfter != "b.json" {
+		t.Fatalf("expected still b.json (no reset), got %q", fAfter)
 	}
 }
 
