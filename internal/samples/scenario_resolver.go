@@ -15,11 +15,16 @@ import (
 
 // ScenarioEngine holds runtime state (in-memory).
 type ScenarioEngine struct {
-	mu         sync.Mutex
-	stepIndex  map[string]int
-	startedAt  map[string]time.Time
-	resetRules map[string][]ResetRule
-	log        *logrus.Logger
+	mu            sync.Mutex
+	stepIndex     map[string]int
+	startedAt     map[string]time.Time
+	resetRules    map[string][]ResetRule
+	resetByMethod map[string][]struct {
+		rule    ResetRule
+		binding ResetBinding
+	}
+
+	log *logrus.Logger
 }
 
 func NewScenarioEngine() IScenarioResolver {
@@ -27,7 +32,11 @@ func NewScenarioEngine() IScenarioResolver {
 		stepIndex:  map[string]int{},
 		startedAt:  map[string]time.Time{},
 		resetRules: map[string][]ResetRule{},
-		log:        logger.GetLogger(),
+		resetByMethod: map[string][]struct {
+			rule    ResetRule
+			binding ResetBinding
+		}{},
+		log: logger.GetLogger(),
 	}
 }
 
@@ -118,6 +127,34 @@ func (e *ScenarioEngine) ResolveScenarioFile(
 		}
 		e.resetRules[k] = rules
 	}
+	for _, rr := range e.resetRules[k] {
+		if rr.Method == "" || rr.PathTpl == "" {
+			continue
+		}
+
+		exists := false
+		for _, it := range e.resetByMethod[rr.Method] {
+			if it.rule.PathTpl == rr.PathTpl &&
+				it.binding.ScenarioTpl == swaggerTpl &&
+				it.binding.KeyParam == sc.Key.PathParam {
+				exists = true
+				break
+			}
+		}
+		if !exists {
+			e.resetByMethod[rr.Method] = append(e.resetByMethod[rr.Method], struct {
+				rule    ResetRule
+				binding ResetBinding
+			}{
+				rule: rr,
+				binding: ResetBinding{
+					ScenarioTpl: swaggerTpl,
+					KeyParam:    sc.Key.PathParam,
+				},
+			})
+		}
+	}
+
 	e.mu.Unlock()
 
 	switch sc.Mode {
@@ -136,20 +173,36 @@ func (e *ScenarioEngine) TryResetByRequest(method, actualPath string) bool {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	for k, rules := range e.resetRules {
-		for _, r := range rules {
-			if r.Method != method {
-				continue
-			}
-			if r.PathTpl == "" || matchTemplatePath(r.PathTpl, actualPath) {
-				delete(e.stepIndex, k)
-				delete(e.startedAt, k)
-				delete(e.resetRules, k)
-				return true
-			}
-		}
+	list := e.resetByMethod[method]
+	if len(list) == 0 {
+		return false
 	}
-	return false
+
+	resetAny := false
+
+	for _, it := range list {
+		rr := it.rule
+		b := it.binding
+
+		if rr.PathTpl != "" && !matchTemplatePathSuffix(rr.PathTpl, actualPath) {
+			continue
+		}
+
+		keyVal, ok := extractPathParam(rr.PathTpl, actualPath, b.KeyParam)
+		if !ok || strings.TrimSpace(keyVal) == "" {
+			continue
+		}
+
+		runtimeKey := scenarioRuntimeKey(b.ScenarioTpl, keyVal)
+
+		delete(e.stepIndex, runtimeKey)
+		delete(e.startedAt, runtimeKey)
+		delete(e.resetRules, runtimeKey)
+
+		resetAny = true
+	}
+
+	return resetAny
 }
 
 func (e *ScenarioEngine) resolveStep(k string, sc *Scenario, method string) (string, string, error) {
@@ -267,25 +320,6 @@ func matchTemplatePathSuffix(tpl, actual string) bool {
 
 	actParts = actParts[len(actParts)-len(tplParts):]
 
-	for i := range tplParts {
-		t := tplParts[i]
-		a := actParts[i]
-		if strings.HasPrefix(t, "{") && strings.HasSuffix(t, "}") {
-			continue
-		}
-		if t != a {
-			return false
-		}
-	}
-	return true
-}
-
-func matchTemplatePath(tpl, actual string) bool {
-	tplParts := strings.Split(strings.Trim(tpl, "/"), "/")
-	actParts := strings.Split(strings.Trim(actual, "/"), "/")
-	if len(tplParts) != len(actParts) {
-		return false
-	}
 	for i := range tplParts {
 		t := tplParts[i]
 		a := actParts[i]

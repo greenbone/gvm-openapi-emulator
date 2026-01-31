@@ -61,11 +61,7 @@ func (p *SampleProvider) ResolvePath(method, swaggerTpl, actualPath, legacyFlatF
 			return "", fmt.Errorf("scenario file not found: %s", full)
 		}
 		if cfg.ScenarioEnabled && cfg.Engine != nil {
-			scPath := ScenarioPathForSwagger(cfg.BaseDir, swaggerTpl, cfg.ScenarioFilename)
-			if utils.FileExists(scPath) {
-			} else {
-				_ = cfg.Engine.TryResetByRequest(method, actualPath)
-			}
+			_ = cfg.Engine.TryResetByRequest(method, actualPath)
 		}
 	}
 

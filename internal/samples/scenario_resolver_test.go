@@ -17,29 +17,6 @@ func TestScenarioPathForSwagger(t *testing.T) {
 	}
 }
 
-func TestMatchTemplatePath(t *testing.T) {
-	cases := []struct {
-		tpl   string
-		act   string
-		match bool
-	}{
-		{"/api/v1/items/{id}", "/api/v1/items/123", true},
-		{"/api/v1/items/{id}/sub", "/api/v1/items/123/sub", true},
-		{"/api/v1/items/{id}/sub", "/api/v1/items/123/other", false},
-		{"/api/v1/items", "/api/v1/items/123", false}, // different segment count
-		{"/api/v1/items/{id}", "/api/v1/things/123", false},
-	}
-	for _, tc := range cases {
-		tc := tc
-		t.Run(tc.tpl+"->"+tc.act, func(t *testing.T) {
-			got := matchTemplatePath(tc.tpl, tc.act)
-			if got != tc.match {
-				t.Fatalf("expected %v, got %v", tc.match, got)
-			}
-		})
-	}
-}
-
 func TestExtractPathParam(t *testing.T) {
 	val, ok := extractPathParam("/api/v1/items/{id}", "/api/v1/items/777", "id")
 	if !ok || val != "777" {
@@ -728,6 +705,37 @@ func TestScenarioEngine_TryResetByRequest_PathMismatch_DoesNotReset(t *testing.T
 	fAfter, _, _ := e.ResolveScenarioFile(sc, "GET", "/scans/{id}", "/scans/1")
 	if fAfter != "b.json" {
 		t.Fatalf("expected still b.json (no reset), got %q", fAfter)
+	}
+}
+
+func TestScenarioEngine_TryResetByRequest_ResetsScenarioRegisteredFromDifferentTpl(t *testing.T) {
+	e := NewScenarioEngine()
+
+	sc := &Scenario{Version: 1, Mode: "step"}
+	sc.Key.PathParam = "id"
+	sc.Sequence = []ScenarioEntry{
+		{State: "s1", File: "a.json"},
+		{State: "s2", File: "b.json"},
+	}
+	sc.Behavior.AdvanceOn = []MatchRule{{Method: "GET"}}
+
+	sc.Behavior.ResetOn = []MatchRule{{Method: "DELETE", Path: "/scans/{id}"}}
+	sc.Behavior.RepeatLast = true
+
+	_, _, _ = e.ResolveScenarioFile(sc, "GET", "/scans/{id}/status", "/scans/1/status")
+	f2, _, _ := e.ResolveScenarioFile(sc, "GET", "/scans/{id}/status", "/scans/1/status")
+	if f2 != "b.json" {
+		t.Fatalf("expected b.json after advancing, got %q", f2)
+	}
+
+	reset := e.TryResetByRequest("DELETE", "/scans/1")
+	if !reset {
+		t.Fatalf("expected reset=true")
+	}
+
+	fAfter, _, _ := e.ResolveScenarioFile(sc, "GET", "/scans/{id}/status", "/scans/1/status")
+	if fAfter != "a.json" {
+		t.Fatalf("expected a.json after reset, got %q", fAfter)
 	}
 }
 

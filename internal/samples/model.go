@@ -67,3 +67,8 @@ type ResetRule struct {
 	Method  string
 	PathTpl string
 }
+
+type ResetBinding struct {
+	ScenarioTpl string
+	KeyParam    string
+}
