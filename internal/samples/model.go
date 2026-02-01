@@ -19,7 +19,7 @@ type ProviderConfig struct {
 	Layout           config.LayoutMode
 	ScenarioEnabled  bool
 	ScenarioFilename string
-	Engine           IScenarioResolver
+	ScenarioResolver IScenarioResolver
 }
 
 type Scenario struct {

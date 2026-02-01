@@ -44,11 +44,11 @@ func (p *SampleProvider) ResolvePath(method, swaggerTpl, actualPath, legacyFlatF
 				p.log.WithError(err).Warn("failed to load scenario")
 				return "", fmt.Errorf("load scenario %s: %w", scPath, err)
 			}
-			if cfg.Engine == nil {
+			if cfg.ScenarioResolver == nil {
 				return "", fmt.Errorf("scenario enabled but engine is nil")
 			}
 
-			file, _, err := cfg.Engine.ResolveScenarioFile(sc, method, swaggerTpl, actualPath)
+			file, _, err := cfg.ScenarioResolver.ResolveScenarioFile(sc, method, swaggerTpl, actualPath)
 			if err != nil {
 				p.log.WithError(err).Warn("failed to resolve scenario")
 				return "", fmt.Errorf("scenario resolve: %w", err)
@@ -60,8 +60,8 @@ func (p *SampleProvider) ResolvePath(method, swaggerTpl, actualPath, legacyFlatF
 			}
 			return "", fmt.Errorf("scenario file not found: %s", full)
 		}
-		if cfg.ScenarioEnabled && cfg.Engine != nil {
-			_ = cfg.Engine.TryResetByRequest(method, actualPath)
+		if cfg.ScenarioEnabled && cfg.ScenarioResolver != nil {
+			_ = cfg.ScenarioResolver.TryResetByRequest(method, actualPath)
 		}
 	}
 

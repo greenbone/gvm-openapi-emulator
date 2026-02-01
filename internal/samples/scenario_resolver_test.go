@@ -115,8 +115,8 @@ func TestLoadScenario_MissingKeyPathParam(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_ResolveScenarioFile_Step_SelectsFirstThenAdvances(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResolveScenarioFile_Step_SelectsFirstThenAdvances(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{
 		Version: 1,
@@ -164,8 +164,8 @@ func TestScenarioEngine_ResolveScenarioFile_Step_SelectsFirstThenAdvances(t *tes
 	}
 }
 
-func TestScenarioEngine_ResolveScenarioFile_Step_NoAdvanceRule_StaysOnFirst(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResolveScenarioFile_Step_NoAdvanceRule_StaysOnFirst(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -190,8 +190,8 @@ func TestScenarioEngine_ResolveScenarioFile_Step_NoAdvanceRule_StaysOnFirst(t *t
 	}
 }
 
-func TestScenarioEngine_ResolveScenarioFile_Step_RequiresNonEmptySequence(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResolveScenarioFile_Step_RequiresNonEmptySequence(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -203,8 +203,8 @@ func TestScenarioEngine_ResolveScenarioFile_Step_RequiresNonEmptySequence(t *tes
 	}
 }
 
-func TestScenarioEngine_ResolveScenarioFile_Time_ChoosesBasedOnElapsed(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResolveScenarioFile_Time_ChoosesBasedOnElapsed(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "time"}
 	sc.Key.PathParam = "id"
@@ -233,8 +233,8 @@ func TestScenarioEngine_ResolveScenarioFile_Time_ChoosesBasedOnElapsed(t *testin
 	}
 }
 
-func TestScenarioEngine_ResolveScenarioFile_Time_RequiresNonEmptyTimeline(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResolveScenarioFile_Time_RequiresNonEmptyTimeline(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "time"}
 	sc.Key.PathParam = "id"
@@ -246,8 +246,8 @@ func TestScenarioEngine_ResolveScenarioFile_Time_RequiresNonEmptyTimeline(t *tes
 	}
 }
 
-func TestScenarioEngine_ResetOn_ClearsState_ViaTryResetByRequest(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResetOn_ClearsState_ViaTryResetByRequest(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -279,8 +279,8 @@ func TestScenarioEngine_ResetOn_ClearsState_ViaTryResetByRequest(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_ResolveScenarioFile_KeyExtractionError(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResolveScenarioFile_KeyExtractionError(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -293,8 +293,8 @@ func TestScenarioEngine_ResolveScenarioFile_KeyExtractionError(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_ResolveScenarioFile_Step_Loop_WrapsToFirst(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResolveScenarioFile_Step_Loop_WrapsToFirst(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -315,8 +315,8 @@ func TestScenarioEngine_ResolveScenarioFile_Step_Loop_WrapsToFirst(t *testing.T)
 	}
 }
 
-func TestScenarioEngine_StateIsolation_ByID(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_StateIsolation_ByID(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -340,8 +340,8 @@ func TestScenarioEngine_StateIsolation_ByID(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_Time_RepeatLast_SticksToLast(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_Time_RepeatLast_SticksToLast(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "time"}
 	sc.Key.PathParam = "id"
@@ -428,8 +428,8 @@ func TestLoadScenario_Time_RequiresNonEmptyTimeline(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_Step_WhenPastEnd_ClampsToLastEvenWithoutRepeatLast(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_Step_WhenPastEnd_ClampsToLastEvenWithoutRepeatLast(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -461,8 +461,8 @@ func TestScenarioEngine_Step_WhenPastEnd_ClampsToLastEvenWithoutRepeatLast(t *te
 	}
 }
 
-func TestScenarioEngine_Step_AdvanceOn_MethodMatchIsCaseInsensitive(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_Step_AdvanceOn_MethodMatchIsCaseInsensitive(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -481,8 +481,8 @@ func TestScenarioEngine_Step_AdvanceOn_MethodMatchIsCaseInsensitive(t *testing.T
 	}
 }
 
-func TestScenarioEngine_ResetOn_PathMismatch_DoesNotReset(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_ResetOn_PathMismatch_DoesNotReset(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -511,8 +511,8 @@ func TestScenarioEngine_ResetOn_PathMismatch_DoesNotReset(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_Time_Loop_Wraps(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_Time_Loop_Wraps(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "time"}
 	sc.Key.PathParam = "id"
@@ -544,8 +544,8 @@ func TestScenarioEngine_Time_Loop_Wraps(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_Time_StateIsolation_ByID(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_Time_StateIsolation_ByID(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "time"}
 	sc.Key.PathParam = "id"
@@ -595,8 +595,8 @@ func TestMatchTemplatePathSuffix(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_RegistersResetRules_OnFirstResolve(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_RegistersResetRules_OnFirstResolve(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -610,7 +610,7 @@ func TestScenarioEngine_RegistersResetRules_OnFirstResolve(t *testing.T) {
 		t.Fatalf("unexpected err: %v", err)
 	}
 
-	eng := e.(*ScenarioEngine)
+	eng := e.(*ScenarioResolver)
 	eng.mu.Lock()
 	defer eng.mu.Unlock()
 
@@ -624,8 +624,8 @@ func TestScenarioEngine_RegistersResetRules_OnFirstResolve(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_TryResetByRequest_ResetsRunningScenario(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_TryResetByRequest_ResetsRunningScenario(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -654,8 +654,8 @@ func TestScenarioEngine_TryResetByRequest_ResetsRunningScenario(t *testing.T) {
 	}
 }
 
-func TestScenarioEngine_TryResetByRequest_WrongMethod_DoesNotReset(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_TryResetByRequest_WrongMethod_DoesNotReset(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -681,8 +681,8 @@ func TestScenarioEngine_TryResetByRequest_WrongMethod_DoesNotReset(t *testing.T)
 	}
 }
 
-func TestScenarioEngine_TryResetByRequest_PathMismatch_DoesNotReset(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_TryResetByRequest_PathMismatch_DoesNotReset(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"
@@ -708,8 +708,8 @@ func TestScenarioEngine_TryResetByRequest_PathMismatch_DoesNotReset(t *testing.T
 	}
 }
 
-func TestScenarioEngine_TryResetByRequest_ResetsScenarioRegisteredFromDifferentTpl(t *testing.T) {
-	e := NewScenarioEngine()
+func TestScenarioResolver_TryResetByRequest_ResetsScenarioRegisteredFromDifferentTpl(t *testing.T) {
+	e := NewScenarioResolver()
 
 	sc := &Scenario{Version: 1, Mode: "step"}
 	sc.Key.PathParam = "id"

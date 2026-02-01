@@ -13,8 +13,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// ScenarioEngine holds runtime state (in-memory).
-type ScenarioEngine struct {
+// ScenarioResolver holds runtime state (in-memory).
+type ScenarioResolver struct {
 	mu            sync.Mutex
 	stepIndex     map[string]int
 	startedAt     map[string]time.Time
@@ -27,8 +27,8 @@ type ScenarioEngine struct {
 	log *logrus.Logger
 }
 
-func NewScenarioEngine() IScenarioResolver {
-	return &ScenarioEngine{
+func NewScenarioResolver() IScenarioResolver {
+	return &ScenarioResolver{
 		stepIndex:  map[string]int{},
 		startedAt:  map[string]time.Time{},
 		resetRules: map[string][]ResetRule{},
@@ -93,7 +93,7 @@ func LoadScenario(scenarioPath string) (*Scenario, error) {
 	return &sc, nil
 }
 
-func (e *ScenarioEngine) ResolveScenarioFile(
+func (e *ScenarioResolver) ResolveScenarioFile(
 	sc *Scenario,
 	method string,
 	swaggerTpl string,
@@ -167,7 +167,7 @@ func (e *ScenarioEngine) ResolveScenarioFile(
 	}
 }
 
-func (e *ScenarioEngine) TryResetByRequest(method, actualPath string) bool {
+func (e *ScenarioResolver) TryResetByRequest(method, actualPath string) bool {
 	method = strings.ToUpper(method)
 
 	e.mu.Lock()
@@ -205,7 +205,7 @@ func (e *ScenarioEngine) TryResetByRequest(method, actualPath string) bool {
 	return resetAny
 }
 
-func (e *ScenarioEngine) resolveStep(k string, sc *Scenario, method string) (string, string, error) {
+func (e *ScenarioResolver) resolveStep(k string, sc *Scenario, method string) (string, string, error) {
 	if len(sc.Sequence) == 0 {
 		return "", "", fmt.Errorf("step mode requires non-empty sequence")
 	}
@@ -245,7 +245,7 @@ func (e *ScenarioEngine) resolveStep(k string, sc *Scenario, method string) (str
 	return entry.File, entry.State, nil
 }
 
-func (e *ScenarioEngine) resolveTime(k string, sc *Scenario, method string, actualPath string) (string, string, error) {
+func (e *ScenarioResolver) resolveTime(k string, sc *Scenario, method string, actualPath string) (string, string, error) {
 	if len(sc.Timeline) == 0 {
 		return "", "", fmt.Errorf("time mode requires non-empty timeline")
 	}
