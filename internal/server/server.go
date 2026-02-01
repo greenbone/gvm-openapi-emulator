@@ -70,8 +70,8 @@ func New(cfg Config) (*Server, error) {
 	}
 
 	if config.Envs.Scenario.Enabled {
-		s.scenario = samples.NewScenarioEngine()
-		providerCfg.Engine = s.scenario
+		s.scenario = samples.NewScenarioResolver()
+		providerCfg.ScenarioResolver = s.scenario
 	}
 
 	s.sampleProvider = samples.NewSampleProvider(providerCfg, log)

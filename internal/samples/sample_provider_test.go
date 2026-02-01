@@ -287,7 +287,7 @@ func TestSampleProvider_ScenarioEnabled_UsesScenarioEngine(t *testing.T) {
 		Layout:           config.LayoutAuto,
 		ScenarioEnabled:  true,
 		ScenarioFilename: scenarioFilename,
-		Engine:           m,
+		ScenarioResolver: m,
 	}, logger.GetLogger())
 
 	resp, err := p.ResolveAndLoad(method, swaggerTpl, actualPath, legacyFlat)
@@ -320,7 +320,7 @@ func TestSampleProvider_ScenarioEnabled_EngineNil_ReturnsError(t *testing.T) {
 		Layout:           config.LayoutAuto,
 		ScenarioEnabled:  true,
 		ScenarioFilename: scenarioFilename,
-		Engine:           nil,
+		ScenarioResolver: nil,
 	}, logger.GetLogger())
 
 	_, err := p.ResolvePath(method, swaggerTpl, actualPath, "legacy.json")
@@ -356,7 +356,7 @@ func TestSampleProvider_ScenarioEnabled_FileReturnedButMissing_ReturnsError(t *t
 		Layout:           config.LayoutAuto,
 		ScenarioEnabled:  true,
 		ScenarioFilename: scenarioFilename,
-		Engine:           m,
+		ScenarioResolver: m,
 	}, logger.GetLogger())
 
 	_, err := p.ResolvePath(method, swaggerTpl, actualPath, "legacy.json")
@@ -383,7 +383,7 @@ func TestSampleProvider_ScenarioEnabled_NoScenarioFile_CallsTryResetByRequest(t 
 		Layout:           config.LayoutAuto,
 		ScenarioEnabled:  true,
 		ScenarioFilename: "scenario.json",
-		Engine:           m,
+		ScenarioResolver: m,
 	}, logger.GetLogger())
 
 	_, err := p.ResolvePath(method, swaggerTpl, actualPath, legacyFlat)
@@ -407,7 +407,7 @@ func TestSampleProvider_ScenarioEnabled_NoScenarioFile_TryResetFalse_StillCalled
 		Layout:           config.LayoutAuto,
 		ScenarioEnabled:  true,
 		ScenarioFilename: "scenario.json",
-		Engine:           m,
+		ScenarioResolver: m,
 	}, logger.GetLogger())
 
 	_, err := p.ResolvePath(method, swaggerTpl, actualPath, legacyFlat)
@@ -446,7 +446,7 @@ func TestSampleProvider_ScenarioEnabled_ScenarioFileExists_DoesNotCallTryResetBy
 		Layout:           config.LayoutAuto,
 		ScenarioEnabled:  true,
 		ScenarioFilename: scenarioFilename,
-		Engine:           m,
+		ScenarioResolver: m,
 	}, logger.GetLogger())
 
 	_, err := p.ResolveAndLoad(method, swaggerTpl, actualPath, legacyFlat)
