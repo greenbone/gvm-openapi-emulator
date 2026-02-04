@@ -4,7 +4,7 @@
 
 package samples
 
-import "github.com/ozgen/openapi-sample-emulator/config"
+import "github.com/ozgen/gvm-openapi-emulator/config"
 
 type Envelope struct {
 	Status  int               `json:"status"`

@@ -5,9 +5,9 @@
 package main
 
 import (
-	"github.com/ozgen/openapi-sample-emulator/config"
-	"github.com/ozgen/openapi-sample-emulator/internal/server"
-	"github.com/ozgen/openapi-sample-emulator/logger"
+	"github.com/ozgen/gvm-openapi-emulator/config"
+	"github.com/ozgen/gvm-openapi-emulator/internal/server"
+	"github.com/ozgen/gvm-openapi-emulator/logger"
 )
 
 func main() {

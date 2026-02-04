@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ozgen/openapi-sample-emulator/logger"
+	"github.com/ozgen/gvm-openapi-emulator/logger"
 
-	"github.com/ozgen/openapi-sample-emulator/config"
+	"github.com/ozgen/gvm-openapi-emulator/config"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )

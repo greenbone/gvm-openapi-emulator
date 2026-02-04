@@ -11,7 +11,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ozgen/openapi-sample-emulator/config"
+	"github.com/ozgen/gvm-openapi-emulator/config"
 
 	"github.com/sirupsen/logrus"
 )
