@@ -13,7 +13,7 @@ APP_NAME ?= emulator
 MAIN_PKG ?= ./cmd/emulator
 
 # Docker
-IMAGE_NAME ?= openapi-sample-emulator:local
+IMAGE_NAME ?= gvm-openapi-emulator:local
 
 # Run config
 HOST ?= 0.0.0.0
