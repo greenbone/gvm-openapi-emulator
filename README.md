@@ -1,6 +1,6 @@
-# openapi-sample-emulator
+# gvm-openapi-emulator
 
-`openapi-sample-emulator` is a lightweight HTTP emulator that serves predefined responses based on an OpenAPI / Swagger specification.
+`gvm-openapi-emulator` is a lightweight HTTP emulator that serves predefined responses based on an OpenAPI / Swagger specification.
 
 It is designed for **local development**, **integration testing**, and **CI environments** where deterministic and predictable API behavior is required.
 
