@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ozgen/openapi-sample-emulator/config"
+	"github.com/ozgen/gvm-openapi-emulator/config"
 )
 
 func TestNew_LoadsSpecAndBuildsRoutes(t *testing.T) {

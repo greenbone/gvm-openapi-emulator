@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ozgen/openapi-sample-emulator/logger"
+	"github.com/ozgen/gvm-openapi-emulator/logger"
 
 	"github.com/sirupsen/logrus"
 )

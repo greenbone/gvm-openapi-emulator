@@ -6,7 +6,7 @@ package config
 
 import (
 	"github.com/joho/godotenv"
-	"github.com/ozgen/openapi-sample-emulator/utils"
+	"github.com/ozgen/gvm-openapi-emulator/utils"
 )
 
 type RunningEnv string
