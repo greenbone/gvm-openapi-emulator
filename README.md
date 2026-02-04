@@ -1,3 +1,5 @@
+![Greenbone Logo](https://www.greenbone.net/wp-content/uploads/gb_new-logo_horizontal_rgb_small.png)
+
 # gvm-openapi-emulator
 
 ![CI](https://github.com/greenbone/gvm-openapi-emulator/actions/workflows/ci.yml/badge.svg)
@@ -13,6 +15,39 @@ It is designed for **local development**, **integration testing**, and **CI envi
 ## Documentation
 
 * [Environment Variables](./docs/ENVIRONMENT_VARIABLES.md) – Configuration options
+
+---
+
+## How to use
+
+Clone the repository and run locally:
+
+```bash
+git clone https://github.com/greenbone/gvm-openapi-emulator.git
+cd gvm-openapi-emulator
+make run
+```
+
+### Using Makefile
+
+The repository includes a `Makefile` with helpful targets:
+
+```bash
+make build         # Build the binary into ./bin/emulator
+make run           # Build and run the emulator (uses SPEC_PATH / SAMPLES_DIR defaults)
+make test          # Run all tests
+make cover         # Run tests with coverage and generate reports (coverage.html)
+
+make format        # Format code with goimports + gofumpt + gofmt
+make lint          # Run golangci-lint
+make tidy          # Run go mod tidy
+
+make docker-build  # Build Docker image (gvm-openapi-emulator:local)
+make docker-run    # Run Docker image with example volume mount
+make compose-up    # Start via docker compose
+make compose-down  # Stop docker compose
+make clean         # Remove build and coverage artifacts
+```
 
 ---
 
