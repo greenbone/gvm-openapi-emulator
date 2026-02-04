@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: openapi-sample-emulator:local
+    image: gvm-openapi-emulator:local
     ports:
       - "${EMULATOR_HOST_PORT:-8086}:8086"
     environment:
