@@ -1,5 +1,9 @@
 # gvm-openapi-emulator
 
+![CI](https://github.com/greenbone/gvm-openapi-emulator/actions/workflows/ci.yml/badge.svg)
+![Lint](https://github.com/greenbone/gvm-openapi-emulator/actions/workflows/lint.yml/badge.svg)
+![Format](https://github.com/greenbone/gvm-openapi-emulator/actions/workflows/format.yml/badge.svg)
+
 `gvm-openapi-emulator` is a lightweight HTTP emulator that serves predefined responses based on an OpenAPI / Swagger specification.
 
 It is designed for **local development**, **integration testing**, and **CI environments** where deterministic and predictable API behavior is required.

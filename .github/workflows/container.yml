@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build:
-    if: ${{ github.repository == 'ozgen/openapi-sample-emulator' }}
+    if: ${{ github.repository == 'greenbone/gvm-openapi-emulator' }}
     strategy:
       fail-fast: false
       matrix:
