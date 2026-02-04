@@ -1,4 +1,4 @@
-module github.com/ozgen/gvm-openapi-emulator
+module github.com/greenbone/gvm-openapi-emulator
 
 go 1.24.0
 

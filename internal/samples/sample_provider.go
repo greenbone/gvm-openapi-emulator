@@ -11,10 +11,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ozgen/gvm-openapi-emulator/utils"
+	"github.com/greenbone/gvm-openapi-emulator/utils"
 	"github.com/sirupsen/logrus"
 
-	"github.com/ozgen/gvm-openapi-emulator/config"
+	"github.com/greenbone/gvm-openapi-emulator/config"
 )
 
 type SampleProvider struct {
