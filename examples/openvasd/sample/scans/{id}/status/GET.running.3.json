@@ -1,0 +1,16 @@
+{
+  "start_time": 1769721021,
+  "end_time": null,
+  "status": "running",
+  "host_info": {
+    "all": 1,
+    "excluded": 0,
+    "dead": 0,
+    "alive": 0,
+    "queued": 0,
+    "finished": 0,
+    "scanning": {
+      "192.168.178.87": 98
+    }
+  }
+}

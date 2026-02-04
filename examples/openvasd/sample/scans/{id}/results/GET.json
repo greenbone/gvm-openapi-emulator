@@ -1,0 +1,419 @@
+[
+  {
+    "id": 0,
+    "type": "host_start",
+    "ip_address": "192.168.178.87",
+    "hostname": "",
+    "oid": "",
+    "message": "Thu Jan 29 21:10:22 2026"
+  },
+  {
+    "id": 1,
+    "type": "log",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.51662",
+    "protocol": "tcp",
+    "message": "Network route from scanner (192.168.178.24) to target (192.168.178.87):\n\n192.168.178.24\n192.168.178.87\n\nNetwork distance between scanner and target: 2"
+  },
+  {
+    "id": 2,
+    "type": "log",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.105937",
+    "protocol": "tcp",
+    "message": "Best matching OS:\n\nOS:           OpenBSD\nCPE:          cpe:/o:openbsd:openbsd\nFound by VT:  1.3.6.1.4.1.25623.1.0.102002 (Operating System (OS) Detection (ICMP))\nConcluded from ICMP based OS fingerprint\nSetting key \"Host/runs_unixoide\" based on this information\n\nOther OS detections (in order of reliability):\n\nOS:           HP UX\nCPE:          cpe:/o:hp:hp-ux\nFound by VT:  1.3.6.1.4.1.25623.1.0.102002 (Operating System (OS) Detection (ICMP))\nConcluded from ICMP based OS fingerprint\n\nOS:           Cisco IOS\nCPE:          cpe:/o:cisco:ios\nFound by VT:  1.3.6.1.4.1.25623.1.0.102002 (Operating System (OS) Detection (ICMP))\nConcluded from ICMP based OS fingerprint\n\nOS:           NetBSD\nCPE:          cpe:/o:netbsd:netbsd\nFound by VT:  1.3.6.1.4.1.25623.1.0.102002 (Operating System (OS) Detection (ICMP))\nConcluded from ICMP based OS fingerprint"
+  },
+  {
+    "id": 3,
+    "type": "log",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.108449",
+    "protocol": "tcp",
+    "message": "Hostname determination for IP 192.168.178.87:\n\nHostname|Source\ntest.local.env|Reverse-DNS"
+  },
+  {
+    "id": 4,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>MAC</name><value>A8:42:E3:0D:12:F8</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.103585</name><description>Nmap MAC Scan</description></source></detail></host>",
+    "detail": {
+      "name": "MAC",
+      "value": "A8:42:E3:0D:12:F8",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.103585",
+        "description": "Nmap MAC Scan"
+      }
+    }
+  },
+  {
+    "id": 5,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>traceroute</name><value>192.168.178.24,192.168.178.87</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.51662</name><description>Traceroute</description></source></detail></host>",
+    "detail": {
+      "name": "traceroute",
+      "value": "192.168.178.24,192.168.178.87",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.51662",
+        "description": "Traceroute"
+      }
+    }
+  },
+  {
+    "id": 6,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>EXIT_CODE</name><value>EXIT_NOTVULN</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.11913</name><description/></source></detail></host>",
+    "detail": {
+      "name": "EXIT_CODE",
+      "value": "EXIT_NOTVULN",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.11913",
+        "description": ""
+      }
+    }
+  },
+  {
+    "id": 7,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS</name><value>Cisco IOS</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "OS",
+      "value": "Cisco IOS",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 8,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS</name><value>cpe:/o:cisco:ios</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "OS",
+      "value": "cpe:/o:cisco:ios",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 9,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS</name><value>OpenBSD</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "OS",
+      "value": "OpenBSD",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 10,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS</name><value>cpe:/o:openbsd:openbsd</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "OS",
+      "value": "cpe:/o:openbsd:openbsd",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 11,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS</name><value>NetBSD</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "OS",
+      "value": "NetBSD",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 12,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS</name><value>cpe:/o:netbsd:netbsd</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "OS",
+      "value": "cpe:/o:netbsd:netbsd",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 13,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS</name><value>HP UX</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "OS",
+      "value": "HP UX",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 14,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS</name><value>cpe:/o:hp:hp-ux</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "OS",
+      "value": "cpe:/o:hp:hp-ux",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 15,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>OS-Detection</name><value>cpe:/o:openbsd:openbsd</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.105937</name><description/></source></detail></host>",
+    "detail": {
+      "name": "OS-Detection",
+      "value": "cpe:/o:openbsd:openbsd",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.105937",
+        "description": ""
+      }
+    }
+  },
+  {
+    "id": 16,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>cpe:/o:openbsd:openbsd</name><value>general/tcp</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.105937</name><description/></source></detail></host>",
+    "detail": {
+      "name": "cpe:/o:openbsd:openbsd",
+      "value": "general/tcp",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.105937",
+        "description": ""
+      }
+    }
+  },
+  {
+    "id": 17,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>hostname_determination</name><value>192.168.178.87,test.local.env,Reverse-DNS</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.108449</name><description>Hostname Determination Reporting</description></source></detail></host>",
+    "detail": {
+      "name": "hostname_determination",
+      "value": "192.168.178.87,test.local.env,Reverse-DNS",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.108449",
+        "description": "Hostname Determination Reporting"
+      }
+    }
+  },
+  {
+    "id": 18,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>scanned_with_scanner</name><value>23.37.0</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.103739</name><description>Host Scan End</description></source></detail></host>",
+    "detail": {
+      "name": "scanned_with_scanner",
+      "value": "23.37.0",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.103739",
+        "description": "Host Scan End"
+      }
+    }
+  },
+  {
+    "id": 19,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>scanned_with_feedversion</name><value>202601010928</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.103739</name><description>Host Scan End</description></source></detail></host>",
+    "detail": {
+      "name": "scanned_with_feedversion",
+      "value": "202601010928",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.103739",
+        "description": "Host Scan End"
+      }
+    }
+  },
+  {
+    "id": 20,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>scanned_with_feedtype</name><value>Greenbone Enterprise Feed</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.103739</name><description>Host Scan End</description></source></detail></host>",
+    "detail": {
+      "name": "scanned_with_feedtype",
+      "value": "Greenbone Enterprise Feed",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.103739",
+        "description": "Host Scan End"
+      }
+    }
+  },
+  {
+    "id": 21,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>scanned_with_feedname</name><value>GSF</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.103739</name><description>Host Scan End</description></source></detail></host>",
+    "detail": {
+      "name": "scanned_with_feedname",
+      "value": "GSF",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.103739",
+        "description": "Host Scan End"
+      }
+    }
+  },
+  {
+    "id": 22,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>scanned_with_feedvendor</name><value>Greenbone AG</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.103739</name><description>Host Scan End</description></source></detail></host>",
+    "detail": {
+      "name": "scanned_with_feedvendor",
+      "value": "Greenbone AG",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.103739",
+        "description": "Host Scan End"
+      }
+    }
+  },
+  {
+    "id": 23,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>hostname</name><value>test.local.env</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.103997</name><description>Host Details</description></source></detail></host>",
+    "detail": {
+      "name": "hostname",
+      "value": "test.local.env",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.103997",
+        "description": "Host Details"
+      }
+    }
+  },
+  {
+    "id": 24,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>best_os_cpe</name><value>cpe:/o:openbsd:openbsd</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002;</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "best_os_cpe",
+      "value": "cpe:/o:openbsd:openbsd",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002;",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 25,
+    "type": "host_detail",
+    "ip_address": "192.168.178.87",
+    "hostname": "test.local.env",
+    "oid": "1.3.6.1.4.1.25623.1.0.103997",
+    "message": "<host><detail><name>best_os_txt</name><value>OpenBSD</value><source><type>nvt</type><name>1.3.6.1.4.1.25623.1.0.102002;</name><description>Operating System (OS) Detection (ICMP)</description></source></detail></host>",
+    "detail": {
+      "name": "best_os_txt",
+      "value": "OpenBSD",
+      "source": {
+        "type": "nvt",
+        "name": "1.3.6.1.4.1.25623.1.0.102002;",
+        "description": "Operating System (OS) Detection (ICMP)"
+      }
+    }
+  },
+  {
+    "id": 26,
+    "type": "host_end",
+    "ip_address": "192.168.178.87",
+    "hostname": "",
+    "oid": "",
+    "message": "Thu Jan 29 21:10:39 2026"
+  }
+]

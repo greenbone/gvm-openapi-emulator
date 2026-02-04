@@ -1,0 +1,63 @@
+@host = http://localhost:8086
+@json = application/json
+
+### Health (GET /api/v1/health/alive)
+GET {{host}}/api/v1/health/alive
+
+### List Items (GET /api/v1/items)
+GET {{host}}/api/v1/items
+
+### Create Item (POST /api/v1/items) - valid
+POST {{host}}/api/v1/items
+Content-Type: {{json}}
+
+{
+  "name": "My first item",
+  "enabled": true,
+  "tags": ["demo", "create"]
+}
+
+### Create Item (POST /api/v1/items) - invalid (missing body / required fields)
+POST {{host}}/api/v1/items
+Content-Type: {{json}}
+
+### Get Item by ID (GET /api/v1/items/{id})
+@itemId = item-1
+GET {{host}}/api/v1/items/{{itemId}}
+
+### Replace Item (PUT /api/v1/items/{id}) - valid (PUT requires full object)
+PUT {{host}}/api/v1/items/{{itemId}}
+Content-Type: {{json}}
+
+{
+  "name": "Replaced item name",
+  "enabled": true,
+  "tags": ["demo", "put"]
+}
+
+### Replace Item (PUT /api/v1/items/{id}) - invalid (missing required fields)
+PUT {{host}}/api/v1/items/{{itemId}}
+Content-Type: {{json}}
+
+{
+  "name": "Only name (invalid for PUT in this demo spec)"
+}
+
+### Patch Item (PATCH /api/v1/items/{id}) - valid (partial update)
+PATCH {{host}}/api/v1/items/{{itemId}}
+Content-Type: {{json}}
+
+{
+  "enabled": false,
+  "tags": ["demo", "patch"]
+}
+
+### Patch Item (PATCH /api/v1/items/{id}) - invalid (missing body)
+PATCH {{host}}/api/v1/items/{{itemId}}
+Content-Type: {{json}}
+
+### Delete Item (DELETE /api/v1/items/{id})
+DELETE {{host}}/api/v1/items/{{itemId}}
+
+### List Items again (GET /api/v1/items)
+GET {{host}}/api/v1/items

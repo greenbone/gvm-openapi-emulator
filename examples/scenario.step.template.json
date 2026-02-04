@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "mode": "step",
+  "key": { "pathParam": "id" },
+  "sequence": [
+    { "state": "requested",  "file": "GET.requested.json" },
+    { "state": "running.1",  "file": "GET.running.1.json" },
+    { "state": "running.2",  "file": "GET.running.2.json" },
+    { "state": "running.3",  "file": "GET.running.3.json" },
+    { "state": "running.4",  "file": "GET.running.4.json" },
+    { "state": "succeeded",  "file": "GET.succeeded.json" }
+  ],
+  "behavior": {
+    "advanceOn": [{ "method": "GET" }],
+    "resetOn": [
+      { "method": "DELETE", "path": "/api/v1/items/{id}" }
+    ],
+    "repeatLast": true,
+    "loop": true
+  }
+}

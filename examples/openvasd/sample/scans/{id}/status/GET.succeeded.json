@@ -1,0 +1,14 @@
+{
+  "start_time": 1769721021,
+  "end_time": 1769721040,
+  "status": "succeeded",
+  "host_info": {
+    "all": 1,
+    "excluded": 0,
+    "dead": 0,
+    "alive": 1,
+    "queued": 0,
+    "finished": 1,
+    "scanning": {}
+  }
+}

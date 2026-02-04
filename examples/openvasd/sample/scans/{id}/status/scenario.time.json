@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "mode": "time",
+  "key": { "pathParam": "id" },
+  "timeline": [
+    { "afterSec": 0,    "state": "requested",  "file": "GET.requested.json" },
+    { "afterSec": 2, "state": "running.1",  "file": "GET.running.1.json" },
+    { "afterSec": 3, "state": "running.2",  "file": "GET.running.2.json" },
+    { "afterSec": 4, "state": "running.3",  "file": "GET.running.3.json" },
+    { "afterSec": 5, "state": "running.4",  "file": "GET.running.4.json" },
+    { "afterSec": 7, "state": "succeeded",  "file": "GET.succeeded.json" }
+  ],
+  "behavior": {
+    "startOn": [{ "method": "GET" }],
+    "resetOn": [
+      { "method": "DELETE", "path": "/scans/{id}" }
+    ],
+    "repeatLast": true,
+    "loop": true
+  }
+}

@@ -1,0 +1,284 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Demo CRUD API (Mock-friendly)",
+    "description": "A minimal Swagger 2.0 spec for emulators/mocks. Includes GET/POST/PUT/PATCH/DELETE with required fields and Swagger 2 examples.",
+    "version": "0.1.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+
+  "paths": {
+    "/api/v1/health/alive": {
+      "get": {
+        "summary": "Liveness",
+        "tags": ["health"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/HealthResponse" },
+            "examples": {
+              "application/json": { "ok": true }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/v1/items": {
+      "get": {
+        "summary": "List items",
+        "tags": ["items"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/ItemListResponse" },
+            "examples": {
+              "application/json": {
+                "items": [
+                  {
+                    "id": "item-1",
+                    "name": "Demo item",
+                    "enabled": true,
+                    "tags": ["demo"],
+                    "updated_at": "2026-01-28T10:00:00Z"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+
+      "post": {
+        "summary": "Create an item",
+        "tags": ["items"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/CreateItemRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/CreateItemResponse" },
+            "examples": {
+              "application/json": { "id": "item-2" }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": { "$ref": "#/definitions/ErrorResponse" },
+            "examples": {
+              "application/json": { "error": "Bad Request", "details": "Request body is required" }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/v1/items/{id}": {
+      "get": {
+        "summary": "Get item by ID",
+        "tags": ["items"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/Item" },
+            "examples": {
+              "application/json": {
+                "id": "item-1",
+                "name": "Demo item",
+                "enabled": true,
+                "tags": ["demo"],
+                "updated_at": "2026-01-28T10:00:00Z"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" },
+            "examples": {
+              "application/json": { "error": "Not Found", "details": "Item does not exist" }
+            }
+          }
+        }
+      },
+
+      "put": {
+        "summary": "Replace an item",
+        "tags": ["items"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/PutItemRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/Item" },
+            "examples": {
+              "application/json": {
+                "id": "item-1",
+                "name": "Replaced item name",
+                "enabled": true,
+                "tags": ["demo", "replaced"],
+                "updated_at": "2026-01-28T10:05:00Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      },
+
+      "patch": {
+        "summary": "Update an item (partial)",
+        "description": "PATCH is partial update; only provided fields are updated.",
+        "tags": ["items"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/PatchItemRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/Item" },
+            "examples": {
+              "application/json": {
+                "id": "item-1",
+                "name": "Patched item name",
+                "enabled": false,
+                "tags": ["demo", "patched"],
+                "updated_at": "2026-01-28T10:06:00Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      },
+
+      "delete": {
+        "summary": "Delete an item",
+        "tags": ["items"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/DeleteItemResponse" },
+            "examples": {
+              "application/json": { "deleted": true }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "HealthResponse": {
+      "type": "object",
+      "properties": { "ok": { "type": "boolean" } },
+      "required": ["ok"]
+    },
+
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": { "type": "string" },
+        "details": { "type": "string" }
+      },
+      "required": ["error"]
+    },
+
+    "Item": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "enabled"]
+    },
+
+    "ItemListResponse": {
+      "type": "object",
+      "properties": {
+        "items": { "type": "array", "items": { "$ref": "#/definitions/Item" } }
+      },
+      "required": ["items"]
+    },
+
+    "CreateItemRequest": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["name"]
+    },
+
+    "CreateItemResponse": {
+      "type": "object",
+      "properties": { "id": { "type": "string" } },
+      "required": ["id"]
+    },
+
+    "PutItemRequest": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["name", "enabled"]
+    },
+
+    "PatchItemRequest": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "DeleteItemResponse": {
+      "type": "object",
+      "properties": { "deleted": { "type": "boolean" } },
+      "required": ["deleted"]
+    }
+  }
+}

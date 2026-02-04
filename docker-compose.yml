@@ -1,0 +1,20 @@
+services:
+  emulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: openapi-sample-emulator:local
+    ports:
+      - "${EMULATOR_HOST_PORT:-8086}:8086"
+    environment:
+      - SERVER_PORT=8086
+      - SPEC_PATH=/work/swagger.json
+      - SAMPLES_DIR=/work/sample
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - RUNNING_ENV=${RUNNING_ENV:-docker}
+      - DEBUG_ROUTES=${DEBUG_ROUTES:-true}
+      - FALLBACK_MODE=openapi_examples
+    volumes:
+
+      - ./examples/openvasd:/work:ro # change the folder path for other examples
+    restart: unless-stopped

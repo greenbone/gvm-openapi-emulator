@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "mode": "time",
+  "key": { "pathParam": "id" },
+  "timeline": [
+    { "afterSec": 0,    "state": "requested", "file": "GET.requested.json" },
+    { "afterSec": 1000, "state": "running.1", "file": "GET.running.1.json" },
+    { "afterSec": 2500, "state": "running.2", "file": "GET.running.2.json" },
+    { "afterSec": 4000, "state": "running.3", "file": "GET.running.3.json" },
+    { "afterSec": 6000, "state": "running.4", "file": "GET.running.4.json" },
+    { "afterSec": 9000, "state": "succeeded", "file": "GET.succeeded.json" }
+  ],
+  "behavior": {
+    "startOn": [{ "method": "POST", "path": "/api/v1/items" }],
+    "resetOn": [
+      { "method": "DELETE", "path": "/api/v1/items/{id}" }
+    ],
+    "repeatLast": true,
+    "loop": true
+  }
+}
