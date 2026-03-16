@@ -6,6 +6,8 @@ SHELL := /bin/bash
 # Tools
 GOIMPORTS = go run golang.org/x/tools/cmd/goimports@latest
 GOFUMPT   = go run mvdan.cc/gofumpt@latest
+GOLANGCI_LINT_VERSION ?= v2.10.0
+GOLANGCI_LINT_BIN ?= $(HOME)/go/bin/golangci-lint
 
 # Project
 BIN_DIR  ?= bin
@@ -68,11 +70,20 @@ format:
 	@GOFUMPT_SPLIT_LONG_LINES=on $(GOFUMPT) -l -w ./internal ./cmd ./config
 	@go fmt ./...
 
-.PHONY: lint
-lint: format
-	@echo "Linting..."
-	@go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest run
+.PHONY: lint-install
+lint-install:
+	@echo "Installing golangci-lint $(GOLANGCI_LINT_VERSION)..."
+	@go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
 
+.PHONY: lint-version
+lint-version:
+	@$(GOLANGCI_LINT_BIN) version
+
+.PHONY: lint
+lint: format lint-install
+	@echo "Lint code"
+	@$(GOLANGCI_LINT_BIN) cache clean
+	@$(GOLANGCI_LINT_BIN) run --timeout=5m
 .PHONY: tidy
 tidy:
 	@go mod tidy

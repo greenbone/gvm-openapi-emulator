@@ -1,6 +1,6 @@
 module github.com/greenbone/gvm-openapi-emulator
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/getkin/kin-openapi v0.133.0
@@ -22,6 +22,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.3 // indirect
 	github.com/woodsbury/decimal128 v1.4.0 // indirect
-	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
