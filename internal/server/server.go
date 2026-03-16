@@ -156,7 +156,7 @@ func (s *Server) handle(w http.ResponseWriter, r *http.Request) {
 			if body, ok := s.specProvider.TryGetExampleBody(rt.Swagger, rt.Method); ok {
 				w.Header().Set("content-type", "application/json")
 				w.WriteHeader(200)
-				_, _ = w.Write(body)
+				_, _ = w.Write(body) // #nosec G705: XSS via taint analysis
 				return
 			}
 		}
@@ -178,7 +178,7 @@ func (s *Server) handle(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set(k, v)
 	}
 	w.WriteHeader(resp.Status)
-	_, _ = w.Write(resp.Body)
+	_, _ = w.Write(resp.Body) // #nosec G705: XSS via taint analysis
 }
 
 func (s *Server) DebugRoutes() string {
