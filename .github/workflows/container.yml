@@ -39,7 +39,7 @@ jobs:
       prefix: ${{ matrix.build.prefix }}
       dockerfile: Dockerfile
       images: |
-        ghcr.io/${{ github.repository }},enable=true
+        ghcr.io/${{ github.repository }},enable=${{ github.event_name != 'pull_request' }}
     secrets: inherit
 
   # notify:
