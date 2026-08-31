@@ -50,7 +50,7 @@ func (f *CustomFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	level := fmt.Sprintf("%s%s%s", levelColor, entry.Level.String(), colorReset)
 
 	caller := ""
-	if entry.HasCaller() {
+	if entry.Caller != nil {
 		caller = fmt.Sprintf("%s:%d", filepath.Base(entry.Caller.File), entry.Caller.Line)
 	}
 
