@@ -1,0 +1,3421 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "contact": {}
+  },
+  "paths": {
+    "/agent-control/protected/v2/api/agents/{agentid}/config": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Get current scan-agent configuration",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/protected/v2/api/agents/{agentid}/heartbeat": {
+      "post": {
+        "description": "The scan-agents use this to signal that they are active.",
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Client Heartbeat Signal",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not been authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/protected/v2/api/agents/{agentid}/log": {
+      "post": {
+        "description": "The scan-agents use this to upload its logs.",
+        "consumes": [
+          "application/json",
+          "application/x-ndjson"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Submit logs",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "The log collection",
+            "name": "message",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.LogEntry"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not be authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "429": {
+            "description": "Submitted before the minimum time between submissions has expired",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "Retry-After": {
+                "type": "string",
+                "description": "Time until minimum interval expires in seconds"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/protected/v2/api/agents/{agentid}/sbom": {
+      "post": {
+        "description": "The scan-agents use this to regularly submit their scan results in the form of SBOMs.",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Submit an Sboms",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "The Sboms",
+            "name": "message",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not be authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "409": {
+            "description": "The maximum number of agents has been reached",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "429": {
+            "description": "Submitted before the minimum time between submissions has expired",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "Retry-After": {
+                "type": "string",
+                "description": "Time until minimum interval expires in seconds"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/protected/v2/api/updater/{agentid}/heartbeat": {
+      "post": {
+        "description": "The scan-agents use this to signal that they are active.",
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Client Heartbeat Signal",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not been authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/protected/v2/api/updater/{agentid}/log": {
+      "post": {
+        "description": "The scan-agent-updater use this to upload its logs.",
+        "consumes": [
+          "application/json",
+          "application/x-ndjson"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Submit logs",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "The log collection",
+            "name": "message",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.LogEntry"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not be authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "429": {
+            "description": "Submitted before the minimum time between submissions has expired",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "Retry-After": {
+                "type": "string",
+                "description": "Time until minimum interval expires in seconds"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/agents/register/{agentid}": {
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Register a new scan-agent",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The ID of the new agent",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Information about the agent",
+            "name": "message",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/handshake.RegisterAgentRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "409": {
+            "description": "An agent with the same agentid already exists or the maximum number of agents has been reached",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/certificates/ca.crt": {
+      "get": {
+        "description": "Returns the CA certificate in PEM format. This certificate is used by clients to verify the server's identity.",
+        "produces": [
+          "application/x-x509-ca-cert"
+        ],
+        "tags": [
+          "ca"
+        ],
+        "summary": "Get CA certificate",
+        "responses": {
+          "200": {
+            "description": "PEM encoded CA certificate",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/certificates/server-cert-fingerprint": {
+      "get": {
+        "description": "Returns the SHA-256 fingerprint of the server certificate.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "cert"
+        ],
+        "summary": "Get server certificate fingerprint",
+        "responses": {
+          "200": {
+            "description": "SHA-256 fingerprint of the server certificate",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/clients/sign-csr": {
+      "post": {
+        "description": "Accepts a CSR (Certificate Signing Request) and returns a signed client certificate if valid.",
+        "consumes": [
+          "application/pkcs10"
+        ],
+        "produces": [
+          "application/x-x509-user-cert"
+        ],
+        "tags": [
+          "ca"
+        ],
+        "summary": "Register client certificate",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Client ID (must match CSR Common Name)",
+            "name": "agentid",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signed X.509 certificate",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/download/{os}/{arch}/{filename}": {
+      "get": {
+        "description": "Serves agent binary files (scan-agent, scan-agent-updater) for a given OS and architecture.",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "updater"
+        ],
+        "summary": "Download agent binary",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Operating system (linux, windows)",
+            "name": "os",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Architecture (amd64, arm64)",
+            "name": "arch",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Binary filename (e.g. scan-agent, scan-agent-updater)",
+            "name": "filename",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "400": {
+            "description": "Missing parameters",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "File not found",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/installers/instructions": {
+      "get": {
+        "description": "Returns installation instructions in HTML (default) or JSON format.\nUses Accept header for content negotiation: application/json returns JSON, otherwise HTML.\nSupports multiple languages via query parameter or Accept-Language header.",
+        "produces": [
+          "text/html",
+          "application/json"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get installation instructions",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Language code (e.g., 'en', 'de')",
+            "name": "lang",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Base URL override (only for JSON format)",
+            "name": "origin_url",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Installation instructions",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Template error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/installers/linux/openvas-scan-agent-bootstrap.sh": {
+      "get": {
+        "description": "Returns a bootstrap script that downloads, verifies, and executes the main install script.\nThis provides an additional layer of verification before installation.",
+        "produces": [
+          "text/x-shellscript"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Linux bootstrap script",
+        "responses": {
+          "200": {
+            "description": "Shell script content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to read bootstrap script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/installers/linux/openvas-scan-agent-install.sh": {
+      "get": {
+        "description": "Returns the Linux shell install script with server configuration pre-filled.\nThe script can be piped directly to sh for installation.",
+        "produces": [
+          "text/x-shellscript"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Linux install script",
+        "responses": {
+          "200": {
+            "description": "Shell script content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to read install script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/installers/linux/openvas-scan-agent-install.sh.sha256": {
+      "get": {
+        "description": "Returns the SHA256 checksum of the Linux install script for verification.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Linux install script checksum",
+        "responses": {
+          "200": {
+            "description": "SHA256 checksum in format: checksum  filename",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to generate install script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/installers/windows/openvas-scan-agent-bootstrap.ps1": {
+      "get": {
+        "description": "Returns a PowerShell bootstrap script that downloads, verifies, and executes the main install script.\nThis provides an additional layer of verification before installation.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Windows bootstrap script",
+        "responses": {
+          "200": {
+            "description": "PowerShell script content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to read Windows bootstrap script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/installers/windows/openvas-scan-agent-install.ps1": {
+      "get": {
+        "description": "Returns the Windows PowerShell install script with server configuration pre-filled.\nThe script can be executed with iex for installation.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Windows install script",
+        "responses": {
+          "200": {
+            "description": "PowerShell script content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to read Windows install script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/installers/windows/openvas-scan-agent-install.ps1.sha256": {
+      "get": {
+        "description": "Returns the SHA256 checksum of the Windows install script for verification.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Windows install script checksum",
+        "responses": {
+          "200": {
+            "description": "SHA256 checksum in format: checksum  filename",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to generate Windows install script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/packages/version/{version}/{os}/{arch}/{type}": {
+      "get": {
+        "description": "Serves a specific version of agent installation packages.\nSupported types: deb (Debian/Ubuntu), rpm (RHEL/CentOS), msi (Windows)",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Serve specific version of agent installation package",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Package version (e.g., v1.0.0)",
+            "name": "version",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Operating system (linux, windows)",
+            "name": "os",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Architecture (amd64, arm64)",
+            "name": "arch",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Package type (deb, rpm, msi)",
+            "name": "type",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Package file",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "404": {
+            "description": "Package not found",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/public/v2/api/packages/{os}/{arch}/{type}": {
+      "get": {
+        "description": "Serves agent installation packages from a versioned directory structure.\nAutomatically serves the latest version available.\nSupported types: deb (Debian/Ubuntu), rpm (RHEL/CentOS), msi (Windows)",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Serve agent installation package",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Operating system (linux, windows)",
+            "name": "os",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Architecture (amd64, arm64)",
+            "name": "arch",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Package type (deb, rpm, msi)",
+            "name": "type",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Package file",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "404": {
+            "description": "Package not found",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/admin/agents": {
+      "get": {
+        "description": "returns a list of all agents registered in the system.",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "List all Agents",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.AgentWithUpdateInfo"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Updates the given agents with the provided data.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Update agents",
+        "parameters": [
+          {
+            "description": "agents to be updated",
+            "name": "updates",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/dtos.AgentUpdate"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/apperrors.ErrUnknownAgents"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/admin/agents/delete": {
+      "post": {
+        "description": "Deletes the specified agents by their IDs.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Delete agents",
+        "parameters": [
+          {
+            "description": "List of agent IDs to delete",
+            "name": "agentids",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/apperrors.ErrUnknownAgents"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/admin/scan-agent-config": {
+      "get": {
+        "description": "Returns the default configuration for scan agents, wrapped in agent_defaults and agent_control_defaults sections.",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Get default scan agent configuration",
+        "responses": {
+          "200": {
+            "description": "agent_defaults and agent_control_defaults",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Sets the default configuration for scan agents. Accepts agent_defaults (scan config) and optionally agent_control_defaults with update_to_latest (boolean) that controls whether newly registered agents are automatically updated.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Set default scan agent configuration",
+        "parameters": [
+          {
+            "description": "Wrapper with agent_defaults and optional agent_control_defaults",
+            "name": "config",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Warnings from config validation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Validation errors and warnings",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/agents/{agentid}/support-bundle": {
+      "get": {
+        "description": "Returns an encrypted, gzip-compressed tar archive with the agent's latest SBOM, recent logs, version info, latest heartbeat information and current configuration.",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Download an agent support bundle",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encrypted support bundle (support-bundle-\u003cagentId\u003e-\u003ctimestamp\u003e.tar.gz.enc)",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "404": {
+            "description": "Agent not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/health/alive": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Tells if the service is alive. Used by the liveness probe, which is used by kubelet to know when to restart a container.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/health/ready": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Tells if the service is ready to serve traffic. Used by the readiness probe.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/health/started": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Tells if the service is started. Used for the startup probe.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/report/logs": {
+      "get": {
+        "description": "Returns logs for a given agent ID",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "report"
+        ],
+        "summary": "Get agent logs",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Agent ID",
+            "name": "agentid",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Limit number of logs",
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.ScanAgentLogEntry"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/apperrors.ErrUnknownAgents"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/scans": {
+      "get": {
+        "description": "Retrieves all scan requests with their IDs",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "scans"
+        ],
+        "summary": "List Scan Requests",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.ScanRequestListItem"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new scan based on the provided parameters",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "scans"
+        ],
+        "summary": "Create Scan",
+        "parameters": [
+          {
+            "description": "Scan parameters",
+            "name": "scan",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.ScanReq"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/dtos.ScanID"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/scans/{id}/results": {
+      "get": {
+        "description": "Retrieves the results for a specific scan by its ID",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "scans"
+        ],
+        "summary": "Get Scan Results",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Scan ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.Result"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent-control/v2/api/version": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Read API version",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dtos.VersionResponseDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/agents": {
+      "get": {
+        "description": "returns a list of all agents registered in the system.",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "List all Agents",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.AgentWithUpdateInfo"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Updates the given agents with the provided data.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Update agents",
+        "parameters": [
+          {
+            "description": "agents to be updated",
+            "name": "updates",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/dtos.AgentUpdate"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/apperrors.ErrUnknownAgents"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/agents/delete": {
+      "post": {
+        "description": "Deletes the specified agents by their IDs.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Delete agents",
+        "parameters": [
+          {
+            "description": "List of agent IDs to delete",
+            "name": "agentids",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/apperrors.ErrUnknownAgents"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/scan-agent-config": {
+      "get": {
+        "description": "Returns the default configuration for scan agents, wrapped in agent_defaults and agent_control_defaults sections.",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Get default scan agent configuration",
+        "responses": {
+          "200": {
+            "description": "agent_defaults and agent_control_defaults",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Sets the default configuration for scan agents. Accepts agent_defaults (scan config) and optionally agent_control_defaults with update_to_latest (boolean) that controls whether newly registered agents are automatically updated.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Set default scan agent configuration",
+        "parameters": [
+          {
+            "description": "Wrapper with agent_defaults and optional agent_control_defaults",
+            "name": "config",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Warnings from config validation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Validation errors and warnings",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agents/register/{agentid}": {
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Register a new scan-agent",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The ID of the new agent",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Information about the agent",
+            "name": "message",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/handshake.RegisterAgentRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "409": {
+            "description": "An agent with the same agentid already exists or the maximum number of agents has been reached",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agents/{agentid}/config": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Get current scan-agent configuration",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agents/{agentid}/heartbeat": {
+      "post": {
+        "description": "The scan-agents use this to signal that they are active.",
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Client Heartbeat Signal",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not been authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agents/{agentid}/log": {
+      "post": {
+        "description": "The scan-agents use this to upload its logs.",
+        "consumes": [
+          "application/json",
+          "application/x-ndjson"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Submit logs",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "The log collection",
+            "name": "message",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.LogEntry"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not be authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "429": {
+            "description": "Submitted before the minimum time between submissions has expired",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "Retry-After": {
+                "type": "string",
+                "description": "Time until minimum interval expires in seconds"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agents/{agentid}/sbom": {
+      "post": {
+        "description": "The scan-agents use this to regularly submit their scan results in the form of SBOMs.",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Submit an Sboms",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "The Sboms",
+            "name": "message",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not be authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "409": {
+            "description": "The maximum number of agents has been reached",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "429": {
+            "description": "Submitted before the minimum time between submissions has expired",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "Retry-After": {
+                "type": "string",
+                "description": "Time until minimum interval expires in seconds"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/certificates/server-cert-fingerprint": {
+      "get": {
+        "description": "Returns the SHA-256 fingerprint of the server certificate.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "cert"
+        ],
+        "summary": "Get server certificate fingerprint",
+        "responses": {
+          "200": {
+            "description": "SHA-256 fingerprint of the server certificate",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/clients/sign-csr": {
+      "post": {
+        "description": "Accepts a CSR (Certificate Signing Request) and returns a signed client certificate if valid.",
+        "consumes": [
+          "application/pkcs10"
+        ],
+        "produces": [
+          "application/x-x509-user-cert"
+        ],
+        "tags": [
+          "ca"
+        ],
+        "summary": "Register client certificate",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Client ID (must match CSR Common Name)",
+            "name": "agentid",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signed X.509 certificate",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/control/version": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Read API version",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dtos.VersionResponseDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/download/{os}/{arch}/{filename}": {
+      "get": {
+        "description": "Serves agent binary files (scan-agent, scan-agent-updater) for a given OS and architecture.",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "updater"
+        ],
+        "summary": "Download agent binary",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Operating system (linux, windows)",
+            "name": "os",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Architecture (amd64, arm64)",
+            "name": "arch",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Binary filename (e.g. scan-agent, scan-agent-updater)",
+            "name": "filename",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "400": {
+            "description": "Missing parameters",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "File not found",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/install-instructions": {
+      "get": {
+        "description": "Returns installation instructions in HTML (default) or JSON format.\nUses Accept header for content negotiation: application/json returns JSON, otherwise HTML.\nSupports multiple languages via query parameter or Accept-Language header.",
+        "produces": [
+          "text/html",
+          "application/json"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get installation instructions",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Language code (e.g., 'en', 'de')",
+            "name": "lang",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Base URL override (only for JSON format)",
+            "name": "origin_url",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Installation instructions",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Template error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openvas-scan-agent-bootstrap.ps1": {
+      "get": {
+        "description": "Returns a PowerShell bootstrap script that downloads, verifies, and executes the main install script.\nThis provides an additional layer of verification before installation.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Windows bootstrap script",
+        "responses": {
+          "200": {
+            "description": "PowerShell script content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to read Windows bootstrap script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openvas-scan-agent-bootstrap.sh": {
+      "get": {
+        "description": "Returns a bootstrap script that downloads, verifies, and executes the main install script.\nThis provides an additional layer of verification before installation.",
+        "produces": [
+          "text/x-shellscript"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Linux bootstrap script",
+        "responses": {
+          "200": {
+            "description": "Shell script content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to read bootstrap script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openvas-scan-agent-install.ps1": {
+      "get": {
+        "description": "Returns the Windows PowerShell install script with server configuration pre-filled.\nThe script can be executed with iex for installation.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Windows install script",
+        "responses": {
+          "200": {
+            "description": "PowerShell script content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to read Windows install script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openvas-scan-agent-install.ps1.sha256": {
+      "get": {
+        "description": "Returns the SHA256 checksum of the Windows install script for verification.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Windows install script checksum",
+        "responses": {
+          "200": {
+            "description": "SHA256 checksum in format: checksum  filename",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to generate Windows install script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openvas-scan-agent-install.sh": {
+      "get": {
+        "description": "Returns the Linux shell install script with server configuration pre-filled.\nThe script can be piped directly to sh for installation.",
+        "produces": [
+          "text/x-shellscript"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Linux install script",
+        "responses": {
+          "200": {
+            "description": "Shell script content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to read install script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openvas-scan-agent-install.sh.sha256": {
+      "get": {
+        "description": "Returns the SHA256 checksum of the Linux install script for verification.",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Get Linux install script checksum",
+        "responses": {
+          "200": {
+            "description": "SHA256 checksum in format: checksum  filename",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Failed to generate install script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/packages/version/{version}/{os}/{arch}/{type}": {
+      "get": {
+        "description": "Serves a specific version of agent installation packages.\nSupported types: deb (Debian/Ubuntu), rpm (RHEL/CentOS), msi (Windows)",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Serve specific version of agent installation package",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Package version (e.g., v1.0.0)",
+            "name": "version",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Operating system (linux, windows)",
+            "name": "os",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Architecture (amd64, arm64)",
+            "name": "arch",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Package type (deb, rpm, msi)",
+            "name": "type",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Package file",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "404": {
+            "description": "Package not found",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/packages/{os}/{arch}/{type}": {
+      "get": {
+        "description": "Serves agent installation packages from a versioned directory structure.\nAutomatically serves the latest version available.\nSupported types: deb (Debian/Ubuntu), rpm (RHEL/CentOS), msi (Windows)",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "installer"
+        ],
+        "summary": "Serve agent installation package",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Operating system (linux, windows)",
+            "name": "os",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Architecture (amd64, arm64)",
+            "name": "arch",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Package type (deb, rpm, msi)",
+            "name": "type",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Package file",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "404": {
+            "description": "Package not found",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/report/logs": {
+      "get": {
+        "description": "Returns logs for a given agent ID",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "report"
+        ],
+        "summary": "Get agent logs",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Agent ID",
+            "name": "agentid",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Limit number of logs",
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.ScanAgentLogEntry"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/apperrors.ErrUnknownAgents"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/report/sbom/{agentid}": {
+      "get": {
+        "description": "Returns the SBOM entries whose agent ID contains the given substring, most recent first. The optional /{limit} segment caps the number of returned entries (e.g. /1 for the latest one).",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "report"
+        ],
+        "summary": "Get SBOMs for a specific agent",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Agent ID (substring, LIKE-matched)",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.SBOMInfo"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/report/sbom/{agentid}/{limit}": {
+      "get": {
+        "description": "Returns the SBOM entries whose agent ID contains the given substring, most recent first. The optional /{limit} segment caps the number of returned entries (e.g. /1 for the latest one).",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "report"
+        ],
+        "summary": "Get SBOMs for a specific agent",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Agent ID (substring, LIKE-matched)",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Max number of SBOMs to return (e.g. 1 for the latest)",
+            "name": "limit",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.SBOMInfo"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/updater/{agentid}/heartbeat": {
+      "post": {
+        "description": "The scan-agents use this to signal that they are active.",
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Client Heartbeat Signal",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not been authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/updater/{agentid}/log": {
+      "post": {
+        "description": "The scan-agent-updater use this to upload its logs.",
+        "consumes": [
+          "application/json",
+          "application/x-ndjson"
+        ],
+        "tags": [
+          "scan-agent"
+        ],
+        "summary": "Submit logs",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The agent ID",
+            "name": "agentid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The authentication token, e.g. Bearer 2wpPdB4dBpoYlEYF9JaNog",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "The log collection",
+            "name": "message",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.LogEntry"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "The request could not be authorized. Apart from non-matching tokens this happens when the scan-agent has not be authorized via the admin API yet.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "type": "string",
+                "description": "Bearer token68"
+              }
+            }
+          },
+          "429": {
+            "description": "Submitted before the minimum time between submissions has expired",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "Retry-After": {
+                "type": "string",
+                "description": "Time until minimum interval expires in seconds"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/ca.crt": {
+      "get": {
+        "description": "Returns the CA certificate in PEM format. This certificate is used by clients to verify the server's identity.",
+        "produces": [
+          "application/x-x509-ca-cert"
+        ],
+        "tags": [
+          "ca"
+        ],
+        "summary": "Get CA certificate",
+        "responses": {
+          "200": {
+            "description": "PEM encoded CA certificate",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/alive": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Tells if the service is alive. Used by the liveness probe, which is used by kubelet to know when to restart a container.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Tells if the service is ready to serve traffic. Used by the readiness probe.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/health/started": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Tells if the service is started. Used for the startup probe.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/scans": {
+      "get": {
+        "description": "Retrieves all scan requests with their IDs",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "scans"
+        ],
+        "summary": "List Scan Requests",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.ScanRequestListItem"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new scan based on the provided parameters",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "scans"
+        ],
+        "summary": "Create Scan",
+        "parameters": [
+          {
+            "description": "Scan parameters",
+            "name": "scan",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.ScanReq"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/dtos.ScanID"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scans/{id}/results": {
+      "get": {
+        "description": "Retrieves the results for a specific scan by its ID",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "scans"
+        ],
+        "summary": "Get Scan Results",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Scan ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.Result"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "apperrors.ErrUnknownAgents": {
+      "type": "object",
+      "properties": {
+        "agentids": {
+          "description": "AgentIDs contains the ids of the unknown agents",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "tango-TOlkPBDu",
+            "foxtrot-8MlhyT15"
+          ]
+        }
+      }
+    },
+    "dtos.AgentUpdate": {
+      "type": "object",
+      "properties": {
+        "authorized": {
+          "description": "Authorized, If not null, is the new value indicating whether the\nagent is to be considered authorized. If this is omitted from the\nJSON object, it is considered to be null.",
+          "type": "boolean",
+          "example": true
+        },
+        "config": {
+          "description": "Config, if not null, is new value of the scan-agent specific\nconfiguration. Note that it replaces the If this is omitted from\nthe JSON object, it is considered to be null.",
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "heartbeat_timeout": {
+          "description": "HeartbeatTimeout, if not, null is the new value of the\nHeartbeatTimeout in seconds. If this is omitted from the JSON\nobject, it is considered to be null.",
+          "type": "integer",
+          "example": 3600
+        },
+        "min_interval": {
+          "description": "MinInterval, if not null, is the new value of the MinInterval in\nseconds. If this is omitted from the JSON object, it is\nconsidered to be null.",
+          "type": "integer",
+          "example": 1800
+        },
+        "update_to_latest": {
+          "description": "UpdateToLatest, if not null, is the new value indicating whether\nthe agent should automatically update to the latest version.\nIf this is omitted from the JSON object, it is considered to be null.",
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "dtos.AgentWithUpdateInfo": {
+      "type": "object",
+      "properties": {
+        "agent_update_available": {
+          "type": "boolean"
+        },
+        "agent_version": {
+          "type": "string",
+          "example": "1.2.3"
+        },
+        "agentid": {
+          "description": "AgentID is the id of the scan-agent",
+          "type": "string",
+          "example": "tango-8MlhyT15"
+        },
+        "architecture": {
+          "type": "string",
+          "example": "amd64"
+        },
+        "authorized": {
+          "description": "Authorized indicates whether the scan agent has been authorized\nto deliver scan results",
+          "type": "boolean",
+          "example": true
+        },
+        "config": {
+          "description": "Config is the scan-agent specific configuration that is sent to\nthe scan-agent.",
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "connection_status": {
+          "description": "ConnectionStatus indicates the status of scan-agent. See the\nConnectionStatus type for details",
+          "allOf": [
+            {
+              "$ref": "#/definitions/dtos.ConnectionStatus"
+            }
+          ],
+          "example": "inactive"
+        },
+        "hostname": {
+          "description": "Hostname is the name of the host the scan-agent runs on as\nreported by the scan-agent itself.",
+          "type": "string",
+          "example": "tango"
+        },
+        "ip_addresses": {
+          "description": "IPAddresses contains all the IP addresses of the host the\nscan-agent runs on as reported by the scan-agent itself.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "192.168.11.60"
+          ]
+        },
+        "last_update": {
+          "type": "string",
+          "example": "2024-11-28T12:08:40.571809Z"
+        },
+        "last_updater_heartbeat": {
+          "type": "string",
+          "example": "2024-11-28T12:08:40.571809Z"
+        },
+        "latest_agent_version": {
+          "type": "string"
+        },
+        "latest_updater_version": {
+          "type": "string"
+        },
+        "operating_system": {
+          "type": "string",
+          "example": "linux"
+        },
+        "os_cpe": {
+          "description": "OSCpe is the full CPE 2.3 string of the host OS as reported by the\nscan-agent-updater (e.g. cpe:2.3:o:redhat:enterprise_linux:9.2:-:-:-:-:-:x86_64:-).\nEmpty string means the agent has not yet reported one (e.g. an older updater).",
+          "type": "string",
+          "example": "cpe:2.3:o:redhat:enterprise_linux:9.2:-:-:-:-:-:x86_64:-"
+        },
+        "os_status": {
+          "description": "OSStatus is \"supported\", \"unsupported\", or \"unknown\" based on the\nagent's OSCpe matched against the supported-OS list.",
+          "enum": [
+            "supported",
+            "unsupported",
+            "unknown"
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/dtos.OSStatus"
+            }
+          ],
+          "example": "supported"
+        },
+        "update_to_latest": {
+          "type": "boolean"
+        },
+        "updater_update_available": {
+          "type": "boolean"
+        },
+        "updater_version": {
+          "type": "string",
+          "example": "1.2.3"
+        }
+      }
+    },
+    "dtos.ConnectionStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "x-enum-varnames": [
+        "ConnectionActive",
+        "ConnectionInactive"
+      ]
+    },
+    "dtos.Credential": {
+      "type": "object",
+      "properties": {
+        "service": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.LogEntry": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "description": "Level is the log level.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/dtos.LogLevel"
+            }
+          ],
+          "example": "info"
+        },
+        "message": {
+          "description": "Message is the log message.",
+          "type": "string",
+          "example": "starting scan"
+        },
+        "timestamp": {
+          "description": "Timestamp is time of the log output.",
+          "type": "string",
+          "example": "2025-04-25T13:20:23Z"
+        }
+      }
+    },
+    "dtos.LogLevel": {
+      "type": "string",
+      "enum": [
+        "DEBUG",
+        "INFO",
+        "WARN",
+        "ERROR"
+      ],
+      "x-enum-varnames": [
+        "LogLevelDebug",
+        "LogLevelInfo",
+        "LogLevelWarn",
+        "LogLevelError"
+      ]
+    },
+    "dtos.OSStatus": {
+      "type": "string",
+      "enum": [
+        "supported",
+        "unsupported",
+        "unknown"
+      ],
+      "x-enum-varnames": [
+        "OSStatusSupported",
+        "OSStatusUnsupported",
+        "OSStatusUnknown"
+      ]
+    },
+    "dtos.Parameter": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.PortRange": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "type": "string"
+        },
+        "range": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dtos.PortRangeEl"
+          }
+        }
+      }
+    },
+    "dtos.PortRangeEl": {
+      "type": "object",
+      "properties": {
+        "end": {
+          "type": "integer"
+        },
+        "start": {
+          "type": "integer"
+        }
+      }
+    },
+    "dtos.Result": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/dtos.ScanResultDetail"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "ip_address": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "oid": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "protocol": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.SBOMInfo": {
+      "type": "object",
+      "properties": {
+        "agentid": {
+          "description": "AgentID is the id of the scan-agent",
+          "type": "string",
+          "example": "tango-8MlhyT15"
+        },
+        "last_update": {
+          "description": "LastUpdate is the time when the SBOM data was updated.",
+          "type": "string",
+          "example": "2024-11-28T12:08:40.571809Z"
+        },
+        "sbom": {
+          "description": "SBOM contains the raw SBOM data.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "scan_result_status": {
+          "description": "ScanResultStatus is the processing status of the SBOM (\"none\", \"success\"\nor \"unprocessable\"). Populated by the support-bundle lookup.",
+          "type": "string"
+        },
+        "sent_to_skiron": {
+          "description": "SentToSkiron is when the SBOM was forwarded to Skiron, if at all.\nPopulated by the support-bundle lookup.",
+          "type": "string"
+        }
+      }
+    },
+    "dtos.ScanAgentLogEntry": {
+      "type": "object",
+      "properties": {
+        "agentid": {
+          "description": "AgentID is the id of the scanagent",
+          "type": "string",
+          "example": "tango-8MlhyT15"
+        },
+        "level": {
+          "description": "Level is the log level.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/dtos.LogLevel"
+            }
+          ],
+          "example": "info"
+        },
+        "message": {
+          "description": "Message is the log message.",
+          "type": "string",
+          "example": "starting scan"
+        },
+        "source": {
+          "description": "Source is the source of the log entry",
+          "type": "string",
+          "example": "app"
+        },
+        "timestamp": {
+          "description": "Timestamp is time of the log output.",
+          "type": "string",
+          "example": "2025-04-25T13:20:23Z"
+        }
+      }
+    },
+    "dtos.ScanID": {
+      "type": "object",
+      "properties": {
+        "scan_id": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.ScanReq": {
+      "type": "object",
+      "required": [
+        "target",
+        "vts"
+      ],
+      "properties": {
+        "scan_preferences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dtos.ScannerPreference"
+          }
+        },
+        "target": {
+          "$ref": "#/definitions/dtos.Target"
+        },
+        "vts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dtos.VT"
+          }
+        }
+      }
+    },
+    "dtos.ScanRequestListItem": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/definitions/dtos.ScanReq"
+        },
+        "scan_id": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.ScanResultDetail": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/definitions/dtos.ScanResultDetailSource"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.ScanResultDetailSource": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.ScannerPreference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.Target": {
+      "type": "object",
+      "properties": {
+        "alive_test_methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alive_test_ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dtos.PortRange"
+          }
+        },
+        "credentials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dtos.Credential"
+          }
+        },
+        "excluded_hosts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dtos.PortRange"
+          }
+        },
+        "reverse_lookup_only": {
+          "type": "boolean"
+        },
+        "reverse_lookup_unify": {
+          "type": "boolean"
+        }
+      }
+    },
+    "dtos.VT": {
+      "type": "object",
+      "properties": {
+        "oid": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dtos.Parameter"
+          }
+        }
+      }
+    },
+    "dtos.VersionResponseDto": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "example": "v0.0.1"
+        }
+      }
+    },
+    "handshake.RegisterAgentRequest": {
+      "type": "object",
+      "properties": {
+        "extra": {
+          "description": "Extra is a set of key/value pairs the agent provides when\nregistering that can be used to identify its host and help decide\nwhether to authorize it.",
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "token": {
+          "description": "Token is the value of the bearer token used by the scan-agent to\nauthenticate API requests after having registered.",
+          "type": "string",
+          "example": "2wpPdB4dBpoYlEYF9JaNog"
+        }
+      }
+    }
+  }
+}

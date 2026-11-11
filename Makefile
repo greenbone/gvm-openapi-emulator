@@ -51,6 +51,12 @@ run: build
 	OPENVASD_TIMEOUT_DELAY=$(OPENVASD_TIMEOUT_DELAY) \
 	./$(BIN_DIR)/$(APP_NAME)
 
+.PHONY: run-agent
+run-agent: SPEC_PATH = ./examples/agent-folder/swagger.json
+run-agent: SAMPLES_DIR = ./examples/agent-folder/sample
+run-agent: PROFILE = generic
+run-agent: run
+
 .PHONY: test
 test:
 	@for pkg in $$(go list ./...); do \

@@ -5,6 +5,7 @@
 package samples
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -52,6 +53,82 @@ func writeFile(t *testing.T, dir, name, content string) string {
 func TestLoadFile_ReadError(t *testing.T) {
 	_, err := loadFile("/no/such/dir/missing.json")
 	require.Error(t, err)
+}
+
+func TestSampleProvider_GeneratesFreshUUIDs(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		sample string
+		status int
+	}{
+		{"raw", `{"id":"{{generate-uuid}}"}`, 200},
+		{"envelope", `{"status":201,"headers":{"x-test":"{{generate-uuid}}"},"body":{"id":"{{generate-uuid}}"}}`, 201},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			path := writeFile(t, dir, filepath.Join("widgets", "POST.json"), tc.sample)
+			provider := NewSampleProvider(ProviderConfig{
+				BaseDir: dir,
+				Layout:  config.LayoutFolders,
+			}, logger.GetLogger())
+
+			seen := map[string]bool{}
+			for range 3 {
+				resp, err := provider.ResolveAndLoad("POST", "/widgets", "/widgets", "POST__widgets.json")
+				require.NoError(t, err)
+				require.Equal(t, tc.status, resp.Status)
+				if tc.name == "envelope" {
+					require.Equal(t, "{{generate-uuid}}", resp.Headers["x-test"])
+				}
+				var body map[string]string
+				require.NoError(t, json.Unmarshal(resp.Body, &body))
+				require.Regexp(t, `^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`, body["id"])
+				require.False(t, seen[body["id"]], "UUID reused across responses")
+				seen[body["id"]] = true
+			}
+			contents, err := os.ReadFile(path)
+			require.NoError(t, err)
+			require.Equal(t, tc.sample, string(contents))
+		})
+	}
+}
+
+func TestLoadFile_UUIDPlaceholdersInNestedValues(t *testing.T) {
+	sample := `{"items":[{"id":"{{generate-uuid}}"},"{{generate-uuid}}"],"number":9007199254740993,"literal":"generate-uuid","embedded":"prefix-{{generate-uuid}}","unknown":"{{generate-number}}","{{generate-uuid}}":true}`
+	path := writeFile(t, t.TempDir(), "sample.json", sample)
+	resp, err := loadFile(path)
+	require.NoError(t, err)
+
+	var body struct {
+		Items []json.RawMessage `json:"items"`
+	}
+	require.NoError(t, json.Unmarshal(resp.Body, &body))
+	var object map[string]string
+	var secondID string
+	require.NoError(t, json.Unmarshal(body.Items[0], &object))
+	require.NoError(t, json.Unmarshal(body.Items[1], &secondID))
+	for _, id := range []string{object["id"], secondID} {
+		require.Regexp(t, `^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`, id)
+	}
+	require.NotEqual(t, object["id"], secondID)
+	require.Contains(t, string(resp.Body), `"number":9007199254740993`)
+	require.Contains(t, string(resp.Body), `"literal":"generate-uuid"`)
+	require.Contains(t, string(resp.Body), `"embedded":"prefix-{{generate-uuid}}"`)
+	require.Contains(t, string(resp.Body), `"unknown":"{{generate-number}}"`)
+	require.Contains(t, string(resp.Body), `"{{generate-uuid}}":true`)
+}
+
+func TestLoadFile_UUIDPlaceholderPreservesStaticSamples(t *testing.T) {
+	for _, sample := range []string{
+		`{ "id": "fixed-id", "number": 9007199254740993 }`,
+		`plain text {{generate-uuid}}`,
+		`{"invalid": "{{generate-uuid}}"`,
+	} {
+		path := writeFile(t, t.TempDir(), "sample.json", sample)
+		resp, err := loadFile(path)
+		require.NoError(t, err)
+		require.Equal(t, sample, string(resp.Body))
+	}
 }
 
 func TestLoadFile_EmptyFile_ReturnsDefault(t *testing.T) {
