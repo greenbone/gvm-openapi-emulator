@@ -11,7 +11,9 @@
       "name": "GPL-2.0-or-later",
       "url": "https://spdx.org/licenses/GPL-2.0-or-later.html"
     },
-    "version": "0.1"
+    "version": "1.0.0-emulator.1",
+    "x-upstream-openapi-revision": "6b0d7ec7e562aff805c8b2f968a8b0e18b5f63b2",
+    "x-emulator-fixture-revision": "openvasd-issue-41-v1"
   },
   "servers": [
     {
@@ -77,6 +79,9 @@
         "responses": {
           "200": {
             "description": "Ok"
+          },
+          "503": {
+            "description": "Service Unavailable"
           }
         }
       }
@@ -108,6 +113,9 @@
         "responses": {
           "200": {
             "description": "Ok"
+          },
+          "503": {
+            "description": "Service Unavailable"
           }
         }
       }
@@ -163,9 +171,6 @@
                   }
                 },
                 "examples": {
-                  "schema": {
-                    "description": "Schema of supported OS products"
-                  },
                   "get notus products": {
                     "$ref": "#/components/examples/notus_products"
                   }
@@ -196,9 +201,6 @@
                 "$ref": "#/components/schemas/NotusPkgList"
               },
               "examples": {
-                "schema": {
-                  "description": "Schema of package list"
-                },
                 "create simple scan": {
                   "$ref": "#/components/examples/notus_simple"
                 }
@@ -213,14 +215,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotusResult"
-                },
-                "examples": {
-                  "schema": {
-                    "description": "Schema of a list of results response"
-                  },
-                  "get results": {
-                    "$ref": "#/components/examples/notus_results"
-                  }
                 }
               }
             }
@@ -248,7 +242,7 @@
           "general"
         ],
         "responses": {
-          "204": {
+          "200": {
             "description": "Authenticated and authorized",
             "headers": {
               "api-version": {
@@ -310,9 +304,6 @@
                 "$ref": "#/components/schemas/ScanReq"
               },
               "examples": {
-                "schema": {
-                  "description": "Schema of a Scan."
-                },
                 "create simple scan": {
                   "$ref": "#/components/examples/scan_simple"
                 },
@@ -342,7 +333,7 @@
           "400": {
             "description": "Bad Request body"
           },
-          "403": {
+          "409": {
             "description": "ScanID already in use"
           }
         }
@@ -446,11 +437,11 @@
           "404": {
             "description": "Scan not found"
           },
-          "406": {
+          "409": {
             "description": "Unable to perform action because of the current scan status"
           },
-          "501": {
-            "description": "Action not supported"
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
@@ -472,7 +463,7 @@
           "404": {
             "description": "Scan not found"
           },
-          "406": {
+          "409": {
             "description": "A running scan cannot be deleted"
           }
         }
@@ -511,9 +502,6 @@
                   }
                 },
                 "examples": {
-                  "schema": {
-                    "description": "Schema of a list of results response"
-                  },
                   "get results 0-3": {
                     "$ref": "#/components/examples/scan_results"
                   }
@@ -526,9 +514,6 @@
           },
           "404": {
             "description": "Scan not found"
-          },
-          "406": {
-            "description": "A scan, that has not started, does not contain results"
           }
         }
       }
@@ -557,9 +542,6 @@
                   "$ref": "#/components/schemas/Result"
                 },
                 "examples": {
-                  "schema": {
-                    "description": "Schema of a result"
-                  },
                   "get result 3": {
                     "$ref": "#/components/examples/scan_result"
                   },
@@ -570,11 +552,11 @@
               }
             }
           },
+          "400": {
+            "description": "Invalid result ID"
+          },
           "404": {
             "description": "Result or Scan not found"
-          },
-          "406": {
-            "description": "A scan that has not started, cannot contain results"
           }
         }
       }
@@ -600,9 +582,6 @@
                   "$ref": "#/components/schemas/Status"
                 },
                 "examples": {
-                  "schema": {
-                    "description": "Schema of a status response."
-                  },
                   "status of a stored scan": {
                     "$ref": "#/components/examples/scan_status_stored"
                   },
@@ -659,10 +638,25 @@
         }
       },
       "get": {
-        "description": "Get a Identifier list of all VTs that are available to the scanner.",
+        "description": "Get the available VT OIDs, or full deterministic VT metadata when information is 1 or true.",
         "operationId": "get_vts",
         "tags": [
           "feed"
+        ],
+        "parameters": [
+          {
+            "name": "information",
+            "in": "query",
+            "required": false,
+            "description": "Return full VT metadata instead of only OIDs.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1",
+                "true"
+              ]
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -672,7 +666,14 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/components/schemas/VTInformation"
+                      }
+                    ]
                   }
                 },
                 "examples": {
@@ -721,6 +722,87 @@
       }
     },
     "schemas": {
+      "VTInformation": {
+        "description": "OpenVASD VT metadata returned by GET /vts?information=1.",
+        "type": "object",
+        "required": [
+          "oid",
+          "name",
+          "filename",
+          "tag",
+          "category",
+          "family"
+        ],
+        "properties": {
+          "oid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required_keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mandatory_keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "excluded_keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required_ports": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required_udp_ports": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "preferences": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "category": {
+            "type": "string"
+          },
+          "family": {
+            "type": "string"
+          }
+        }
+      },
       "ScanID": {
         "description": "A scan ID to identify a scan.",
         "type": "string"
@@ -1915,13 +1997,13 @@
           {
             "id": "optimize_test",
             "name": "Optimize Test",
-            "default": true,
+            "default": "true",
             "description": "By default, optimize_test is enabled which means openvas does trust the remote host banners and is only launching plugins against the services they have been designed to check. For example it will check a web server claiming to be IIS only for IIS related flaws but will skip plugins testing for Apache flaws, and so on. This default behavior is used to optimize the scanning performance and to avoid false positives. If you are not sure that the banners of the remote host have been tampered with, you can disable this option."
           },
           {
             "id": "plugins_timeout",
             "name": "Plugins Timeout",
-            "default": 5,
+            "default": "5",
             "description": "This is the maximum lifetime, in seconds of a plugin. It may happen that some plugins are slow because of the way they are written or the way the remote server behaves. This option allows you to make sure your scan is never caught in an endless loop because of a non-finishing plugin. Doesn't affect ACT_SCANNER plugins, use 'ACT_SCANNER plugins timeout' for them instead."
           }
         ]

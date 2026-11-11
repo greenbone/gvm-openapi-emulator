@@ -19,6 +19,9 @@ func TestInitConfig_Defaults_AllFields(t *testing.T) {
 	_ = os.Unsetenv("FALLBACK_MODE")
 	_ = os.Unsetenv("DEBUG_ROUTES")
 	_ = os.Unsetenv("LAYOUT_MODE")
+	_ = os.Unsetenv("PROFILE")
+	_ = os.Unsetenv("OPENVASD_RESET_TOKEN")
+	_ = os.Unsetenv("OPENVASD_TIMEOUT_DELAY")
 	_ = os.Unsetenv("SCENARIO_ENABLED")
 	_ = os.Unsetenv("SCENARIO_FILENAME")
 
@@ -51,6 +54,15 @@ func TestInitConfig_Defaults_AllFields(t *testing.T) {
 	if cfg.Layout != LayoutAuto {
 		t.Fatalf("Layout: expected %q, got %q", LayoutAuto, cfg.Layout)
 	}
+	if cfg.Profile != ProfileGeneric {
+		t.Fatalf("Profile: expected %q, got %q", ProfileGeneric, cfg.Profile)
+	}
+	if cfg.ResetToken != "" {
+		t.Fatalf("ResetToken: expected empty, got %q", cfg.ResetToken)
+	}
+	if cfg.TimeoutDelay.String() != "11s" {
+		t.Fatalf("TimeoutDelay: expected %q, got %q", "11s", cfg.TimeoutDelay)
+	}
 
 	if cfg.Scenario.Enabled != true {
 		t.Fatalf("Scenario.Enabled: expected %v, got %v", true, cfg.Scenario.Enabled)
@@ -70,6 +82,9 @@ func TestInitConfig_Overrides_AllFields(t *testing.T) {
 	t.Setenv("FALLBACK_MODE", "none")
 	t.Setenv("DEBUG_ROUTES", "1")
 	t.Setenv("LAYOUT_MODE", "folders")
+	t.Setenv("PROFILE", "openvasd")
+	t.Setenv("OPENVASD_RESET_TOKEN", "test-reset-token")
+	t.Setenv("OPENVASD_TIMEOUT_DELAY", "250ms")
 
 	t.Setenv("SCENARIO_ENABLED", "false")
 	t.Setenv("SCENARIO_FILENAME", "my-scenario.json")
@@ -102,6 +117,15 @@ func TestInitConfig_Overrides_AllFields(t *testing.T) {
 	}
 	if cfg.Layout != LayoutFolders {
 		t.Fatalf("Layout: expected %q, got %q", LayoutFolders, cfg.Layout)
+	}
+	if cfg.Profile != ProfileOpenVASD {
+		t.Fatalf("Profile: expected %q, got %q", ProfileOpenVASD, cfg.Profile)
+	}
+	if cfg.ResetToken != "test-reset-token" {
+		t.Fatalf("ResetToken: expected %q, got %q", "test-reset-token", cfg.ResetToken)
+	}
+	if cfg.TimeoutDelay.String() != "250ms" {
+		t.Fatalf("TimeoutDelay: expected %q, got %q", "250ms", cfg.TimeoutDelay)
 	}
 
 	if cfg.Scenario.Enabled != false {

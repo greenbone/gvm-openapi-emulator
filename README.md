@@ -58,6 +58,7 @@ make clean         # Remove build and coverage artifacts
 * Resolves responses from JSON sample files (folder-based or legacy flat)
 * Supports **stateful APIs** using explicit `scenario.json` definitions
 * Supports **step-based** and **time-based** state progression
+* Includes a **stateful, fail-closed OpenVASD profile** for contract testing
 * Optionally falls back to examples defined in the OpenAPI spec
 * Can enforce basic request validation (e.g. required request body)
 
@@ -73,6 +74,14 @@ This tool is useful when:
 * CI tests must be stable and predictable
 * You want to simulate **long-running or stateful APIs**
   (e.g. scans, jobs, tasks, workflows)
+
+## Stateful OpenVASD contract backend
+
+The checked-in OpenVASD example runs with `PROFILE=openvasd` through `make run`,
+`make docker-run`, and Docker Compose. It supplies lifecycle isolation,
+request/result correlation, VT metadata, named failures, deterministic
+readiness, and authenticated reset behavior for OpenVASD client tests. See
+[OpenVASD Profile](./docs/OPENVASD_PROFILE.md) for the exact contract.
 
 ---
 
