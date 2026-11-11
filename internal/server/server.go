@@ -12,6 +12,7 @@ import (
 
 	"github.com/greenbone/gvm-openapi-emulator/config"
 	"github.com/greenbone/gvm-openapi-emulator/internal/openapi"
+	"github.com/greenbone/gvm-openapi-emulator/internal/openvasd"
 	"github.com/greenbone/gvm-openapi-emulator/internal/samples"
 	"github.com/greenbone/gvm-openapi-emulator/logger"
 	"github.com/greenbone/gvm-openapi-emulator/utils"
@@ -25,6 +26,9 @@ type Config struct {
 	FallbackMode   config.FallbackMode
 	ValidationMode config.ValidationMode
 	Layout         config.LayoutMode
+	Profile        config.Profile
+	ResetToken     string
+	TimeoutDelay   time.Duration
 }
 
 type Server struct {
@@ -36,6 +40,7 @@ type Server struct {
 	log            *logrus.Logger
 
 	scenario samples.IScenarioResolver
+	openvasd http.Handler
 }
 
 func New(cfg Config) (*Server, error) {
@@ -80,6 +85,17 @@ func New(cfg Config) (*Server, error) {
 
 	s.sampleProvider = samples.NewSampleProvider(providerCfg, log)
 
+	switch cfg.Profile {
+	case "", config.ProfileGeneric:
+	case config.ProfileOpenVASD:
+		s.openvasd = openvasd.New(openvasd.Config{
+			ResetToken:   cfg.ResetToken,
+			TimeoutDelay: cfg.TimeoutDelay,
+		})
+	default:
+		return nil, fmt.Errorf("unsupported profile %q", cfg.Profile)
+	}
+
 	return s, nil
 }
 
@@ -91,9 +107,9 @@ func (s *Server) ListenAndServe() error {
 
 	s.log.Printf("mock listening on %s", addr)
 	s.log.Printf(
-		"spec=%s samples=%s fallback=%s validation=%s layout=%s scenario_enabled=%v scenario_file=%q",
+		"spec=%s samples=%s fallback=%s validation=%s layout=%s profile=%s scenario_enabled=%v scenario_file=%q",
 		s.cfg.SpecPath, s.cfg.SamplesDir, s.cfg.FallbackMode, s.cfg.ValidationMode,
-		s.cfg.Layout, config.Envs.Scenario.Enabled, config.Envs.Scenario.Filename,
+		s.cfg.Layout, s.cfg.Profile, config.Envs.Scenario.Enabled, config.Envs.Scenario.Filename,
 	)
 
 	server := &http.Server{
@@ -109,6 +125,11 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) handle(w http.ResponseWriter, r *http.Request) {
+	if s.openvasd != nil {
+		s.openvasd.ServeHTTP(w, r)
+		return
+	}
+
 	method := r.Method
 	path := r.URL.Path
 

@@ -5,6 +5,8 @@
 package config
 
 import (
+	"time"
+
 	"github.com/greenbone/gvm-openapi-emulator/utils"
 	"github.com/joho/godotenv"
 )
@@ -39,6 +41,13 @@ const (
 	LayoutFlat    LayoutMode = "flat"    // only flat
 )
 
+type Profile string
+
+const (
+	ProfileGeneric  Profile = "generic"
+	ProfileOpenVASD Profile = "openvasd"
+)
+
 type ScenarioConfig struct {
 	Enabled  bool
 	Filename string
@@ -54,6 +63,9 @@ type Config struct {
 	DebugRoutes    bool
 	ValidationMode ValidationMode
 	Layout         LayoutMode
+	Profile        Profile
+	ResetToken     string
+	TimeoutDelay   time.Duration
 
 	Scenario ScenarioConfig
 }
@@ -73,10 +85,22 @@ func initConfig() Config {
 		FallbackMode:   FallbackMode(utils.GetEnv("FALLBACK_MODE", "openapi_examples")),
 		DebugRoutes:    utils.GetEnvAsBool("DEBUG_ROUTES", false),
 		Layout:         LayoutMode(utils.GetEnv("LAYOUT_MODE", "auto")),
+		Profile:        Profile(utils.GetEnv("PROFILE", "generic")),
+		ResetToken:     utils.GetEnv("OPENVASD_RESET_TOKEN", ""),
+		TimeoutDelay:   getEnvDuration("OPENVASD_TIMEOUT_DELAY", 11*time.Second),
 
 		Scenario: ScenarioConfig{
 			Enabled:  utils.GetEnvAsBool("SCENARIO_ENABLED", true),
 			Filename: utils.GetEnv("SCENARIO_FILENAME", "scenario.json"),
 		},
 	}
+}
+
+func getEnvDuration(name string, fallback time.Duration) time.Duration {
+	value := utils.GetEnv(name, fallback.String())
+	duration, err := time.ParseDuration(value)
+	if err != nil || duration < 0 {
+		return fallback
+	}
+	return duration
 }
