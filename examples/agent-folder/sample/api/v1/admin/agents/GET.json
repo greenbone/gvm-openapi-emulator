@@ -1,0 +1,179 @@
+
+[
+  {
+    "agentid": "test::2d61a736",
+    "authorized": true,
+    "connection_status": "active",
+    "last_update": "2026-11-11T07:20:00Z",
+    "last_updater_heartbeat": "2026-11-11T07:25:00Z",
+    "hostname": "ubuntu-dev-01",
+    "ip_addresses": ["192.168.1.101"],
+    "config": {
+      "agent_control": {
+        "retry": {
+          "attempts": 10,
+          "delay_in_seconds": 60,
+          "max_jitter_in_seconds": 10
+        }
+      },
+      "agent_script_executor": {
+        "bulk_size": 8,
+        "bulk_throttle_time_in_ms": 100,
+        "indexer_dir_depth": 10,
+        "scheduler_cron_time": [
+          {
+            "cron": "0 */12 * * *",
+            "max_delay_second": 60
+          }
+        ]
+      },
+      "heartbeat": {
+        "interval_in_seconds": 1024,
+        "miss_until_inactive": 1
+      }
+    },
+    "updater_version": "1.0.0",
+    "agent_version": "0.0.0",
+    "operating_system": "linux",
+    "architecture": "amd64",
+    "os_cpe": "",
+    "os_status": "unknown",
+    "latest_updater_version": "1.0.1",
+    "latest_agent_version": "1.0.0",
+    "agent_update_available": true,
+    "updater_update_available": true,
+    "update_to_latest": true
+  },
+  {
+    "agentid": "test::123123",
+    "authorized": true,
+    "connection_status": "active",
+    "last_update": "2026-11-11T07:15:00Z",
+    "last_updater_heartbeat": "2026-11-11T07:24:00Z",
+    "hostname": "debian-server-01",
+    "ip_addresses": ["192.168.1.102"],
+    "config": {
+      "agent_control": {
+        "retry": {
+          "attempts": 10,
+          "delay_in_seconds": 60,
+          "max_jitter_in_seconds": 10
+        }
+      },
+      "agent_script_executor": {
+        "bulk_size": 8,
+        "bulk_throttle_time_in_ms": 100,
+        "indexer_dir_depth": 10,
+        "scheduler_cron_time": [
+          {
+            "cron": "0 */12 * * *",
+            "max_delay_second": 60
+          }
+        ]
+      },
+      "heartbeat": {
+        "interval_in_seconds": 1024,
+        "miss_until_inactive": 1
+      }
+    },
+    "updater_version": "1.0.1",
+    "agent_version": "1.0.0",
+    "operating_system": "linux",
+    "architecture": "amd64",
+    "os_cpe": "",
+    "os_status": "unknown",
+    "latest_updater_version": "1.0.1",
+    "latest_agent_version": "1.0.0",
+    "agent_update_available": false,
+    "updater_update_available": false,
+    "update_to_latest": true
+  },
+  {
+    "agentid": "test::33333",
+    "authorized": true,
+    "connection_status": "inactive",
+    "last_update": "2026-11-08T10:00:00Z",
+    "last_updater_heartbeat": "2026-11-08T10:05:00Z",
+    "hostname": "ubuntu-server-02",
+    "ip_addresses": ["192.168.1.103"],
+    "config": {
+      "agent_control": {
+        "retry": {
+          "attempts": 10,
+          "delay_in_seconds": 60,
+          "max_jitter_in_seconds": 10
+        }
+      },
+      "agent_script_executor": {
+        "bulk_size": 8,
+        "bulk_throttle_time_in_ms": 100,
+        "indexer_dir_depth": 10,
+        "scheduler_cron_time": [
+          {
+            "cron": "0 */12 * * *",
+            "max_delay_second": 60
+          }
+        ]
+      },
+      "heartbeat": {
+        "interval_in_seconds": 1024,
+        "miss_until_inactive": 1
+      }
+    },
+    "updater_version": "1.0.0",
+    "agent_version": "0.0.0",
+    "operating_system": "linux",
+    "architecture": "amd64",
+    "os_cpe": "",
+    "os_status": "unknown",
+    "latest_updater_version": "1.0.1",
+    "latest_agent_version": "1.0.0",
+    "agent_update_available": true,
+    "updater_update_available": true,
+    "update_to_latest": true
+  },
+  {
+    "agentid": "test::55555",
+    "authorized": false,
+    "connection_status": "inactive",
+    "last_update": "2026-11-01T08:00:00Z",
+    "last_updater_heartbeat": "2026-11-01T08:05:00Z",
+    "hostname": "test-agent-04",
+    "ip_addresses": null,
+    "config": {
+      "agent_control": {
+        "retry": {
+          "attempts": 10,
+          "delay_in_seconds": 60,
+          "max_jitter_in_seconds": 10
+        }
+      },
+      "agent_script_executor": {
+        "bulk_size": 8,
+        "bulk_throttle_time_in_ms": 100,
+        "indexer_dir_depth": 10,
+        "scheduler_cron_time": [
+          {
+            "cron": "0 */12 * * *",
+            "max_delay_second": 60
+          }
+        ]
+      },
+      "heartbeat": {
+        "interval_in_seconds": 1024,
+        "miss_until_inactive": 1
+      }
+    },
+    "updater_version": "1.0.0",
+    "agent_version": "0.0.0",
+    "operating_system": "linux",
+    "architecture": "amd64",
+    "os_cpe": "",
+    "os_status": "unknown",
+    "latest_updater_version": "1.0.1",
+    "latest_agent_version": "1.0.0",
+    "agent_update_available": true,
+    "updater_update_available": true,
+    "update_to_latest": false
+  }
+]
