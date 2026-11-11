@@ -21,6 +21,9 @@ func main() {
 		FallbackMode:   cfg.FallbackMode,
 		ValidationMode: cfg.ValidationMode,
 		Layout:         cfg.Layout,
+		Profile:        cfg.Profile,
+		ResetToken:     cfg.ResetToken,
+		TimeoutDelay:   cfg.TimeoutDelay,
 	})
 	if err != nil {
 		log.Fatalf("failed to init server: %v", err)

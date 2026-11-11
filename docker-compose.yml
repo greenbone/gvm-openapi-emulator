@@ -14,6 +14,9 @@ services:
       - RUNNING_ENV=${RUNNING_ENV:-docker}
       - DEBUG_ROUTES=${DEBUG_ROUTES:-true}
       - FALLBACK_MODE=openapi_examples
+      - PROFILE=openvasd
+      - OPENVASD_RESET_TOKEN=${OPENVASD_RESET_TOKEN:-local-test-reset}
+      - OPENVASD_TIMEOUT_DELAY=${OPENVASD_TIMEOUT_DELAY:-11s}
     volumes:
 
       - ./examples/openvasd:/work:ro # change the folder path for other examples

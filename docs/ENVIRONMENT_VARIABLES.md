@@ -18,6 +18,20 @@ Defaults are shown in parentheses.
 | `FALLBACK_MODE`   | `openapi_examples`   | Fallback behavior if a sample file is missing (`none`, `openapi_examples`). |
 | `DEBUG_ROUTES`    | `false`              | If `true`, prints resolved route - sample mappings on startup.              |
 | `LAYOUT_MODE`     | `auto`               | Sample file layout mode (`auto`, `folders`, `flat`).                        |
+| `PROFILE`         | `generic`            | Runtime profile (`generic`, `openvasd`).                                    |
+
+## OpenVASD Profile
+
+`PROFILE=openvasd` enables the stateful, fail-closed OpenVASD test backend.
+This profile does not fall back to sample files or OpenAPI examples. It adds
+isolated scan lifecycle state, deterministic VT metadata and results, explicit
+failure injection, and an authenticated reset endpoint. See
+[OpenVASD Profile](./OPENVASD_PROFILE.md) for its contract.
+
+| Variable                  | Default | Description                                                        |
+| ------------------------- | ------- | ------------------------------------------------------------------ |
+| `OPENVASD_RESET_TOKEN`    | empty   | Enables and authenticates `POST /_emulator/reset` when non-empty.  |
+| `OPENVASD_TIMEOUT_DELAY`  | `11s`   | Delay used by the named `timeout` failure scenario.                |
 
 ---
 
@@ -153,6 +167,11 @@ VALIDATION_MODE=required        # none | required
 
 # Debug
 DEBUG_ROUTES=false
+
+# Stateful OpenVASD contract backend
+PROFILE=openvasd
+OPENVASD_RESET_TOKEN=local-test-reset
+OPENVASD_TIMEOUT_DELAY=11s
 ```
 
 ---

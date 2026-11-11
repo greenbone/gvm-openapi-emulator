@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build:
-    if: ${{ github.repository == 'greenbone/gvm-openapi-emulator' }}
+    if: ${{ github.repository == 'greenbone/gvm-openapi-emulator' && github.event_name != 'pull_request' }}
     strategy:
       fail-fast: false
       matrix:
@@ -41,6 +41,17 @@ jobs:
       images: |
         ghcr.io/${{ github.repository }},enable=${{ github.event_name != 'pull_request' }}
     secrets: inherit
+
+  pull-request-build:
+    if: ${{ github.repository == 'greenbone/gvm-openapi-emulator' && github.event_name == 'pull_request' }}
+    name: Build pull request container without publishing
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build container
+        run: docker build --tag gvm-openapi-emulator:pr .
 
   # notify:
   #   needs:

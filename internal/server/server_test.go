@@ -55,6 +55,50 @@ func TestNew_LoadsSpecAndBuildsRoutes(t *testing.T) {
 	}
 }
 
+func TestNew_OpenVASDProfileRoutesToStatefulBackend(t *testing.T) {
+	disableScenarioForTests()
+	dir := t.TempDir()
+	specPath := writeFile(t, dir, "spec.json", minimalSpec())
+	s, err := New(Config{
+		Port:           "0",
+		SpecPath:       specPath,
+		SamplesDir:     dir,
+		FallbackMode:   config.FallbackOpenAPIExample,
+		ValidationMode: config.ValidationRequired,
+		Layout:         config.LayoutFolders,
+		Profile:        config.ProfileOpenVASD,
+		ResetToken:     "reset-secret",
+	})
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "http://example.com/health/ready", nil)
+	s.handle(response, request)
+	if response.Code != http.StatusServiceUnavailable {
+		t.Fatalf("expected deterministic not-ready response, got %d", response.Code)
+	}
+	if response.Header().Get("api-version") != "1" {
+		t.Fatalf("expected OpenVASD metadata headers, got %#v", response.Header())
+	}
+}
+
+func TestNew_RejectsUnknownProfile(t *testing.T) {
+	disableScenarioForTests()
+	dir := t.TempDir()
+	specPath := writeFile(t, dir, "spec.json", minimalSpec())
+	_, err := New(Config{
+		Port:       "0",
+		SpecPath:   specPath,
+		SamplesDir: dir,
+		Profile:    config.Profile("unknown"),
+	})
+	if err == nil || !strings.Contains(err.Error(), "unsupported profile") {
+		t.Fatalf("expected unsupported profile error, got %v", err)
+	}
+}
+
 func TestHandle_HealthEndpoints(t *testing.T) {
 	s := newTestServer(t, config.ValidationRequired, config.FallbackOpenAPIExample)
 
