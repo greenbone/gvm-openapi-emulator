@@ -15,6 +15,7 @@ It is designed for **local development**, **integration testing**, and **CI envi
 ## Documentation
 
 * [Environment Variables](./docs/ENVIRONMENT_VARIABLES.md) – Configuration options
+* [Sample Placeholders](./docs/SAMPLE_PLACEHOLDERS.md) – Generate UUIDs in fixture responses
 
 ---
 
@@ -35,6 +36,7 @@ The repository includes a `Makefile` with helpful targets:
 ```bash
 make build         # Build the binary into ./bin/emulator
 make run           # Build and run the emulator (uses SPEC_PATH / SAMPLES_DIR defaults)
+make run-agent     # Run Agent Control examples using the generic profile
 make test          # Run all tests
 make cover         # Run tests with coverage and generate reports (coverage.html)
 
@@ -127,6 +129,20 @@ Examples:
 * `GET /scans/{id}` - `scans/{id}/GET.json`
 
 Path parameters remain as `{id}`.
+
+### Generated UUIDs
+
+Use `{{generate-uuid}}` as a complete JSON string value to generate a random
+UUID v4 whenever a sample is loaded:
+
+```json
+{
+  "scan_id": "{{generate-uuid}}"
+}
+```
+
+Each placeholder generates a fresh UUID on every request. See
+[Sample Placeholders](./docs/SAMPLE_PLACEHOLDERS.md) for details.
 
 ---
 
@@ -316,7 +332,7 @@ Supported specs:
 
 This tool is **not intended** to:
 
-* Generate random or synthetic data
+* Generate arbitrary synthetic datasets
 * Fully validate request schemas
 * Replace contract-testing tools
 

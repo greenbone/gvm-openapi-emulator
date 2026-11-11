@@ -5,12 +5,14 @@
 package samples
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/greenbone/gvm-openapi-emulator/utils"
 	"github.com/sirupsen/logrus"
 
@@ -143,6 +145,10 @@ func loadFile(path string) (*Response, error) {
 					return nil, fmt.Errorf("marshal envelope body: %w", err)
 				}
 			}
+			bodyBytes, err = expandUUIDPlaceholders(bodyBytes)
+			if err != nil {
+				return nil, err
+			}
 
 			return &Response{
 				Status:  status,
@@ -152,11 +158,63 @@ func loadFile(path string) (*Response, error) {
 		}
 	}
 
+	bodyBytes, err := expandUUIDPlaceholders([]byte(raw))
+	if err != nil {
+		return nil, err
+	}
 	return &Response{
 		Status:  200,
 		Headers: map[string]string{"content-type": "application/json"},
-		Body:    []byte(raw),
+		Body:    bodyBytes,
 	}, nil
+}
+
+func expandUUIDPlaceholders(body []byte) ([]byte, error) {
+	if !bytes.Contains(body, []byte("{{generate-uuid}}")) || !json.Valid(body) {
+		return body, nil
+	}
+
+	decoder := json.NewDecoder(bytes.NewReader(body))
+	decoder.UseNumber()
+	var value any
+	if err := decoder.Decode(&value); err != nil {
+		return nil, fmt.Errorf("decode sample body: %w", err)
+	}
+	value, err := expandUUIDValue(value)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(value)
+}
+
+func expandUUIDValue(value any) (any, error) {
+	switch v := value.(type) {
+	case string:
+		if v == "{{generate-uuid}}" {
+			id, err := uuid.NewRandom()
+			if err != nil {
+				return nil, fmt.Errorf("generate sample UUID: %w", err)
+			}
+			return id.String(), nil
+		}
+	case map[string]any:
+		for key, item := range v {
+			expanded, err := expandUUIDValue(item)
+			if err != nil {
+				return nil, err
+			}
+			v[key] = expanded
+		}
+	case []any:
+		for i, item := range v {
+			expanded, err := expandUUIDValue(item)
+			if err != nil {
+				return nil, err
+			}
+			v[i] = expanded
+		}
+	}
+	return value, nil
 }
 
 func isJSONObject(s string) bool {

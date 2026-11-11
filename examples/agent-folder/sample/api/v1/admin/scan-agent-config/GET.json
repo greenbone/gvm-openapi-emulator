@@ -1,0 +1,24 @@
+{
+  "agent_control": {
+    "retry": {
+      "attempts": 5,
+      "delay_in_seconds": 60,
+      "max_jitter_in_seconds": 10
+    }
+  },
+  "agent_script_executor": {
+    "bulk_size": 2,
+    "bulk_throttle_time_in_ms": 100,
+    "indexer_dir_depth": 10,
+    "scheduler_cron_time": [
+      {
+        "cron": "0 */12 * * *",
+        "max_delay_second": 60
+      }
+    ]
+  },
+  "heartbeat": {
+    "interval_in_seconds": 600,
+    "miss_until_inactive": 1
+  }
+}
