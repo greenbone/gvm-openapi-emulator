@@ -25,7 +25,7 @@ const (
 	feedVersion     = "202611110000"
 	authentication  = "disabled"
 	openAPIRevision = "6b0d7ec7e562aff805c8b2f968a8b0e18b5f63b2"
-	fixtureRevision = "openvasd-issue-41-v1"
+	fixtureRevision = "openvasd-issue-45-v1"
 
 	scenarioHeader   = "X-Emulator-Scenario"
 	resetTokenHeader = "X-Emulator-Reset-Token" // #nosec G101 -- HTTP header name, not a credential.
@@ -859,8 +859,11 @@ func vtInformation() []map[string]any {
 			"name":     "Deterministic OpenVASD test VT",
 			"filename": "deterministic_openvasd_test.nasl",
 			"tag": map[string]any{
-				"creation_date": 1_700_000_000,
-				"summary":       "Deterministic emulator VT",
+				"creation_date":   1_700_000_000,
+				"severity_date":   1_700_000_000,
+				"severity_origin": "Greenbone",
+				"severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+				"summary":         "Deterministic emulator VT",
 			},
 			"dependencies":       []string{},
 			"required_keys":      []string{},
@@ -878,8 +881,11 @@ func vtInformation() []map[string]any {
 			"name":     "Deterministic OpenVASD result VT",
 			"filename": "deterministic_openvasd_result.nasl",
 			"tag": map[string]any{
-				"creation_date": 1_700_000_001,
-				"summary":       "Produces a correlated emulator result",
+				"creation_date":   1_700_000_001,
+				"severity_date":   1_700_000_001,
+				"severity_origin": "Greenbone",
+				"severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+				"summary":         "Produces a correlated emulator result",
 			},
 			"dependencies":       []string{"deterministic_openvasd_test.nasl"},
 			"required_keys":      []string{},

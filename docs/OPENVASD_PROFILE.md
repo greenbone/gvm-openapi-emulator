@@ -29,7 +29,7 @@ api-version: 1
 feed-version: 202611110000
 authentication: disabled
 x-emulator-openapi-revision: 6b0d7ec7e562aff805c8b2f968a8b0e18b5f63b2
-x-emulator-fixture-revision: openvasd-issue-41-v1
+x-emulator-fixture-revision: openvasd-issue-45-v1
 ```
 
 The OpenAPI revision pins the upstream OpenVASD source contract used to build
@@ -39,6 +39,8 @@ digest; the repository's main-branch container workflow publishes the image.
 
 `GET /vts` returns deterministic OIDs. `GET /vts?information=1` (and
 `information=true`) returns the corresponding OpenVASD VT metadata objects.
+Every VT includes a deterministic CVSS 3.1 `severity_vector` and its companion
+origin and date fields so gvmd can import the inventory during readiness.
 
 ## Scan lifecycle
 

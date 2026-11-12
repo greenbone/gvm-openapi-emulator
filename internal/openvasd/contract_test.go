@@ -7,6 +7,7 @@ package openvasd
 import (
 	"context"
 	"path/filepath"
+	"slices"
 	"testing"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -72,5 +73,28 @@ func TestPinnedOpenAPIContract(t *testing.T) {
 	if vts == nil || len(vts.Parameters) != 1 || vts.Parameters[0].Value == nil ||
 		vts.Parameters[0].Value.Name != "information" {
 		t.Fatalf("GET /vts must pin the information query parameter")
+	}
+}
+
+// TestPinnedOpenAPIContractRequiresGvmdSeverityVector keeps the documented VT
+// response from regressing to metadata that gvmd rejects during feed import.
+func TestPinnedOpenAPIContractRequiresGvmdSeverityVector(t *testing.T) {
+	specPath := filepath.Join("..", "..", "examples", "openvasd", "swagger.json")
+	document, err := openapi3.NewLoader().LoadFromFile(specPath)
+	if err != nil {
+		t.Fatalf("load pinned OpenAPI document: %v", err)
+	}
+
+	information := document.Components.Schemas["VTInformation"]
+	if information == nil || information.Value == nil {
+		t.Fatal("pinned contract is missing VTInformation")
+	}
+	tag := information.Value.Properties["tag"]
+	if tag == nil || tag.Value == nil {
+		t.Fatal("VTInformation is missing tag metadata")
+	}
+	if !slices.Contains(tag.Value.Required, "severity_vector") ||
+		tag.Value.Properties["severity_vector"] == nil {
+		t.Fatalf("VTInformation.tag must require severity_vector: %#v", tag.Value)
 	}
 }

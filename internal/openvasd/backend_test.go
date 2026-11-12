@@ -61,6 +61,40 @@ func TestHealthMetadataReadinessAndVTInformation(t *testing.T) {
 	assertStatus(t, response, http.StatusBadRequest)
 }
 
+// TestVTInformationIncludesGvmdCompatibleSeverityMetadata prevents gvmd from
+// rejecting every emulated VT and importing zero VTs during readiness.
+func TestVTInformationIncludesGvmdCompatibleSeverityMetadata(t *testing.T) {
+	backend := New(Config{})
+	response := request(t, backend, http.MethodGet, "/vts?information=1", "", nil)
+	assertStatus(t, response, http.StatusOK)
+
+	var information []struct {
+		OID string `json:"oid"`
+		Tag struct {
+			CreationDate   int64  `json:"creation_date"`
+			SeverityDate   int64  `json:"severity_date"`
+			SeverityOrigin string `json:"severity_origin"`
+			SeverityVector string `json:"severity_vector"`
+		} `json:"tag"`
+	}
+	decodeResponse(t, response, &information)
+
+	if len(information) == 0 {
+		t.Fatal("expected VT information")
+	}
+	for _, vt := range information {
+		if vt.Tag.SeverityVector != "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N" {
+			t.Errorf("VT %q has invalid gvmd severity vector %q", vt.OID, vt.Tag.SeverityVector)
+		}
+		if vt.Tag.SeverityOrigin != "Greenbone" {
+			t.Errorf("VT %q has unexpected severity origin %q", vt.OID, vt.Tag.SeverityOrigin)
+		}
+		if vt.Tag.SeverityDate == 0 || vt.Tag.SeverityDate != vt.Tag.CreationDate {
+			t.Errorf("VT %q has inconsistent severity date: %#v", vt.OID, vt.Tag)
+		}
+	}
+}
+
 func TestResultsCoverEveryTargetAndVT(t *testing.T) {
 	backend := New(Config{ResetToken: "reset-secret", TimeoutDelay: time.Millisecond})
 	body := `{"target":{"hosts":["192.0.2.1","192.0.2.2"],"ports":[{"protocol":"tcp","range":[{"start":443}]}]},"scan_preferences":[{"id":"safe_checks","value":"yes"}],"vts":[{"oid":"1.3.6.1.4.1.25623.1.0.100196"},{"oid":"1.3.6.1.4.1.25623.1.0.100127"}]}`
