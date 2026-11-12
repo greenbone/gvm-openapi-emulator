@@ -145,7 +145,10 @@ func TestVTResponsesFailClosedWithoutValidSample(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			provider := samples.NewSampleProvider(samples.ProviderConfig{BaseDir: dir, Layout: config.LayoutFlat}, logrus.New())
+			provider := samples.NewSampleProvider(samples.ProviderConfig{
+				BaseDir: dir,
+				Layout:  config.LayoutFlat,
+			}, logrus.New())
 			backend := New(Config{SampleProvider: provider})
 			for _, path := range []string{"/vts", "/vts?information=1"} {
 				response := request(t, backend, http.MethodGet, path, "", nil)

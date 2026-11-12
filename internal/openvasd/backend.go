@@ -333,7 +333,8 @@ func (b *Backend) handleVTs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if b.sampleProvider == nil {
-		writeError(w, http.StatusInternalServerError, "VT sample provider is not configured", nil)
+		writeError(w, http.StatusInternalServerError,
+			"VT sample provider is not configured", nil)
 		return
 	}
 	sample, err := b.sampleProvider.ResolveAndLoad(http.MethodGet, "/vts", "/vts", "GET__vts.json")
