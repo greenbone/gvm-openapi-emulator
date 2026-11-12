@@ -89,8 +89,9 @@ func New(cfg Config) (*Server, error) {
 	case "", config.ProfileGeneric:
 	case config.ProfileOpenVASD:
 		s.openvasd = openvasd.New(openvasd.Config{
-			ResetToken:   cfg.ResetToken,
-			TimeoutDelay: cfg.TimeoutDelay,
+			ResetToken:     cfg.ResetToken,
+			TimeoutDelay:   cfg.TimeoutDelay,
+			SampleProvider: s.sampleProvider,
 		})
 	default:
 		return nil, fmt.Errorf("unsupported profile %q", cfg.Profile)

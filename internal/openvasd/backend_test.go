@@ -10,14 +10,21 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/greenbone/gvm-openapi-emulator/config"
+	"github.com/greenbone/gvm-openapi-emulator/internal/samples"
+	"github.com/sirupsen/logrus"
 )
 
 func TestHealthMetadataReadinessAndVTInformation(t *testing.T) {
-	backend := New(Config{ResetToken: "reset-secret", TimeoutDelay: time.Millisecond})
+	backend := New(Config{ResetToken: "reset-secret", TimeoutDelay: time.Millisecond, SampleProvider: vtSampleProvider()})
 
 	response := request(t, backend, http.MethodHead, "/health", "", nil)
 	assertStatus(t, response, http.StatusOK)
@@ -38,7 +45,7 @@ func TestHealthMetadataReadinessAndVTInformation(t *testing.T) {
 	assertStatus(t, response, http.StatusOK)
 	var oids []string
 	decodeResponse(t, response, &oids)
-	if len(oids) != 2 || oids[0] == "" {
+	if len(oids) == 0 || oids[0] == "" {
 		t.Fatalf("unexpected VT OIDs: %#v", oids)
 	}
 
@@ -46,7 +53,7 @@ func TestHealthMetadataReadinessAndVTInformation(t *testing.T) {
 	assertStatus(t, response, http.StatusOK)
 	var information []map[string]any
 	decodeResponse(t, response, &information)
-	if len(information) != 2 || information[0]["oid"] != oids[0] {
+	if len(information) != len(oids) || information[0]["oid"] != oids[0] {
 		t.Fatalf("unexpected VT information: %#v", information)
 	}
 	for _, field := range []string{"name", "filename", "tag", "category", "family"} {
@@ -64,17 +71,14 @@ func TestHealthMetadataReadinessAndVTInformation(t *testing.T) {
 // TestVTInformationIncludesGvmdCompatibleSeverityMetadata prevents gvmd from
 // rejecting every emulated VT and importing zero VTs during readiness.
 func TestVTInformationIncludesGvmdCompatibleSeverityMetadata(t *testing.T) {
-	backend := New(Config{})
+	backend := New(Config{SampleProvider: vtSampleProvider()})
 	response := request(t, backend, http.MethodGet, "/vts?information=1", "", nil)
 	assertStatus(t, response, http.StatusOK)
 
 	var information []struct {
 		OID string `json:"oid"`
 		Tag struct {
-			CreationDate   int64  `json:"creation_date"`
-			SeverityDate   int64  `json:"severity_date"`
-			SeverityOrigin string `json:"severity_origin"`
-			SeverityVector string `json:"severity_vector"`
+			CVSSBaseVector string `json:"cvss_base_vector"`
 		} `json:"tag"`
 	}
 	decodeResponse(t, response, &information)
@@ -83,16 +87,80 @@ func TestVTInformationIncludesGvmdCompatibleSeverityMetadata(t *testing.T) {
 		t.Fatal("expected VT information")
 	}
 	for _, vt := range information {
-		if vt.Tag.SeverityVector != "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N" {
-			t.Errorf("VT %q has invalid gvmd severity vector %q", vt.OID, vt.Tag.SeverityVector)
-		}
-		if vt.Tag.SeverityOrigin != "Greenbone" {
-			t.Errorf("VT %q has unexpected severity origin %q", vt.OID, vt.Tag.SeverityOrigin)
-		}
-		if vt.Tag.SeverityDate == 0 || vt.Tag.SeverityDate != vt.Tag.CreationDate {
-			t.Errorf("VT %q has inconsistent severity date: %#v", vt.OID, vt.Tag)
+		if vt.Tag.CVSSBaseVector != "AV:N/AC:L/Au:N/C:N/I:N/A:N" {
+			t.Errorf("VT %q has invalid gvmd severity vector %q", vt.OID, vt.Tag.CVSSBaseVector)
 		}
 	}
+}
+
+func TestVTSampleMatchesScanResultOIDs(t *testing.T) {
+	baseDir := filepath.Join("..", "..", "examples", "openvasd", "sample")
+	resultSample, err := os.ReadFile(filepath.Join(baseDir, "scans", "{id}", "results", "GET.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := make(map[string]bool)
+	for _, oid := range regexp.MustCompile(`1\.3\.6\.1\.4\.1\.25623(?:\.\d+)+`).FindAllString(string(resultSample), -1) {
+		expected[oid] = true
+	}
+	if len(expected) == 0 {
+		t.Fatal("scan result sample must reference VTs")
+	}
+
+	backend := New(Config{SampleProvider: vtSampleProvider()})
+	for _, query := range []string{"information=1", "information=true"} {
+		response := request(t, backend, http.MethodGet, "/vts?"+query, "", nil)
+		assertStatus(t, response, http.StatusOK)
+		var information []vt
+		decodeResponse(t, response, &information)
+		if len(information) != len(expected) {
+			t.Fatalf("expected %d referenced VTs, got %d", len(expected), len(information))
+		}
+		for _, item := range information {
+			if !expected[item.OID] {
+				t.Errorf("VT %q is not referenced by the scan result sample", item.OID)
+			}
+		}
+		response = request(t, backend, http.MethodGet, "/vts", "", nil)
+		assertStatus(t, response, http.StatusOK)
+		var oids []string
+		decodeResponse(t, response, &oids)
+		if len(oids) != len(information) {
+			t.Fatalf("VT inventory and metadata lengths differ")
+		}
+		for index, oid := range oids {
+			if oid != information[index].OID {
+				t.Errorf("inventory OID %q does not match metadata OID %q", oid, information[index].OID)
+			}
+		}
+	}
+}
+
+func TestVTResponsesFailClosedWithoutValidSample(t *testing.T) {
+	for _, body := range []string{"missing", `{`, `null`, `[]`, `[{}]`, `[{"oid":"one"},{"oid":"one"}]`} {
+		t.Run(body, func(t *testing.T) {
+			dir := t.TempDir()
+			if body != "missing" {
+				if err := os.WriteFile(filepath.Join(dir, "GET__vts.json"), []byte(body), 0o600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			provider := samples.NewSampleProvider(samples.ProviderConfig{BaseDir: dir, Layout: config.LayoutFlat}, logrus.New())
+			backend := New(Config{SampleProvider: provider})
+			for _, path := range []string{"/vts", "/vts?information=1"} {
+				response := request(t, backend, http.MethodGet, path, "", nil)
+				assertStatus(t, response, http.StatusInternalServerError)
+				assertErrorBody(t, response)
+			}
+		})
+	}
+}
+
+func vtSampleProvider() samples.ISampleProvider {
+	return samples.NewSampleProvider(samples.ProviderConfig{
+		BaseDir: filepath.Join("..", "..", "examples", "openvasd", "sample"),
+		Layout:  config.LayoutFolders,
+	}, logrus.New())
 }
 
 func TestResultsCoverEveryTargetAndVT(t *testing.T) {
