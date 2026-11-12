@@ -6,7 +6,7 @@ SHELL := /bin/bash
 # Tools
 GOIMPORTS = go run golang.org/x/tools/cmd/goimports@latest
 GOFUMPT   = go run mvdan.cc/gofumpt@latest
-GOLANGCI_LINT_VERSION ?= v2.10.0
+GOLANGCI_LINT_VERSION ?= v2.15.0
 GOLANGCI_LINT_BIN ?= $(HOME)/go/bin/golangci-lint
 
 # Project
