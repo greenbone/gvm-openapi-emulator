@@ -121,6 +121,35 @@
     "family": "Service detection"
   },
   {
+    "oid": "1.3.6.1.4.1.25623.1.0.105586",
+    "name": "Operating System (OS) Detection (SSH Banner)",
+    "filename": "gb_ssh_os_detection.nasl",
+    "tag": {
+      "creation_date": 1458739720,
+      "cvss_base_vector": "AV:N/AC:L/Au:N/C:N/I:N/A:N",
+      "last_modification": 1788932657,
+      "qod_type": "remote_banner",
+      "summary": "SSH banner-based Operating System (OS) detection."
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [
+      "ssh/server_banner/available"
+    ],
+    "excluded_keys": [],
+    "required_ports": [
+      "Services/ssh",
+      "22"
+    ],
+    "required_udp_ports": [],
+    "references": [],
+    "preferences": [],
+    "category": "gather_info",
+    "family": "Product detection"
+  },
+  {
     "oid": "1.3.6.1.4.1.25623.1.0.105937",
     "name": "OS Detection Consolidation and Reporting",
     "filename": "os_detection.nasl",
@@ -227,5 +256,3119 @@
     "preferences": [],
     "category": "gather_info",
     "family": "General"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.3977.1",
+    "name": "Ubuntu: Security Advisory (USN-3977-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1557885798,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'intel-microcode' package(s) announced via the USN-3977-1 advisory.",
+      "affected": "'intel-microcode' package(s) on Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Giorgi Maisuradze, Dan\nHorea Lutas, Andrei Lutas, Volodymyr Pikhur, Stephan van Schaik, Alyssa\nMilburn, Sebastian Osterlund, Pietro Frigo, Kaveh Razavi, Herbert Bos,\nCristiano Giuffrida, Moritz Lipp, Michael Schwarz, and Daniel Gruss\ndiscovered that memory previously stored in microarchitectural fill buffers\nof an Intel CPU core may be exposed to a malicious process that is\nexecuting on the same CPU core. A local attacker could use this to expose\nsensitive information. (CVE-2018-12130)\n\nBrandon Falk, Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Stephan\nvan Schaik, Alyssa Milburn, Sebastian Osterlund, Pietro Frigo, Kaveh\nRazavi, Herbert Bos, and Cristiano Giuffrida discovered that memory\npreviously stored in microarchitectural load ports of an Intel CPU core may\nbe exposed to a malicious process that is executing on the same CPU core. A\nlocal attacker could use this to expose sensitive information.\n(CVE-2018-12127)\n\nKe Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Marina Minkin, Daniel\nMoghimi, Moritz Lipp, Michael Schwarz, Jo Van Bulck, Daniel Genkin, Daniel\nGruss, Berk Sunar, Frank Piessens, and Yuval Yarom discovered that memory\npreviously stored in microarchitectural store buffers of an Intel CPU core\nmay be exposed to a malicious process that is executing on the same CPU\ncore. A local attacker could use this to expose sensitive information.\n(CVE-2018-12126)\n\nKe Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Volodrmyr Pikhur,\nMoritz Lipp, Michael Schwarz, Daniel Gruss, Stephan van Schaik, Alyssa\nMilburn, Sebastian Osterlund, Pietro Frigo, Kaveh Razavi, Herbert Bos, and\nCristiano Giuffrida discovered that uncacheable memory previously stored in\nmicroarchitectural buffers of an Intel CPU core may be exposed to a\nmalicious process that is executing on the same CPU core. A local attacker\ncould use this to expose sensitive information. (CVE-2019-11091)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:L/AC:H/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/MDS"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-3977-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12126"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12127"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12130"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11091"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.3977.2",
+    "name": "Ubuntu: Security Advisory (USN-3977-2)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1558576830,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'intel-microcode' package(s) announced via the USN-3977-2 advisory.",
+      "affected": "'intel-microcode' package(s) on Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "USN-3977-1 provided mitigations for Microarchitectural Data Sampling\n(MDS) vulnerabilities in Intel Microcode for a large number of Intel\nprocessor families. This update provides the corresponding updated\nmicrocode mitigations for Intel Cherry Trail and Bay Trail processor\nfamilies.\n\nOriginal advisory details:\n\n Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Giorgi Maisuradze, Dan\n Horea Lutas, Andrei Lutas, Volodymyr Pikhur, Stephan van Schaik, Alyssa\n Milburn, Sebastian Osterlund, Pietro Frigo, Kaveh Razavi, Herbert Bos,\n Cristiano Giuffrida, Moritz Lipp, Michael Schwarz, and Daniel Gruss\n discovered that memory previously stored in microarchitectural fill buffers\n of an Intel CPU core may be exposed to a malicious process that is\n executing on the same CPU core. A local attacker could use this to expose\n sensitive information. (CVE-2018-12130)\n\n Brandon Falk, Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Stephan\n van Schaik, Alyssa Milburn, Sebastian Osterlund, Pietro Frigo, Kaveh\n Razavi, Herbert Bos, and Cristiano Giuffrida discovered that memory\n previously stored in microarchitectural load ports of an Intel CPU core may\n be exposed to a malicious process that is executing on the same CPU core. A\n local attacker could use this to expose sensitive information.\n (CVE-2018-12127)\n\n Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Marina Minkin, Daniel\n Moghimi, Moritz Lipp, Michael Schwarz, Jo Van Bulck, Daniel Genkin, Daniel\n Gruss, Berk Sunar, Frank Piessens, and Yuval Yarom discovered that memory\n previously stored in microarchitectural store buffers of an Intel CPU core\n may be exposed to a malicious process that is executing on the same CPU\n core. A local attacker could use this to expose sensitive information.\n (CVE-2018-12126)\n\n Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Volodrmyr Pikhur,\n Moritz Lipp, Michael Schwarz, Daniel Gruss, Stephan van Schaik, Alyssa\n Milburn, Sebastian Osterlund, Pietro Frigo, Kaveh Razavi, Herbert Bos, and\n Cristiano Giuffrida discovered that uncacheable memory previously stored in\n microarchitectural buffers of an Intel CPU core may be exposed to a\n malicious process that is executing on the same CPU core. A local attacker\n could use this to expose sensitive information. (CVE-2019-11091)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:L/AC:H/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/MDS"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-3977-2"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12126"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12127"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12130"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11091"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.3977.3",
+    "name": "Ubuntu: Security Advisory (USN-3977-3)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1561082450,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'intel-microcode' package(s) announced via the USN-3977-3 advisory.",
+      "affected": "'intel-microcode' package(s) on Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "USN-3977-1 and USN-3977-2 provided mitigations for Microarchitectural\nData Sampling (MDS) vulnerabilities in Intel Microcode for a\nlarge number of Intel processor families. This update provides the\ncorresponding updated microcode mitigations for the Intel Sandy Bridge\nprocessor family\n\nKe Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Giorgi Maisuradze, Dan\nHorea Lutas, Andrei Lutas, Volodymyr Pikhur, Stephan van Schaik, Alyssa\nMilburn, Sebastian Osterlund, Pietro Frigo, Kaveh Razavi, Herbert Bos,\nCristiano Giuffrida, Moritz Lipp, Michael Schwarz, and Daniel Gruss\ndiscovered that memory previously stored in microarchitectural fill buffers\nof an Intel CPU core may be exposed to a malicious process that is\nexecuting on the same CPU core. A local attacker could use this to expose\nsensitive information. (CVE-2018-12130)\n\nBrandon Falk, Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Stephan\nvan Schaik, Alyssa Milburn, Sebastian Osterlund, Pietro Frigo, Kaveh\nRazavi, Herbert Bos, and Cristiano Giuffrida discovered that memory\npreviously stored in microarchitectural load ports of an Intel CPU core may\nbe exposed to a malicious process that is executing on the same CPU core. A\nlocal attacker could use this to expose sensitive information.\n(CVE-2018-12127)\n\nKe Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Marina Minkin, Daniel\nMoghimi, Moritz Lipp, Michael Schwarz, Jo Van Bulck, Daniel Genkin, Daniel\nGruss, Berk Sunar, Frank Piessens, and Yuval Yarom discovered that memory\npreviously stored in microarchitectural store buffers of an Intel CPU core\nmay be exposed to a malicious process that is executing on the same CPU\ncore. A local attacker could use this to expose sensitive information.\n(CVE-2018-12126)\n\nKe Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Volodrmyr Pikhur,\nMoritz Lipp, Michael Schwarz, Daniel Gruss, Stephan van Schaik, Alyssa\nMilburn, Sebastian Osterlund, Pietro Frigo, Kaveh Razavi, Herbert Bos, and\nCristiano Giuffrida discovered that uncacheable memory previously stored in\nmicroarchitectural buffers of an Intel CPU core may be exposed to a\nmalicious process that is executing on the same CPU core. A local attacker\ncould use this to expose sensitive information. (CVE-2019-11091)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:L/AC:H/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/MDS"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-3977-3"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12126"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12127"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12130"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11091"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.3979.1",
+    "name": "Ubuntu: Security Advisory (USN-3979-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1557885759,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-azure, linux-gcp, linux-kvm, linux-raspi2' package(s) announced via the USN-3979-1 advisory.",
+      "affected": "'linux, linux-aws, linux-azure, linux-gcp, linux-kvm, linux-raspi2' package(s) on Ubuntu 19.04.",
+      "insight": "Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Giorgi Maisuradze, Dan\nHorea Lutas, Andrei Lutas, Volodymyr Pikhur, Stephan van Schaik, Alyssa\nMilburn, Sebastian Osterlund, Pietro Frigo, Kaveh Razavi, Herbert Bos,\nCristiano Giuffrida, Moritz Lipp, Michael Schwarz, and Daniel Gruss\ndiscovered that memory previously stored in microarchitectural fill buffers\nof an Intel CPU core may be exposed to a malicious process that is\nexecuting on the same CPU core. A local attacker could use this to expose\nsensitive information. (CVE-2018-12130)\n\nBrandon Falk, Ke Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Stephan\nvan Schaik, Alyssa Milburn, Sebastian Osterlund, Pietro Frigo, Kaveh\nRazavi, Herbert Bos, and Cristiano Giuffrida discovered that memory\npreviously stored in microarchitectural load ports of an Intel CPU core may\nbe exposed to a malicious process that is executing on the same CPU core. A\nlocal attacker could use this to expose sensitive information.\n(CVE-2018-12127)\n\nKe Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Marina Minkin, Daniel\nMoghimi, Moritz Lipp, Michael Schwarz, Jo Van Bulck, Daniel Genkin, Daniel\nGruss, Berk Sunar, Frank Piessens, and Yuval Yarom discovered that memory\npreviously stored in microarchitectural store buffers of an Intel CPU core\nmay be exposed to a malicious process that is executing on the same CPU\ncore. A local attacker could use this to expose sensitive information.\n(CVE-2018-12126)\n\nKe Sun, Henrique Kawakami, Kekai Hu, Rodrigo Branco, Volodrmyr Pikhur,\nMoritz Lipp, Michael Schwarz, Daniel Gruss, Stephan van Schaik, Alyssa\nMilburn, Sebastian Osterlund, Pietro Frigo, Kaveh Razavi, Herbert Bos, and\nCristiano Giuffrida discovered that uncacheable memory previously stored in\nmicroarchitectural buffers of an Intel CPU core may be exposed to a\nmalicious process that is executing on the same CPU core. A local attacker\ncould use this to expose sensitive information. (CVE-2019-11091)\n\nIt was discovered that the IPv4 generic receive offload (GRO) for UDP\nimplementation in the Linux kernel did not properly handle padded packets.\nA remote attacker could use this to cause a denial of service (system\ncrash). (CVE-2019-11683)\n\nIt was discovered that a race condition existed in the Binder IPC driver\nfor the Linux kernel. A local attacker could use this to cause a denial of\nservice (system crash) or possibly execute arbitrary code. (CVE-2019-1999)\n\nMatteo Croce, Natale Vinto, and Andrea Spagnolo discovered that the cgroups\nsubsystem of the Linux kernel did not properly account for SCTP socket\nbuffers. A local attacker could use this to cause a denial of service\n(system crash). (CVE-2019-3874)\n\nAlex Williamson discovered that the vfio subsystem of the Linux kernel did\nnot properly limit DMA mappings. A local attacker could use this to cause a\ndenial of service (memory exhaustion). (CVE-2019-3882)\n\nMarc Orr discovered that the KVM hypervisor ... [Please see the references for more information on the vulnerabilities]",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/MDS"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-3979-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12126"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12127"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12130"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11091"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11683"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1999"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-3874"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-3882"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-3887"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9500"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9503"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.3990.1",
+    "name": "Ubuntu: Security Advisory (USN-3990-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1558490447,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'python-urllib3' package(s) announced via the USN-3990-1 advisory.",
+      "affected": "'python-urllib3' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "It was discovered that urllib3 incorrectly removed Authorization HTTP\nheaders when handled cross-origin redirects. This could result in\ncredentials being sent to unintended hosts. This issue only affected Ubuntu\n16.04 LTS, Ubuntu 18.04 LTS and Ubuntu 18.10. (CVE-2018-20060)\n\nIt was discovered that urllib3 incorrectly stripped certain characters from\nrequests. A remote attacker could use this issue to perform CRLF injection.\n(CVE-2019-11236)\n\nIt was discovered that urllib3 incorrectly handled situations where a\ndesired set of CA certificates were specified. This could result in\ncertificates being accepted by the default CA certificates contrary to\nexpectations. This issue only affected Ubuntu 18.04 LTS, Ubuntu 18.10, and\nUbuntu 19.04. (CVE-2019-11324)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-3990-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-20060"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11236"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11324"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.3993.1",
+    "name": "Ubuntu: Security Advisory (USN-3993-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1558576826,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'curl' package(s) announced via the USN-3993-1 advisory.",
+      "affected": "'curl' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Wenchao Li discovered that curl incorrectly handled memory in the\ncurl_url_set() function. A remote attacker could use this issue to cause\ncurl to crash, resulting in a denial of service, or possibly execute\narbitrary code. This issue only affected Ubuntu 19.04. (CVE-2019-5435)\n\nIt was discovered that curl incorrectly handled memory when receiving data\nfrom a TFTP server. A remote attacker could use this issue to cause curl to\ncrash, resulting in a denial of service, or possibly execute arbitrary\ncode. (CVE-2019-5436)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-3993-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5435"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5436"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.3999.1",
+    "name": "Ubuntu: Security Advisory (USN-3999-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1559268034,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'gnutls28' package(s) announced via the USN-3999-1 advisory.",
+      "affected": "'gnutls28' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Eyal Ronen, Kenneth G. Paterson, and Adi Shamir discovered that GnuTLS was\nvulnerable to a timing side-channel attack known as the 'Lucky Thirteen'\nissue. A remote attacker could possibly use this issue to perform\nplaintext-recovery attacks via analysis of timing data. This issue only\naffected Ubuntu 16.04 LTS and Ubuntu 18.04 LTS. (CVE-2018-10844,\nCVE-2018-10845, CVE-2018-10846)\n\nTavis Ormandy discovered that GnuTLS incorrectly handled memory when\nverifying certain X.509 certificates. A remote attacker could use this\nissue to cause GnuTLS to crash, resulting in a denial of service, or\npossibly execute arbitrary code. This issue only affected Ubuntu 18.04 LTS,\nUbuntu 18.10, and Ubuntu 19.04. (CVE-2019-3829)\n\nIt was discovered that GnuTLS incorrectly handled certain post-handshake\nmessages. A remote attacker could use this issue to cause GnuTLS to crash,\nresulting in a denial of service, or possibly execute arbitrary code. This\nissue only affected Ubuntu 18.10 and Ubuntu 19.04. (CVE-2019-3836)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-3999-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-10844"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-10845"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-10846"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-3829"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-3836"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4001.1",
+    "name": "Ubuntu: Security Advisory (USN-4001-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1559268033,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'libseccomp' package(s) announced via the USN-4001-1 advisory.",
+      "affected": "'libseccomp' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Jann Horn discovered that libseccomp did not correctly generate 64-bit\nsyscall argument comparisons with arithmetic operators (LT, GT, LE, GE).\nAn attacker could use this to bypass intended access restrictions for\nargument-filtered system calls.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4001-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9893"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4004.1",
+    "name": "Ubuntu: Security Advisory (USN-4004-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1559700041,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'db5.3' package(s) announced via the USN-4004-1 advisory.",
+      "affected": "'db5.3' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "It was discovered that Berkeley DB incorrectly handled certain inputs.\nAn attacker could possibly use this issue to read sensitive information.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4004-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-8457"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4005.1",
+    "name": "Ubuntu: Security Advisory (USN-4005-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1559700032,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-gcp, linux-kvm, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4005-1 advisory.",
+      "affected": "'linux, linux-aws, linux-gcp, linux-kvm, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 19.04.",
+      "insight": "It was discovered that a null pointer dereference vulnerability existed in\nthe LSI Logic MegaRAID driver in the Linux kernel. A local attacker could\nuse this to cause a denial of service (system crash). (CVE-2019-11810)\n\nIt was discovered that a race condition leading to a use-after-free existed\nin the Reliable Datagram Sockets (RDS) protocol implementation in the Linux\nkernel. The RDS protocol is disabled via blocklist by default in Ubuntu.\nIf enabled, a local attacker could use this to cause a denial of service\n(system crash) or possibly execute arbitrary code. (CVE-2019-11815)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4005-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11810"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11815"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4011.1",
+    "name": "Ubuntu: Security Advisory (USN-4011-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1559872831,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'jinja2' package(s) announced via the USN-4011-1 advisory.",
+      "affected": "'jinja2' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Olivier Dony discovered that Jinja incorrectly handled str.format. An\nattacker could possibly use this issue to escape the sandbox. This issue\nonly affected Ubuntu 16.04 LTS. (CVE-2016-10745)\n\nBrian Welch discovered that Jinja incorrectly handled str.format_map. An\nattacker could possibly use this issue to escape the sandbox.\n(CVE-2019-10906)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4011-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2016-10745"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-10906"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4014.1",
+    "name": "Ubuntu: Security Advisory (USN-4014-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1560218469,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'glib2.0' package(s) announced via the USN-4014-1 advisory.",
+      "affected": "'glib2.0' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "It was discovered that GLib incorrectly handled certain files.\nAn attacker could possibly use this issue to access sensitive information.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4014-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-12450"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4015.1",
+    "name": "Ubuntu: Security Advisory (USN-4015-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1560304836,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'dbus' package(s) announced via the USN-4015-1 advisory.",
+      "affected": "'dbus' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Joe Vennix discovered that DBus incorrectly handled DBUS_COOKIE_SHA1\nauthentication. A local attacker could possibly use this issue to bypass\nauthentication and connect to DBus servers with elevated privileges.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4015-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-12749"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4016.1",
+    "name": "Ubuntu: Security Advisory (USN-4016-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1560304837,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'vim' package(s) announced via the USN-4016-1 advisory.",
+      "affected": "'vim' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "It was discovered that Vim incorrectly handled certain files.\nAn attacker could possibly use this issue to execute arbitrary code.\nThis issue only affected Ubuntu 16.04 LTS. (CVE-2017-5953)\n\nIt was discovered that Vim incorrectly handled certain files.\nAn attacker could possibly use this issue to execute arbitrary code.\n(CVE-2019-12735)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4016-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2017-5953"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-12735"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4017.1",
+    "name": "Ubuntu: Security Advisory (USN-4017-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1560823299,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-aws-hwe, linux-azure, linux-gcp, linux-hwe, linux-kvm, linux-oem, linux-oracle, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4017-1 advisory.",
+      "affected": "'linux, linux-aws, linux-aws-hwe, linux-azure, linux-gcp, linux-hwe, linux-kvm, linux-oem, linux-oracle, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Jonathan Looney discovered that the TCP retransmission queue implementation\nin the Linux kernel could be fragmented when handling certain TCP Selective\nAcknowledgment (SACK) sequences. A remote attacker could use this to cause\na denial of service. (CVE-2019-11478)\n\nJonathan Looney discovered that an integer overflow existed in the Linux\nkernel when handling TCP Selective Acknowledgments (SACKs). A remote\nattacker could use this to cause a denial of service (system crash).\n(CVE-2019-11477)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/SACKPanic"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4017-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11477"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11478"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4019.1",
+    "name": "Ubuntu: Security Advisory (USN-4019-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1560996035,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'sqlite3' package(s) announced via the USN-4019-1 advisory.",
+      "affected": "'sqlite3' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "It was discovered that SQLite incorrectly handled certain SQL files.\nAn attacker could possibly use this issue to execute arbitrary code\nor cause a denial of service. This issue only affected Ubuntu 16.04\nLTS. (CVE-2017-2518, CVE-2017-2520)\n\nIt was discovered that SQLite incorrectly handled certain queries.\nAn attacker could possibly use this issue to execute arbitrary code.\nThis issue only affected Ubuntu 18.04 LTS and Ubuntu 18.10. (CVE-2018-20505)\n\nIt was discovered that SQLite incorrectly handled certain queries.\nAn attacker could possibly use this issue to execute arbitrary code.\nThis issue only affected Ubuntu 16.04 LTS, Ubuntu 18.04 LTS and\nUbuntu 18.10. (CVE-2018-20346, CVE-2018-20506)\n\nIt was discovered that SQLite incorrectly handled certain inputs.\nAn attacker could possibly use this issue to access sensitive information.\n(CVE-2019-8457)\n\nIt was discovered that SQLite incorrectly handled certain queries.\nAn attacker could possibly use this issue to access sensitive information.\nThis issue only affected Ubuntu 16.04 LTS, Ubuntu 18.04 LTS and Ubuntu 18.10.\n(CVE-2019-9936)\n\nIt was discovered that SQLite incorrectly handled certain inputs.\nAn attacker could possibly use this issue to cause a crash or execute\narbitrary code. This issue only affected Ubuntu 16.04 LTS, Ubuntu 18.04 LTS\nand Ubuntu 18.10. (CVE-2019-9937)\n\nIt was discovered that SQLite incorrectly handled certain inputs.\nAn attacker could possibly use this issue to cause a denial of service.\nThis issue only affected Ubuntu 16.04 LTS. (CVE-2016-6153)\n\nIt was discovered that SQLite incorrectly handled certain databases.\nAn attacker could possibly use this issue to access sensitive information.\nThis issue only affected Ubuntu 16.04 LTS. (CVE-2017-10989)\n\nIt was discovered that SQLite incorrectly handled certain files.\nAn attacker could possibly use this issue to cause a denial of service.\nThis issue only affected Ubuntu 16.04 LTS. (CVE-2017-13685)\n\nIt was discovered that SQLite incorrectly handled certain queries.\nAn attacker could possibly use this issue to execute arbitrary code or\ncause a denial of service. This issue only affected Ubuntu 16.04 LTS.\n(CVE-2017-2519)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4019-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2016-6153"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2017-10989"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2017-13685"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2017-2518"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2017-2519"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2017-2520"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-20346"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-20505"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-20506"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-8457"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9936"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9937"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4031.1",
+    "name": "Ubuntu: Security Advisory (USN-4031-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1561428045,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-hwe' package(s) announced via the USN-4031-1 advisory.",
+      "affected": "'linux, linux-hwe' package(s) on Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "It was discovered that the Linux kernel did not properly separate certain\nmemory mappings when creating new userspace processes on 64-bit Power\n(ppc64el) systems. A local attacker could use this to access memory\ncontents or cause memory corruption of other processes on the system.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4031-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-12817"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4038.1",
+    "name": "Ubuntu: Security Advisory (USN-4038-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1561600840,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'bzip2' package(s) announced via the USN-4038-1 advisory.",
+      "affected": "'bzip2' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Aladdin Mubaied discovered that bzip2 incorrectly handled certain files.\nAn attacker could possibly use this issue to cause a denial of service.\nThis issue only affected Ubuntu 16.04 LTS. (CVE-2016-3189)\n\nIt was discovered that bzip2 incorrectly handled certain files.\nAn attacker could possibly use this issue to execute arbitrary code.\n(CVE-2019-12900)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4038-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2016-3189"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-12900"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4038.3",
+    "name": "Ubuntu: Security Advisory (USN-4038-3)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1562292040,
+      "last_modification": 1663078451,
+      "summary": "The remote host is missing an update for the 'bzip2' package(s) announced via the USN-4038-3 advisory.",
+      "affected": "'bzip2' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "USN-4038-1 fixed a vulnerability in bzip2. The update introduced a regression causing\nbzip2 to incorrect raises CRC errors for some files.\n\nWe apologize for the inconvenience.\n\nOriginal advisory details:\n\n It was discovered that bzip2 incorrectly handled certain files.\n An attacker could possibly use this issue to execute arbitrary code.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://launchpad.net/bugs/1834494"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4038-3"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4040.1",
+    "name": "Ubuntu: Security Advisory (USN-4040-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1561600839,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'expat' package(s) announced via the USN-4040-1 advisory.",
+      "affected": "'expat' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "It was discovered that Expat incorrectly handled certain XML files.\nAn attacker could possibly use this issue to cause a denial of service.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4040-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-20843"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4041.1",
+    "name": "Ubuntu: Security Advisory (USN-4041-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1561860025,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-aws-hwe, linux-azure, linux-gcp, linux-gke-4.15, linux-hwe, linux-kvm, linux-oem, linux-oracle, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4041-1 advisory.",
+      "affected": "'linux, linux-aws, linux-aws-hwe, linux-azure, linux-gcp, linux-gke-4.15, linux-hwe, linux-kvm, linux-oem, linux-oracle, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "USN-4017-1 fixed vulnerabilities in the Linux kernel for Ubuntu.\nUnfortunately, the update introduced a regression that interfered with\nnetworking applications that setup very low SO_SNDBUF values. This\nupdate fixes the problem.\n\nWe apologize for the inconvenience.\n\nJonathan Looney discovered that the Linux kernel could be coerced into\nsegmenting responses into multiple TCP segments. A remote attacker could\nconstruct an ongoing sequence of requests to cause a denial of service.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/SACKPanic"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4041-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11479"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4051.1",
+    "name": "Ubuntu: Security Advisory (USN-4051-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1562637637,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'apport' package(s) announced via the USN-4051-1 advisory.",
+      "affected": "'apport' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 18.10, Ubuntu 19.04.",
+      "insight": "Kevin Backhouse discovered a race-condition when reading the user's local\nApport configuration. This could be used by a local attacker to cause\nApport to include arbitrary files in a resulting crash report.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4051-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-7307"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4060.1",
+    "name": "Ubuntu: Security Advisory (USN-4060-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1563328828,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'nss' package(s) announced via the USN-4060-1 advisory.",
+      "affected": "'nss' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "Henry Corrigan-Gibbs discovered that NSS incorrectly handled importing\ncertain curve25519 private keys. An attacker could use this issue to cause\nNSS to crash, resulting in a denial of service, or possibly obtain\nsensitive information. (CVE-2019-11719)\n\nHubert Kario discovered that NSS incorrectly handled PKCS#1 v1.5 signatures\nwhen using TLSv1.3. An attacker could possibly use this issue to trick NSS\ninto using PKCS#1 v1.5 signatures, contrary to expectations. This issue\nonly applied to Ubuntu 19.04. (CVE-2019-11727)\n\nJonas Allmann discovered that NSS incorrectly handled certain p256-ECDH\npublic keys. An attacker could possibly use this issue to cause NSS to\ncrash, resulting in a denial of service. (CVE-2019-11729)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4060-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11719"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11727"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11729"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4069.1",
+    "name": "Ubuntu: Security Advisory (USN-4069-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1563933686,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-azure, linux-gcp, linux-kvm, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4069-1 advisory.",
+      "affected": "'linux, linux-aws, linux-azure, linux-gcp, linux-kvm, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 19.04.",
+      "insight": "It was discovered that an integer overflow existed in the Linux kernel when\nreference counting pages, leading to potential use-after-free issues. A\nlocal attacker could use this to cause a denial of service (system crash)\nor possibly execute arbitrary code. (CVE-2019-11487)\n\nJann Horn discovered that a race condition existed in the Linux kernel when\nperforming core dumps. A local attacker could use this to cause a denial of\nservice (system crash) or expose sensitive information. (CVE-2019-11599)\n\nIt was discovered that the ext4 file system implementation in the Linux\nkernel did not properly zero out memory in some situations. A local\nattacker could use this to expose sensitive information (kernel memory).\n(CVE-2019-11833)\n\nIt was discovered that the Bluetooth Human Interface Device Protocol (HIDP)\nimplementation in the Linux kernel did not properly verify strings were\nNULL terminated in certain situations. A local attacker could use this to\nexpose sensitive information (kernel memory). (CVE-2019-11884)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4069-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11487"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11599"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11833"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11884"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4071.1",
+    "name": "Ubuntu: Security Advisory (USN-4071-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1564020099,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'patch' package(s) announced via the USN-4071-1 advisory.",
+      "affected": "'patch' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that Patch incorrectly handled certain files.\nAn attacker could possibly use this issue to access sensitive information.\n(CVE-2019-13636)\n\nIt was discovered that Patch incorrectly handled certain files.\nAn attacker could possibly use this issue to execute arbitrary code.\n(CVE-2019-13638)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.0/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4071-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13636"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13638"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4093.1",
+    "name": "Ubuntu: Security Advisory (USN-4093-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1565748124,
+      "last_modification": 1723029695,
+      "summary": "The remote host is missing an update for the 'linux, linux-azure, linux-gcp, linux-hwe, linux-kvm, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4093-1 advisory.",
+      "affected": "'linux, linux-azure, linux-gcp, linux-hwe, linux-kvm, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that a heap buffer overflow existed in the Marvell\nWireless LAN device driver for the Linux kernel. An attacker could use this\nto cause a denial of service (system crash) or possibly execute arbitrary\ncode. (CVE-2019-10126)\n\nAndrei Vlad Lutas and Dan Lutas discovered that some x86 processors\nincorrectly handle SWAPGS instructions during speculative execution. A\nlocal attacker could use this to expose sensitive information (kernel\nmemory). (CVE-2019-1125)\n\nIt was discovered that the PowerPC dlpar implementation in the Linux kernel\ndid not properly check for allocation errors in some situations. A local\nattacker could possibly use this to cause a denial of service (system\ncrash). (CVE-2019-12614)\n\nIt was discovered that a NULL pointer dereference vulnerability existed in\nthe Near-field communication (NFC) implementation in the Linux kernel. A\nlocal attacker could use this to cause a denial of service (system crash).\n(CVE-2019-12984)\n\nJann Horn discovered a use-after-free vulnerability in the Linux kernel\nwhen accessing LDT entries in some situations. A local attacker could use\nthis to cause a denial of service (system crash) or possibly execute\narbitrary code. (CVE-2019-13233)\n\nJann Horn discovered that the ptrace implementation in the Linux kernel did\nnot properly record credentials in some situations. A local attacker could\nuse this to cause a denial of service (system crash) or possibly gain\nadministrative privileges. (CVE-2019-13272)\n\nIt was discovered that the Marvell Wireless LAN device driver in the Linux\nkernel did not properly validate the BSS descriptor. A local attacker could\npossibly use this to cause a denial of service (system crash) or possibly\nexecute arbitrary code. (CVE-2019-3846)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4093-1"
+      },
+      {
+        "class": "CISA",
+        "id": "Known Exploited Vulnerability (KEV) catalog"
+      },
+      {
+        "class": "URL",
+        "id": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-10126"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1125"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-12614"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-12984"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13233"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13272"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-3846"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4114.1",
+    "name": "Ubuntu: Security Advisory (USN-4114-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1567476109,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-azure, linux-gcp, linux-gke-5.0, linux-hwe, linux-kvm, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4114-1 advisory.",
+      "affected": "'linux, linux-azure, linux-gcp, linux-gke-5.0, linux-hwe, linux-kvm, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "Amit Klein and Benny Pinkas discovered that the Linux kernel did not\nsufficiently randomize IP ID values generated for connectionless networking\nprotocols. A remote attacker could use this to track particular Linux\ndevices. (CVE-2019-10638)\n\nPraveen Pandey discovered that the Linux kernel did not properly validate\nsent signals in some situations on PowerPC systems with transactional\nmemory disabled. A local attacker could use this to cause a denial of\nservice. (CVE-2019-13648)\n\nIt was discovered that the floppy driver in the Linux kernel did not\nproperly validate meta data, leading to a buffer overread. A local attacker\ncould use this to cause a denial of service (system crash).\n(CVE-2019-14283)\n\nIt was discovered that the floppy driver in the Linux kernel did not\nproperly validate ioctl() calls, leading to a division-by-zero. A local\nattacker could use this to cause a denial of service (system crash).\n(CVE-2019-14284)\n\nJason Wang discovered that an infinite loop vulnerability existed in the\nvirtio net driver in the Linux kernel. A local attacker in a guest VM could\npossibly use this to cause a denial of service in the host system.\n(CVE-2019-3900)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:N/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4114-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-10638"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13648"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14283"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14284"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-3900"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4120.1",
+    "name": "Ubuntu: Security Advisory (USN-4120-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1567562463,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'systemd' package(s) announced via the USN-4120-1 advisory.",
+      "affected": "'systemd' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that the systemd-resolved D-Bus interface did not\nenforce appropriate access controls. A local unprivileged user could\nexploit this to modify a system's DNS resolver settings.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4120-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15718"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4120.2",
+    "name": "Ubuntu: Security Advisory (USN-4120-2)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1568167258,
+      "last_modification": 1663078451,
+      "summary": "The remote host is missing an update for the 'systemd' package(s) announced via the USN-4120-2 advisory.",
+      "affected": "'systemd' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "USN-4120-1 fixed a vulnerability in systemd. The update included a recent\nSRU from the updates pocket that introduced networking problems for some\nusers. This update fixes the problem.\n\nWe apologize for the inconvenience.\n\nOriginal advisory details:\n\n It was discovered that the systemd-resolved D-Bus interface did not\n enforce appropriate access controls. A local unprivileged user could\n exploit this to modify a system's DNS resolver settings.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://launchpad.net/bugs/1842651"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4120-2"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4127.1",
+    "name": "Ubuntu: Security Advisory (USN-4127-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1568080847,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'python2.7, python3.5, python3.6, python3.7' package(s) announced via the USN-4127-1 advisory.",
+      "affected": "'python2.7, python3.5, python3.6, python3.7' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that Python incorrectly handled certain pickle files. An\nattacker could possibly use this issue to consume memory, leading to a\ndenial of service. This issue only affected Ubuntu 16.04 LTS and Ubuntu\n18.04 LTS. (CVE-2018-20406)\n\nIt was discovered that Python incorrectly validated the domain when\nhandling cookies. An attacker could possibly trick Python into sending\ncookies to the wrong domain. (CVE-2018-20852)\n\nJonathan Birch and Panayiotis Panayiotou discovered that Python incorrectly\nhandled Unicode encoding during NFKC normalization. An attacker could\npossibly use this issue to obtain sensitive information. (CVE-2019-9636,\nCVE-2019-10160)\n\nColin Read and Nicolas Edet discovered that Python incorrectly handled\nparsing certain X509 certificates. An attacker could possibly use this\nissue to cause Python to crash, resulting in a denial of service. This\nissue only affected Ubuntu 16.04 LTS and Ubuntu 18.04 LTS. (CVE-2019-5010)\n\nIt was discovered that Python incorrectly handled certain urls. A remote\nattacker could possibly use this issue to perform CRLF injection attacks.\n(CVE-2019-9740, CVE-2019-9947)\n\nSihoon Lee discovered that Python incorrectly handled the local_file:\nscheme. A remote attacker could possibly use this issue to bypass blocklist\nmeschanisms. (CVE-2019-9948)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4127-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-20406"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-20852"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-10160"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5010"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9636"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9740"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9947"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9948"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4129.1",
+    "name": "Ubuntu: Security Advisory (USN-4129-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1568253681,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'curl' package(s) announced via the USN-4129-1 advisory.",
+      "affected": "'curl' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "Thomas Vegas discovered that curl incorrectly handled memory when using\nKerberos over FTP. A remote attacker could use this issue to crash curl,\nresulting in a denial of service. (CVE-2019-5481)\n\nThomas Vegas discovered that curl incorrectly handled memory during TFTP\ntransfers. A remote attacker could use this issue to crash curl, resulting\nin a denial of service, or possibly execute arbitrary code. (CVE-2019-5482)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4129-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5481"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5482"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4132.1",
+    "name": "Ubuntu: Security Advisory (USN-4132-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1568340065,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'expat' package(s) announced via the USN-4132-1 advisory.",
+      "affected": "'expat' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that Expat incorrectly handled certain XML files.\nAn attacker could possibly use this issue to expose sensitive information.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4132-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15903"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4135.1",
+    "name": "Ubuntu: Security Advisory (USN-4135-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1568858590,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-aws-hwe, linux-azure, linux-gcp, linux-gke-4.15, linux-gke-5.0, linux-hwe, linux-kvm, linux-oem, linux-oracle, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4135-1 advisory.",
+      "affected": "'linux, linux-aws, linux-aws-hwe, linux-azure, linux-gcp, linux-gke-4.15, linux-gke-5.0, linux-hwe, linux-kvm, linux-oem, linux-oracle, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "Peter Pi discovered a buffer overflow in the virtio network backend\n(vhost_net) implementation in the Linux kernel. An attacker in a guest may\nbe able to use this to cause a denial of service (host OS crash) or\npossibly execute arbitrary code in the host OS. (CVE-2019-14835)\n\nIt was discovered that the Linux kernel on PowerPC architectures did not\nproperly handle Facility Unavailable exceptions in some situations. A local\nattacker could use this to expose sensitive information. (CVE-2019-15030)\n\nIt was discovered that the Linux kernel on PowerPC architectures did not\nproperly handle exceptions on interrupts in some situations. A local\nattacker could use this to expose sensitive information. (CVE-2019-15031)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4135-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14835"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15030"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15031"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4142.1",
+    "name": "Ubuntu: Security Advisory (USN-4142-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1569895260,
+      "last_modification": 1755157585,
+      "summary": "The remote host is missing an update for the 'e2fsprogs' package(s) announced via the USN-4142-1 advisory.",
+      "affected": "'e2fsprogs' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that e2fsprogs incorrectly handled certain ext4 partitions.\nAn attacker could possibly use this issue to execute arbitrary code.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4142-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5094"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4147.1",
+    "name": "Ubuntu: Security Advisory (USN-4147-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1570240838,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-azure, linux-gcp, linux-gke-5.0, linux-hwe, linux-kvm, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4147-1 advisory.",
+      "affected": "'linux, linux-aws, linux-azure, linux-gcp, linux-gke-5.0, linux-hwe, linux-kvm, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that the Intel Wi-Fi device driver in the Linux kernel\ndid not properly validate certain Tunneled Direct Link Setup (TDLS). A\nphysically proximate attacker could use this to cause a denial of service\n(Wi-Fi disconnect). (CVE-2019-0136)\n\nIt was discovered that the Bluetooth UART implementation in the Linux\nkernel did not properly check for missing tty operations. A local attacker\ncould use this to cause a denial of service. (CVE-2019-10207)\n\nIt was discovered that the GTCO tablet input driver in the Linux kernel did\nnot properly bounds check the initial HID report sent by the device. A\nphysically proximate attacker could use this to cause a denial of service\n(system crash) or possibly execute arbitrary code. (CVE-2019-13631)\n\nIt was discovered that an out-of-bounds read existed in the QLogic QEDI\niSCSI Initiator Driver in the Linux kernel. A local attacker could possibly\nuse this to expose sensitive information (kernel memory). (CVE-2019-15090)\n\nHui Peng and Mathias Payer discovered that the USB audio driver for the\nLinux kernel did not properly validate device meta data. A physically\nproximate attacker could use this to cause a denial of service (system\ncrash). (CVE-2019-15117)\n\nHui Peng and Mathias Payer discovered that the USB audio driver for the\nLinux kernel improperly performed recursion while handling device meta\ndata. A physically proximate attacker could use this to cause a denial of\nservice (system crash). (CVE-2019-15118)\n\nIt was discovered that the Raremono AM/FM/SW radio device driver in the\nLinux kernel did not properly allocate memory, leading to a use-after-free.\nA physically proximate attacker could use this to cause a denial of service\nor possibly execute arbitrary code. (CVE-2019-15211)\n\nIt was discovered at a double-free error existed in the USB Rio 500 device\ndriver for the Linux kernel. A physically proximate attacker could use this\nto cause a denial of service. (CVE-2019-15212)\n\nIt was discovered that a race condition existed in the CPiA2 video4linux\ndevice driver for the Linux kernel, leading to a use-after-free. A\nphysically proximate attacker could use this to cause a denial of service\n(system crash) or possibly execute arbitrary code. (CVE-2019-15215)\n\nIt was discovered that a race condition existed in the Softmac USB Prism54\ndevice driver in the Linux kernel. A physically proximate attacker could\nuse this to cause a denial of service (system crash). (CVE-2019-15220)\n\nBenjamin Moody discovered that the XFS file system in the Linux kernel did\nnot properly handle an error condition when out of disk quota. A local\nattacker could possibly use this to cause a denial of service.\n(CVE-2019-15538)\n\nIt was discovered that the Hisilicon HNS3 ethernet device driver in the\nLinux kernel contained an out of bounds access vulnerability. A local\nattacker could use this to possibly cause a denial of service (system\ncrash). (CVE-2019-15925)\n\nIt ... [Please see the references for more information on the vulnerabilities]",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4147-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-0136"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-10207"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13631"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15090"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15117"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15118"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15211"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15212"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15215"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15217"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15218"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15220"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15221"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15223"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15538"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15925"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15926"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-9506"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4151.1",
+    "name": "Ubuntu: Security Advisory (USN-4151-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1570672847,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'python2.7, python3.5, python3.6, python3.7' package(s) announced via the USN-4151-1 advisory.",
+      "affected": "'python2.7, python3.5, python3.6, python3.7' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that Python incorrectly parsed certain email addresses. A\nremote attacker could possibly use this issue to trick Python applications\ninto accepting email addresses that should be denied. (CVE-2019-16056)\n\nIt was discovered that the Python documentation XML-RPC server incorrectly\nhandled certain fields. A remote attacker could use this issue to execute a\ncross-site scripting (XSS) attack. (CVE-2019-16935)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4151-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-16056"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-16935"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4154.1",
+    "name": "Ubuntu: Security Advisory (USN-4154-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1571104836,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'sudo' package(s) announced via the USN-4154-1 advisory.",
+      "affected": "'sudo' package(s) on Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "Joe Vennix discovered that Sudo incorrectly handled\ncertain user IDs. An attacker could potentially exploit this\nto execute arbitrary commands as the root user.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4154-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14287"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4157.1",
+    "name": "Ubuntu: Security Advisory (USN-4157-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1571364055,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-azure, linux-gcp, linux-kvm, linux-raspi2, linux-snapdragon' package(s) announced via the USN-4157-1 advisory.",
+      "affected": "'linux, linux-aws, linux-azure, linux-gcp, linux-kvm, linux-raspi2, linux-snapdragon' package(s) on Ubuntu 19.04.",
+      "insight": "Wen Huang discovered that the Marvell Wi-Fi device driver in the Linux\nkernel did not properly perform bounds checking, leading to a heap\noverflow. A local attacker could use this to cause a denial of service\n(system crash) or possibly execute arbitrary code. (CVE-2019-14814,\nCVE-2019-14815, CVE-2019-14816)\n\nMatt Delco discovered that the KVM hypervisor implementation in the Linux\nkernel did not properly perform bounds checking when handling coalesced\nMMIO write operations. A local attacker with write access to /dev/kvm could\nuse this to cause a denial of service (system crash). (CVE-2019-14821)\n\nHui Peng and Mathias Payer discovered that the 91x Wi-Fi driver in the\nLinux kernel did not properly handle error conditions on initialization,\nleading to a double-free vulnerability. A physically proximate attacker\ncould use this to cause a denial of service (system crash).\n(CVE-2019-15504)\n\nIt was discovered that the Technisat DVB-S/S2 USB device driver in the\nLinux kernel contained a buffer overread. A physically proximate attacker\ncould use this to cause a denial of service (system crash) or possibly\nexpose sensitive information. (CVE-2019-15505)\n\nBrad Spengler discovered that a Spectre mitigation was improperly\nimplemented in the ptrace subsystem of the Linux kernel. A local attacker\ncould possibly use this to expose sensitive information. (CVE-2019-15902)\n\nIt was discovered that the IPv6 RDS implementation in the Linux kernel did\nnot properly initialize fields in a data structure returned to user space.\nA local attacker could use this to expose sensitive information (kernel\nmemory). Please note that the RDS protocol is disabled via blocklist in\nUbuntu by default. (CVE-2019-16714)\n\nIt was discovered that an integer overflow existed in the Binder\nimplementation of the Linux kernel, leading to a buffer overflow. A local\nattacker could use this to escalate privileges. (CVE-2019-2181)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4157-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14814"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14815"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14816"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14821"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15504"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15505"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15902"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-16714"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-2181"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4164.1",
+    "name": "Ubuntu: Security Advisory (USN-4164-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1571796065,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'libxslt' package(s) announced via the USN-4164-1 advisory.",
+      "affected": "'libxslt' package(s) on Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that Libxslt incorrectly handled certain documents.\nAn attacker could possibly use this issue to access sensitive information.\nThis issue not affected Ubuntu 19.10. (CVE-2019-13117, CVE-2019-13118)\n\nIt was discovered that Libxslt incorrectly handled certain documents.\nAn attacker could possibly use this issue to execute arbitrary code.\n(CVE-2019-18197)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4164-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13117"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13118"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-18197"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4168.1",
+    "name": "Ubuntu: Security Advisory (USN-4168-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1572404451,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'libidn2' package(s) announced via the USN-4168-1 advisory.",
+      "affected": "'libidn2' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that Libidn2 incorrectly handled certain inputs.\nA attacker could possibly use this issue to impersonate domains.\n(CVE-2019-12290)\n\nIt was discovered that Libidn2 incorrectly handled certain inputs.\nAn attacker could possibly use this issue to execute arbitrary code.\n(CVE-2019-18224)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4168-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-12290"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-18224"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4171.1",
+    "name": "Ubuntu: Security Advisory (USN-4171-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1572490868,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'apport' package(s) announced via the USN-4171-1 advisory.",
+      "affected": "'apport' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "Kevin Backhouse discovered Apport would read its user-controlled settings\nfile as the root user. This could be used by a local attacker to possibly\ncrash Apport or have other unspecified consequences. (CVE-2019-11481)\n\nSander Bos discovered a race-condition in Apport during core dump\ncreation. This could be used by a local attacker to generate a crash report\nfor a privileged process that is readable by an unprivileged user.\n(CVE-2019-11482)\n\nSander Bos discovered Apport mishandled crash dumps originating from\ncontainers. This could be used by a local attacker to generate a crash\nreport for a privileged process that is readable by an unprivileged user.\n(CVE-2019-11483)\n\nSander Bos discovered Apport mishandled lock-file creation. This could be\nused by a local attacker to cause a denial of service against Apport.\n(CVE-2019-11485)\n\nKevin Backhouse discovered Apport read various process-specific files with\nelevated privileges during crash dump generation. This could could be used\nby a local attacker to generate a crash report for a privileged process\nthat is readable by an unprivileged user. (CVE-2019-15790)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4171-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11481"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11482"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11483"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11485"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15790"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4171.3",
+    "name": "Ubuntu: Security Advisory (USN-4171-3)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1573009279,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'apport' package(s) announced via the USN-4171-3 advisory.",
+      "affected": "'apport' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "USN-4171-1 fixed vulnerabilities in Apport. The update caused a regression\nin the Python Apport library. This update fixes the problem.\n\nWe apologize for the inconvenience.\n\nOriginal advisory details:\n\n Kevin Backhouse discovered Apport would read its user-controlled settings\n file as the root user. This could be used by a local attacker to possibly\n crash Apport or have other unspecified consequences. (CVE-2019-11481)\n\n Sander Bos discovered a race-condition in Apport during core dump\n creation. This could be used by a local attacker to generate a crash report\n for a privileged process that is readable by an unprivileged user.\n (CVE-2019-11482)\n\n Sander Bos discovered Apport mishandled crash dumps originating from\n containers. This could be used by a local attacker to generate a crash\n report for a privileged process that is readable by an unprivileged user.\n (CVE-2019-11483)\n\n Sander Bos discovered Apport mishandled lock-file creation. This could be\n used by a local attacker to cause a denial of service against Apport.\n (CVE-2019-11485)\n\n Kevin Backhouse discovered Apport read various process-specific files with\n elevated privileges during crash dump generation. This could could be used\n by a local attacker to generate a crash report for a privileged process\n that is readable by an unprivileged user. (CVE-2019-15790)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://launchpad.net/bugs/1850929"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4171-3"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11481"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11482"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11483"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11485"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15790"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4172.1",
+    "name": "Ubuntu: Security Advisory (USN-4172-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1572490872,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'file' package(s) announced via the USN-4172-1 advisory.",
+      "affected": "'file' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that file incorrectly handled certain malformed files. An\nattacker could use this issue to cause a denial of service, or possibly\nexecute arbitrary code.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4172-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-18218"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4176.1",
+    "name": "Ubuntu: Security Advisory (USN-4176-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1573095654,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'cpio' package(s) announced via the USN-4176-1 advisory.",
+      "affected": "'cpio' package(s) on Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "Thomas Habets discovered that GNU cpio incorrectly handled certain inputs.\nAn attacker could possibly use this issue to privilege escalation.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4176-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14866"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4179.1",
+    "name": "Ubuntu: Security Advisory (USN-4179-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1573182039,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'fribidi' package(s) announced via the USN-4179-1 advisory.",
+      "affected": "'fribidi' package(s) on Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "Alex Murray discovered a stack-based buffer overflow when handling a large\nnumber of unicode isolate directives. An attacker could use this to cause a\ndenial of service or possibly execute arbitrary code.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4179-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-18397"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4182.1",
+    "name": "Ubuntu: Security Advisory (USN-4182-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1573614051,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'intel-microcode' package(s) announced via the USN-4182-1 advisory.",
+      "affected": "'intel-microcode' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "Stephan van Schaik, Alyssa Milburn, Sebastian Osterlund, Pietro Frigo,\nKaveh Razavi, Herbert Bos, Cristiano Giuffrida, Giorgi Maisuradze, Moritz\nLipp, Michael Schwarz, Daniel Gruss, and Jo Van Bulck discovered that Intel\nprocessors using Transactional Synchronization Extensions (TSX) could\nexpose memory contents previously stored in microarchitectural buffers to a\nmalicious process that is executing on the same CPU core. A local attacker\ncould use this to expose sensitive information. (CVE-2019-11135)\n\nIt was discovered that certain Intel Xeon processors did not properly\nrestrict access to a voltage modulation interface. A local privileged\nattacker could use this to cause a denial of service (system crash).\n(CVE-2019-11139)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/TAA_MCEPSC_i915"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4182-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11135"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11139"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4182.3",
+    "name": "Ubuntu: Security Advisory (USN-4182-3)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1575514847,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'intel-microcode' package(s) announced via the USN-4182-3 advisory.",
+      "affected": "'intel-microcode' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "USN-4182-1 provided updated Intel Processor Microcode. A regression\nwas discovered that caused some Skylake processors to hang after\na warm reboot. This update reverts the microcode for that specific\nprocessor family.\n\nWe apologize for the inconvenience.\n\nOriginal advisory details:\n\n Stephan van Schaik, Alyssa Milburn, Sebastian Osterlund, Pietro Frigo,\n Kaveh Razavi, Herbert Bos, Cristiano Giuffrida, Giorgi Maisuradze, Moritz\n Lipp, Michael Schwarz, Daniel Gruss, and Jo Van Bulck discovered that Intel\n processors using Transactional Synchronization Extensions (TSX) could\n expose memory contents previously stored in microarchitectural buffers to a\n malicious process that is executing on the same CPU core. A local attacker\n could use this to expose sensitive information. (CVE-2019-11135)\n\n It was discovered that certain Intel Xeon processors did not properly\n restrict access to a voltage modulation interface. A local privileged\n attacker could use this to cause a denial of service (system crash).\n (CVE-2019-11139)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://launchpad.net/bugs/1854764"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4182-3"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11135"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11139"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4184.1",
+    "name": "Ubuntu: Security Advisory (USN-4184-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1573614071,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-azure, linux-gcp, linux-gke-5.0, linux-hwe, linux-kvm, linux-oem-osp1, linux-oracle, linux-raspi2' package(s) announced via the USN-4184-1 advisory.",
+      "affected": "'linux, linux-aws, linux-azure, linux-gcp, linux-gke-5.0, linux-hwe, linux-kvm, linux-oem-osp1, linux-oracle, linux-raspi2' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "Stephan van Schaik, Alyssa Milburn, Sebastian Osterlund, Pietro Frigo,\nKaveh Razavi, Herbert Bos, Cristiano Giuffrida, Giorgi Maisuradze, Moritz\nLipp, Michael Schwarz, Daniel Gruss, and Jo Van Bulck discovered that Intel\nprocessors using Transactional Synchronization Extensions (TSX) could\nexpose memory contents previously stored in microarchitectural buffers to a\nmalicious process that is executing on the same CPU core. A local attacker\ncould use this to expose sensitive information. (CVE-2019-11135)\n\nIt was discovered that the Intel i915 graphics chipsets allowed userspace\nto modify page table entries via writes to MMIO from the Blitter Command\nStreamer and expose kernel memory information. A local attacker could use\nthis to expose sensitive information or possibly elevate privileges.\n(CVE-2019-0155)\n\nDeepak Gupta discovered that on certain Intel processors, the Linux kernel\ndid not properly perform invalidation on page table updates by virtual\nguest operating systems. A local attacker in a guest VM could use this to\ncause a denial of service (host system crash). (CVE-2018-12207)\n\nIt was discovered that the Intel i915 graphics chipsets could cause a\nsystem hang when userspace performed a read from GT memory mapped input\noutput (MMIO) when the product is in certain low power states. A local\nattacker could use this to cause a denial of service. (CVE-2019-0154)\n\nHui Peng discovered that the Atheros AR6004 USB Wi-Fi device driver for the\nLinux kernel did not properly validate endpoint descriptors returned by the\ndevice. A physically proximate attacker could use this to cause a denial of\nservice (system crash). (CVE-2019-15098)\n\nJann Horn discovered a reference count underflow in the shiftfs\nimplementation in the Linux kernel. A local attacker could use this to\ncause a denial of service (system crash) or possibly execute arbitrary\ncode. (CVE-2019-15791)\n\nJann Horn discovered a type confusion vulnerability in the shiftfs\nimplementation in the Linux kernel. A local attacker could use this to\ncause a denial of service (system crash) or possibly execute arbitrary\ncode. (CVE-2019-15792)\n\nJann Horn discovered that the shiftfs implementation in the Linux kernel\ndid not use the correct file system uid/gid when the user namespace of a\nlower file system is not in the init user namespace. A local attacker could\nuse this to possibly bypass DAC permissions or have some other unspecified\nimpact. (CVE-2019-15793)\n\nOri Nimron discovered that the AX25 network protocol implementation in the\nLinux kernel did not properly perform permissions checks. A local attacker\ncould use this to create a raw socket. (CVE-2019-17052)\n\nOri Nimron discovered that the IEEE 802.15.4 Low-Rate Wireless network\nprotocol implementation in the Linux kernel did not properly perform\npermissions checks. A local attacker could use this to create a raw socket.\n(CVE-2019-17053)\n\nOri Nimron discovered that the Appletalk ... [Please see the references for more information on the vulnerabilities]",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/TAA_MCEPSC_i915"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4184-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-12207"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-0154"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-0155"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11135"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15098"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15791"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15792"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15793"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17052"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17053"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17054"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17055"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17056"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17666"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4184.2",
+    "name": "Ubuntu: Security Advisory (USN-4184-2)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1573700489,
+      "last_modification": 1709114562,
+      "summary": "The remote host is missing an update for the 'linux, linux-hwe, linux-oem-osp1' package(s) announced via the USN-4184-2 advisory.",
+      "affected": "'linux, linux-hwe, linux-oem-osp1' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "USN-4184-1 fixed vulnerabilities in the Linux kernel. It was discovered\nthat the kernel fix for CVE-2019-0155 (i915 missing Blitter Command\nStreamer check) was incomplete on 64-bit Intel x86 systems. Also, the\nupdate introduced a regression that broke KVM guests where extended\npage tables (EPT) are disabled or not supported. This update addresses\nboth issues.\n\nWe apologize for the inconvenience.\n\nOriginal advisory details:\n\n Stephan van Schaik, Alyssa Milburn, Sebastian Osterlund, Pietro Frigo,\n Kaveh Razavi, Herbert Bos, Cristiano Giuffrida, Giorgi Maisuradze, Moritz\n Lipp, Michael Schwarz, Daniel Gruss, and Jo Van Bulck discovered that Intel\n processors using Transactional Synchronization Extensions (TSX) could\n expose memory contents previously stored in microarchitectural buffers to a\n malicious process that is executing on the same CPU core. A local attacker\n could use this to expose sensitive information. (CVE-2019-11135)\n\n It was discovered that the Intel i915 graphics chipsets allowed userspace\n to modify page table entries via writes to MMIO from the Blitter Command\n Streamer and expose kernel memory information. A local attacker could use\n this to expose sensitive information or possibly elevate privileges.\n (CVE-2019-0155)\n\n Deepak Gupta discovered that on certain Intel processors, the Linux kernel\n did not properly perform invalidation on page table updates by virtual\n guest operating systems. A local attacker in a guest VM could use this to\n cause a denial of service (host system crash). (CVE-2018-12207)\n\n It was discovered that the Intel i915 graphics chipsets could cause a\n system hang when userspace performed a read from GT memory mapped input\n output (MMIO) when the product is in certain low power states. A local\n attacker could use this to cause a denial of service. (CVE-2019-0154)\n\n Hui Peng discovered that the Atheros AR6004 USB Wi-Fi device driver for the\n Linux kernel did not properly validate endpoint descriptors returned by the\n device. A physically proximate attacker could use this to cause a denial of\n service (system crash). (CVE-2019-15098)\n\n Jann Horn discovered a reference count underflow in the shiftfs\n implementation in the Linux kernel. A local attacker could use this to\n cause a denial of service (system crash) or possibly execute arbitrary\n code. (CVE-2019-15791)\n\n Jann Horn discovered a type confusion vulnerability in the shiftfs\n implementation in the Linux kernel. A local attacker could use this to\n cause a denial of service (system crash) or possibly execute arbitrary\n code. (CVE-2019-15792)\n\n Jann Horn discovered that the shiftfs implementation in the Linux kernel\n did not use the correct file system uid/gid when the user namespace of a\n lower file system is not in the init user namespace. A local attacker could\n use this to possibly bypass DAC permissions or have some other unspecified\n impact. (CVE-2019-15793)\n\n Ori Nimron ... [Please see the references for more information on the vulnerabilities]",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://bugs.launchpad.net/bugs/1851709"
+      },
+      {
+        "class": "URL",
+        "id": "https://bugs.launchpad.net/bugs/1852141"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4184-2"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-0155"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4203.1",
+    "name": "Ubuntu: Security Advisory (USN-4203-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1574910039,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'nss' package(s) announced via the USN-4203-1 advisory.",
+      "affected": "'nss' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that NSS incorrectly handled certain memory operations. A\nremote attacker could use this issue to cause NSS to crash, resulting in a\ndenial of service, or possibly execute arbitrary code.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4203-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-11745"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4205.1",
+    "name": "Ubuntu: Security Advisory (USN-4205-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1575342047,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'sqlite3' package(s) announced via the USN-4205-1 advisory.",
+      "affected": "'sqlite3' package(s) on Ubuntu 12.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that SQLite incorrectly handled certain schemas.\nAn attacker could possibly use this issue to cause a denial of service.\nThis issue only affected Ubuntu 12.04 ESM. (CVE-2018-8740)\n\nIt was discovered that SQLite incorrectly handled certain schemas.\nAn attacker could possibly use this issue to cause a denial of service.\nThis issue only affected Ubuntu 16.04 LTS, Ubuntu 18.04 LTS and Ubuntu 19.04.\n(CVE-2019-16168)\n\nIt was discovered that SQLite incorrectly handled certain schemas.\nAn attacker could possibly use this issue to mishandles some expressions.\nThis issue only affected Ubuntu 19.04 and Ubuntu 19.10. (CVE-2019-19242)\n\nIt was discovered that SQLite incorrectly handled certain queries.\nAn attacker could possibly use this issue to execute arbitrary code.\nThis issue only affected Ubuntu 19.04 and Ubuntu 19.10. (CVE-2019-19244)\n\nIt was discovered that SQLite incorrectly handled certain SQL commands.\nAn attacker could possibly use this issue to execute arbitrary code.\nThis issue only affected Ubuntu 19.04. (CVE-2019-5018)\n\nIt was discovered that SQLite incorrectly handled certain commands. An\nattacker could possibly use this issue to execute arbitrary code.\n(CVE-2019-5827)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4205-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2018-8740"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-16168"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19242"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19244"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5018"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5827"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4209.1",
+    "name": "Ubuntu: Security Advisory (USN-4209-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1575428523,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-aws-5.0, linux-gcp, linux-gke-5.0, linux-hwe, linux-kvm, linux-oem-osp1, linux-oracle, linux-oracle-5.0, linux-raspi2' package(s) announced via the USN-4209-1 advisory.",
+      "affected": "'linux, linux-aws, linux-aws-5.0, linux-gcp, linux-gke-5.0, linux-hwe, linux-kvm, linux-oem-osp1, linux-oracle, linux-oracle-5.0, linux-raspi2' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "Jann Horn discovered that the OverlayFS and ShiftFS Drivers in the Linux\nkernel did not properly handle reference counting during memory mapping\noperations when used in conjunction with AUFS. A local attacker could use\nthis to cause a denial of service (system crash) or possibly execute\narbitrary code. (CVE-2019-15794)\n\nIt was discovered that a buffer overflow existed in the 802.11 Wi-Fi\nconfiguration interface for the Linux kernel when handling beacon settings.\nA local attacker could use this to cause a denial of service (system crash)\nor possibly execute arbitrary code. (CVE-2019-16746)\n\nIt was discovered that there was a memory leak in the Advanced Buffer\nManagement functionality of the Netronome NFP4000/NFP6000 NIC Driver in the\nLinux kernel during certain error scenarios. A local attacker could use\nthis to cause a denial of service (memory exhaustion). (CVE-2019-19076)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4209-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15794"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-16746"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19076"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4215.1",
+    "name": "Ubuntu: Security Advisory (USN-4215-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1575946840,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'nss' package(s) announced via the USN-4215-1 advisory.",
+      "affected": "'nss' package(s) on Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that NSS incorrectly handled certain certificates.\nAn attacker could possibly use this issue to cause a denial of service.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4215-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17007"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4219.1",
+    "name": "Ubuntu: Security Advisory (USN-4219-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1576033297,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'libssh' package(s) announced via the USN-4219-1 advisory.",
+      "affected": "'libssh' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that libssh incorrectly handled certain scp commands. If\na user or automated system were tricked into using a specially-crafted scp\ncommand, a remote attacker could execute arbitrary commands on the server.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4219-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14889"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4220.1",
+    "name": "Ubuntu: Security Advisory (USN-4220-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1576033283,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'git' package(s) announced via the USN-4220-1 advisory.",
+      "affected": "'git' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "Joern Schneeweisz and Nicolas Joly discovered that Git contained various\nsecurity flaws. An attacker could possibly use these issues to overwrite\narbitrary paths, execute arbitrary code, and overwrite files in the .git\ndirectory.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4220-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1348"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1349"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1350"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1351"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1352"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1353"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1354"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-1387"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19604"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2019.4221.1",
+    "name": "Ubuntu: Security Advisory (USN-4221-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1576033299,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'libpcap' package(s) announced via the USN-4221-1 advisory.",
+      "affected": "'libpcap' package(s) on Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that libpcap did not properly validate PHB headers in\nsome situations. An attacker could use this to cause a denial of service\n(memory exhaustion).",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4221-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15165"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2020.4226.1",
+    "name": "Ubuntu: Security Advisory (USN-4226-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1578482168,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'linux, linux-aws, linux-aws-5.0, linux-azure, linux-gcp, linux-gke-5.0, linux-kvm, linux-oem-osp1, linux-oracle, linux-oracle-5.0, linux-raspi2' package(s) announced via the USN-4226-1 advisory.",
+      "affected": "'linux, linux-aws, linux-aws-5.0, linux-azure, linux-gcp, linux-gke-5.0, linux-kvm, linux-oem-osp1, linux-oracle, linux-oracle-5.0, linux-raspi2' package(s) on Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "Michael Hanselmann discovered that the CIFS implementation in the Linux\nkernel did not sanitize paths returned by an SMB server. An attacker\ncontrolling an SMB server could use this to overwrite arbitrary files.\n(CVE-2019-10220)\n\nIt was discovered that a heap-based buffer overflow existed in the Marvell\nWiFi-Ex Driver for the Linux kernel. A physically proximate attacker could\nuse this to cause a denial of service (system crash) or possibly execute\narbitrary code. (CVE-2019-14895, CVE-2019-14901)\n\nIt was discovered that a heap-based buffer overflow existed in the Marvell\nLibertas WLAN Driver for the Linux kernel. A physically proximate attacker\ncould use this to cause a denial of service (system crash) or possibly\nexecute arbitrary code. (CVE-2019-14896, CVE-2019-14897)\n\nIt was discovered that the Fujitsu ES network device driver for the Linux\nkernel did not properly check for errors in some situations, leading to a\nNULL pointer dereference. A local attacker could use this to cause a denial\nof service. (CVE-2019-16231)\n\nIt was discovered that the QLogic Fibre Channel driver in the Linux kernel\ndid not properly check for error, leading to a NULL pointer dereference. A\nlocal attacker could possibly use this to cause a denial of service (system\ncrash). (CVE-2019-16233)\n\nNicolas Waisman discovered that the WiFi driver stack in the Linux kernel\ndid not properly validate SSID lengths. A physically proximate attacker\ncould use this to cause a denial of service (system crash).\n(CVE-2019-17133)\n\nAnthony Steinhauser discovered that the Linux kernel did not properly\nperform Spectre_RSB mitigations to all processors for PowerPC architecture\nsystems in some situations. A local attacker could use this to expose\nsensitive information. (CVE-2019-18660)\n\nIt was discovered that the Mellanox Technologies Innova driver in the Linux\nkernel did not properly deallocate memory in certain failure conditions. A\nlocal attacker could use this to cause a denial of service (kernel memory\nexhaustion). (CVE-2019-19045)\n\nIt was discovered that the VirtualBox guest driver implementation in the\nLinux kernel did not properly deallocate memory in certain error\nconditions. A local attacker could use this to cause a denial of service\n(memory exhaustion). (CVE-2019-19048)\n\nIt was discovered that Geschwister Schneider USB CAN interface driver in\nthe Linux kernel did not properly deallocate memory in certain failure\nconditions. A physically proximate attacker could use this to cause a\ndenial of service (kernel memory exhaustion). (CVE-2019-19052)\n\nIt was discovered that the netlink-based 802.11 configuration interface in\nthe Linux kernel did not deallocate memory in certain error conditions. A\nlocal attacker could possibly use this to cause a denial of service (kernel\nmemory exhaustion). (CVE-2019-19055)\n\nIt was discovered that the ADIS16400 IIO IMU Driver for the Linux kernel\ndid not properly deallocate memory ... [Please see the references for more information on the vulnerabilities]",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4226-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-10220"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14895"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14896"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14897"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-14901"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-16231"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-16233"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17075"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17133"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-18660"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-18813"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19045"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19048"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19052"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19055"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19060"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19065"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19067"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19072"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19075"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19083"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19524"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19526"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19529"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19532"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19534"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-19922"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-2214"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2020.4231.1",
+    "name": "Ubuntu: Security Advisory (USN-4231-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1578567828,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'nss' package(s) announced via the USN-4231-1 advisory.",
+      "affected": "'nss' package(s) on Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that NSS incorrectly handled certain inputs. An\nattacker could possibly use this issue to execute arbitrary code.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4231-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-17006"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2020.4236.1",
+    "name": "Ubuntu: Security Advisory (USN-4236-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1578974458,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'libgcrypt20' package(s) announced via the USN-4236-1 advisory.",
+      "affected": "'libgcrypt20' package(s) on Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that Libgcrypt was susceptible to a ECDSA timing attack.\nAn attacker could possibly use this attack to recover sensitive\ninformation.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4236-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-13627"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2020.4243.1",
+    "name": "Ubuntu: Security Advisory (USN-4243-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1579579283,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'libbsd' package(s) announced via the USN-4243-1 advisory.",
+      "affected": "'libbsd' package(s) on Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04.",
+      "insight": "It was discovered that libbsd incorrectly handled certain inputs.\nAn attacker could possibly use this issue to execute arbitrary code.\nThis issue only affected Ubuntu 14.04 ESM. (CVE-2016-2090)\n\nIt was discovered that libbsd incorrectly handled certain strings.\nAn attacker could possibly use this issue to access sensitive information.\n(CVE-2019-20367)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4243-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2016-2090"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-20367"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2020.4247.1",
+    "name": "Ubuntu: Security Advisory (USN-4247-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1579752024,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'python-apt' package(s) announced via the USN-4247-1 advisory.",
+      "affected": "'python-apt' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that python-apt would still use MD5 hashes to validate\ncertain downloaded packages. If a remote attacker were able to perform a\nmachine-in-the-middle attack, this flaw could potentially be used to install\naltered packages. (CVE-2019-15795)\n\nIt was discovered that python-apt could install packages from untrusted\nrepositories, contrary to expectations. (CVE-2019-15796)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4247-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15795"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15796"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2020.4247.2",
+    "name": "Ubuntu: Security Advisory (USN-4247-2)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1579752032,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'python-apt' package(s) announced via the USN-4247-2 advisory.",
+      "affected": "'python-apt' package(s) on Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "USN-4247-1 fixed vulnerabilities in python-apt. The updated packages caused\na regression when attempting to upgrade to a new Ubuntu release. This\nupdate fixes the problem.\n\nWe apologize for the inconvenience.\n\nOriginal advisory details:\n\n It was discovered that python-apt would still use MD5 hashes to validate\n certain downloaded packages. If a remote attacker were able to perform a\n machine-in-the-middle attack, this flaw could potentially be used to install\n altered packages. (CVE-2019-15795)\n\n It was discovered that python-apt could install packages from untrusted\n repositories, contrary to expectations. (CVE-2019-15796)",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://launchpad.net/bugs/1860606"
+      },
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4247-2"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15795"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-15796"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
+  },
+  {
+    "oid": "1.3.6.1.4.1.25623.1.1.12.2020.4249.1",
+    "name": "Ubuntu: Security Advisory (USN-4249-1)",
+    "filename": "ubuntu.notus",
+    "tag": {
+      "creation_date": 1579838422,
+      "last_modification": 1706846941,
+      "summary": "The remote host is missing an update for the 'e2fsprogs' package(s) announced via the USN-4249-1 advisory.",
+      "affected": "'e2fsprogs' package(s) on Ubuntu 12.04, Ubuntu 14.04, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 19.04, Ubuntu 19.10.",
+      "insight": "It was discovered that e2fsprogs incorrectly handled certain ext4 partitions.\nAn attacker could possibly use this issue to execute arbitrary code.",
+      "qod_type": "package",
+      "solution": "Please install the updated package(s).",
+      "solution_type": "VendorFix",
+      "vuldetect": "Checks if a vulnerable package version is present on the target host.",
+      "severity_vector": "CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    },
+    "dependencies": [
+      "gb_test.nasl"
+    ],
+    "required_keys": [],
+    "mandatory_keys": [],
+    "excluded_keys": [],
+    "required_ports": [],
+    "required_udp_ports": [],
+    "preferences": [],
+    "references": [
+      {
+        "class": "URL",
+        "id": "https://ubuntu.com/security/notices/USN-4249-1"
+      },
+      {
+        "class": "cve",
+        "id": "CVE-2019-5188"
+      }
+    ],
+    "category": "gather_info",
+    "family": "Ubuntu Local Security Checks"
   }
 ]

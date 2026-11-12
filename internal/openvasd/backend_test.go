@@ -79,6 +79,7 @@ func TestVTInformationIncludesGvmdCompatibleSeverityMetadata(t *testing.T) {
 		OID string `json:"oid"`
 		Tag struct {
 			CVSSBaseVector string `json:"cvss_base_vector"`
+			SeverityVector string `json:"severity_vector"`
 		} `json:"tag"`
 	}
 	decodeResponse(t, response, &information)
@@ -86,22 +87,31 @@ func TestVTInformationIncludesGvmdCompatibleSeverityMetadata(t *testing.T) {
 	if len(information) == 0 {
 		t.Fatal("expected VT information")
 	}
+	legacyVector := regexp.MustCompile(`^AV:[LAN]/AC:[HML]/Au:[MSN]/C:[NPC]/I:[NPC]/A:[NPC]$`)
+	modernVector := regexp.MustCompile(`^CVSS:3\.[01]/AV:[NALP]/AC:[LH]/PR:[NLH]/UI:[NR]/S:[UC]/C:[NLH]/I:[NLH]/A:[NLH]$`)
 	for _, vt := range information {
-		if vt.Tag.CVSSBaseVector != "AV:N/AC:L/Au:N/C:N/I:N/A:N" {
-			t.Errorf("VT %q has invalid gvmd severity vector %q", vt.OID, vt.Tag.CVSSBaseVector)
+		vector := vt.Tag.SeverityVector
+		if vector == "" {
+			vector = vt.Tag.CVSSBaseVector
+		}
+		if !legacyVector.MatchString(vector) && !modernVector.MatchString(vector) {
+			t.Errorf("VT %q has invalid gvmd severity vector %q", vt.OID, vector)
 		}
 	}
 }
 
 func TestVTSampleMatchesScanResultOIDs(t *testing.T) {
-	baseDir := filepath.Join("..", "..", "examples", "openvasd", "sample")
-	resultSample, err := os.ReadFile(filepath.Join(baseDir, "scans", "{id}", "results", "GET.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
 	expected := make(map[string]bool)
-	for _, oid := range regexp.MustCompile(`1\.3\.6\.1\.4\.1\.25623(?:\.\d+)+`).FindAllString(string(resultSample), -1) {
-		expected[oid] = true
+	oidPattern := regexp.MustCompile(`1\.3\.6\.1\.4\.1\.25623(?:\.\d+)+`)
+	for _, profile := range []string{"openvasd", "agent-folder"} {
+		resultSample, err := os.ReadFile(filepath.Join("..", "..", "examples", profile,
+			"sample", "scans", "{id}", "results", "GET.json"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, oid := range oidPattern.FindAllString(string(resultSample), -1) {
+			expected[oid] = true
+		}
 	}
 	if len(expected) == 0 {
 		t.Fatal("scan result sample must reference VTs")
@@ -116,10 +126,15 @@ func TestVTSampleMatchesScanResultOIDs(t *testing.T) {
 		if len(information) != len(expected) {
 			t.Fatalf("expected %d referenced VTs, got %d", len(expected), len(information))
 		}
+		seen := make(map[string]bool)
 		for _, item := range information {
 			if !expected[item.OID] {
-				t.Errorf("VT %q is not referenced by the scan result sample", item.OID)
+				t.Errorf("VT %q is not referenced by the scan result samples", item.OID)
 			}
+			if seen[item.OID] {
+				t.Errorf("duplicate VT %q", item.OID)
+			}
+			seen[item.OID] = true
 		}
 		response = request(t, backend, http.MethodGet, "/vts", "", nil)
 		assertStatus(t, response, http.StatusOK)
