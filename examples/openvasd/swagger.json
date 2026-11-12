@@ -13,7 +13,7 @@
     },
     "version": "1.0.0-emulator.1",
     "x-upstream-openapi-revision": "6b0d7ec7e562aff805c8b2f968a8b0e18b5f63b2",
-    "x-emulator-fixture-revision": "openvasd-issue-41-v1"
+    "x-emulator-fixture-revision": "openvasd-issue-45-v2"
   },
   "servers": [
     {
@@ -745,6 +745,44 @@
           },
           "tag": {
             "type": "object",
+            "anyOf": [
+              {
+                "required": [
+                  "severity_vector"
+                ]
+              },
+              {
+                "required": [
+                  "cvss_base_vector"
+                ]
+              }
+            ],
+            "properties": {
+              "creation_date": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "severity_date": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "severity_origin": {
+                "type": "string"
+              },
+              "severity_vector": {
+                "type": "string",
+                "minLength": 1,
+                "description": "CVSS vector accepted by gvmd when importing VT metadata."
+              },
+              "cvss_base_vector": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Legacy CVSS vector accepted by gvmd when severity_vector is absent."
+              },
+              "summary": {
+                "type": "string"
+              }
+            },
             "additionalProperties": true
           },
           "dependencies": {

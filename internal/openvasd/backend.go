@@ -18,6 +18,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/greenbone/gvm-openapi-emulator/internal/samples"
 )
 
 const (
@@ -25,7 +27,7 @@ const (
 	feedVersion     = "202611110000"
 	authentication  = "disabled"
 	openAPIRevision = "6b0d7ec7e562aff805c8b2f968a8b0e18b5f63b2"
-	fixtureRevision = "openvasd-issue-41-v1"
+	fixtureRevision = "openvasd-issue-45-v2"
 
 	scenarioHeader   = "X-Emulator-Scenario"
 	resetTokenHeader = "X-Emulator-Reset-Token" // #nosec G101 -- HTTP header name, not a credential.
@@ -43,14 +45,16 @@ var knownScenarios = []string{
 }
 
 type Config struct {
-	ResetToken   string
-	TimeoutDelay time.Duration
+	ResetToken     string
+	TimeoutDelay   time.Duration
+	SampleProvider samples.ISampleProvider
 }
 
 type Backend struct {
 	mu sync.Mutex
 
 	resetToken        string
+	sampleProvider    samples.ISampleProvider
 	timeoutDelay      time.Duration
 	nextScanID        uint64
 	notReadyResponses int
@@ -157,6 +161,7 @@ func New(cfg Config) *Backend {
 	}
 	return &Backend{
 		resetToken:        cfg.ResetToken,
+		sampleProvider:    cfg.SampleProvider,
 		timeoutDelay:      cfg.TimeoutDelay,
 		notReadyResponses: 1,
 		scans:             make(map[string]*scan),
@@ -327,11 +332,34 @@ func (b *Backend) handleVTs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.URL.Query().Has("information") {
-		writeJSON(w, http.StatusOK, vtInformation())
+	if b.sampleProvider == nil {
+		writeError(w, http.StatusInternalServerError,
+			"VT sample provider is not configured", nil)
 		return
 	}
-	writeJSON(w, http.StatusOK, vtOIDs())
+	sample, err := b.sampleProvider.ResolveAndLoad(http.MethodGet, "/vts", "/vts", "GET__vts.json")
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "cannot load VT sample", nil)
+		return
+	}
+	var information []vt
+	if err := json.Unmarshal(sample.Body, &information); err != nil || len(information) == 0 {
+		writeError(w, http.StatusInternalServerError, "invalid VT sample", nil)
+		return
+	}
+	oids := make([]string, 0, len(information))
+	for _, item := range information {
+		if item.OID == "" || slices.Contains(oids, item.OID) {
+			writeError(w, http.StatusInternalServerError, "invalid VT sample OID", nil)
+			return
+		}
+		oids = append(oids, item.OID)
+	}
+	if r.URL.Query().Has("information") {
+		writeJSON(w, http.StatusOK, json.RawMessage(sample.Body))
+		return
+	}
+	writeJSON(w, http.StatusOK, oids)
 }
 
 func (b *Backend) handleScans(w http.ResponseWriter, r *http.Request, scenario string) {
@@ -843,56 +871,6 @@ func applyResultRange(results []result, value string) []result {
 		}
 	}
 	return results[start : end+1]
-}
-
-func vtOIDs() []string {
-	return []string{
-		"1.3.6.1.4.1.25623.1.0.100196",
-		"1.3.6.1.4.1.25623.1.0.100127",
-	}
-}
-
-func vtInformation() []map[string]any {
-	return []map[string]any{
-		{
-			"oid":      "1.3.6.1.4.1.25623.1.0.100196",
-			"name":     "Deterministic OpenVASD test VT",
-			"filename": "deterministic_openvasd_test.nasl",
-			"tag": map[string]any{
-				"creation_date": 1_700_000_000,
-				"summary":       "Deterministic emulator VT",
-			},
-			"dependencies":       []string{},
-			"required_keys":      []string{},
-			"mandatory_keys":     []string{},
-			"excluded_keys":      []string{},
-			"required_ports":     []string{},
-			"required_udp_ports": []string{},
-			"references":         []map[string]string{},
-			"preferences":        []map[string]any{},
-			"category":           "gather_info",
-			"family":             "Emulator",
-		},
-		{
-			"oid":      "1.3.6.1.4.1.25623.1.0.100127",
-			"name":     "Deterministic OpenVASD result VT",
-			"filename": "deterministic_openvasd_result.nasl",
-			"tag": map[string]any{
-				"creation_date": 1_700_000_001,
-				"summary":       "Produces a correlated emulator result",
-			},
-			"dependencies":       []string{"deterministic_openvasd_test.nasl"},
-			"required_keys":      []string{},
-			"mandatory_keys":     []string{},
-			"excluded_keys":      []string{},
-			"required_ports":     []string{},
-			"required_udp_ports": []string{},
-			"references":         []map[string]string{},
-			"preferences":        []map[string]any{},
-			"category":           "attack",
-			"family":             "Emulator",
-		},
-	}
 }
 
 func splitPath(path string) []string {

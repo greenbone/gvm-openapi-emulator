@@ -6,6 +6,8 @@ package openvasd
 
 import (
 	"context"
+	"encoding/json"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -72,5 +74,54 @@ func TestPinnedOpenAPIContract(t *testing.T) {
 	if vts == nil || len(vts.Parameters) != 1 || vts.Parameters[0].Value == nil ||
 		vts.Parameters[0].Value.Name != "information" {
 		t.Fatalf("GET /vts must pin the information query parameter")
+	}
+}
+
+func TestPinnedOpenAPIContractAcceptsGvmdSeverityVectors(t *testing.T) {
+	specPath := filepath.Join("..", "..", "examples", "openvasd", "swagger.json")
+	document, err := openapi3.NewLoader().LoadFromFile(specPath)
+	if err != nil {
+		t.Fatalf("load pinned OpenAPI document: %v", err)
+	}
+
+	information := document.Components.Schemas["VTInformation"]
+	if information == nil || information.Value == nil {
+		t.Fatal("pinned contract is missing VTInformation")
+	}
+	tag := information.Value.Properties["tag"]
+	if tag == nil || tag.Value == nil {
+		t.Fatal("VTInformation is missing tag metadata")
+	}
+	for _, test := range []struct {
+		name  string
+		tag   map[string]any
+		valid bool
+	}{
+		{"modern", map[string]any{"severity_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"}, true},
+		{"legacy", map[string]any{"cvss_base_vector": "AV:N/AC:L/Au:N/C:N/I:N/A:N"}, true},
+		{"missing", map[string]any{"summary": "no severity"}, false},
+		{"empty modern", map[string]any{"severity_vector": ""}, false},
+		{"empty legacy", map[string]any{"cvss_base_vector": ""}, false},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			err := tag.Value.VisitJSON(test.tag)
+			if (err == nil) != test.valid {
+				t.Fatalf("expected valid=%v, got %v", test.valid, err)
+			}
+		})
+	}
+
+	data, err := os.ReadFile(filepath.Join("..", "..", "examples", "openvasd", "sample", "vts", "GET.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var metadata []any
+	if err := json.Unmarshal(data, &metadata); err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range metadata {
+		if err := information.Value.VisitJSON(item); err != nil {
+			t.Errorf("VT sample does not match the contract: %v", err)
+		}
 	}
 }

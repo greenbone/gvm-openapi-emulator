@@ -82,6 +82,24 @@ func TestNew_OpenVASDProfileRoutesToStatefulBackend(t *testing.T) {
 	if response.Header().Get("api-version") != "1" {
 		t.Fatalf("expected OpenVASD metadata headers, got %#v", response.Header())
 	}
+
+	metadata := `[{"oid":"1.3.6.1.4.1.25623.1.0.51662","name":"Traceroute","tag":{"cvss_base_vector":"AV:N/AC:L/Au:N/C:N/I:N/A:N"}}]`
+	if err := os.MkdirAll(filepath.Join(dir, "vts"), 0o750); err != nil {
+		t.Fatal(err)
+	}
+	writeFile(t, dir, filepath.Join("vts", "GET.json"), metadata)
+	for _, query := range []string{"information=1", "information=true"} {
+		response = httptest.NewRecorder()
+		s.handle(response, httptest.NewRequest(http.MethodGet, "/vts?"+query, nil))
+		if response.Code != http.StatusOK || strings.TrimSpace(response.Body.String()) != metadata {
+			t.Fatalf("expected configured VT metadata, got %d: %s", response.Code, response.Body.String())
+		}
+	}
+	response = httptest.NewRecorder()
+	s.handle(response, httptest.NewRequest(http.MethodGet, "/vts", nil))
+	if response.Code != http.StatusOK || strings.TrimSpace(response.Body.String()) != `["1.3.6.1.4.1.25623.1.0.51662"]` {
+		t.Fatalf("expected OIDs from configured metadata, got %d: %s", response.Code, response.Body.String())
+	}
 }
 
 func TestNew_RejectsUnknownProfile(t *testing.T) {

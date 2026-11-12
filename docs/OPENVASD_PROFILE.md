@@ -29,7 +29,7 @@ api-version: 1
 feed-version: 202611110000
 authentication: disabled
 x-emulator-openapi-revision: 6b0d7ec7e562aff805c8b2f968a8b0e18b5f63b2
-x-emulator-fixture-revision: openvasd-issue-41-v1
+x-emulator-fixture-revision: openvasd-issue-45-v2
 ```
 
 The OpenAPI revision pins the upstream OpenVASD source contract used to build
@@ -37,8 +37,17 @@ this fixture. The fixture revision changes when deterministic test behavior or
 data changes. Downstream jobs should additionally pin the emulator container by
 digest; the repository's main-branch container workflow publishes the image.
 
-`GET /vts` returns deterministic OIDs. `GET /vts?information=1` (and
-`information=true`) returns the corresponding OpenVASD VT metadata objects.
+`GET /vts?information=1` (and `information=true`) loads VT metadata from
+`SAMPLES_DIR/vts/GET.json` through the sample provider. `GET /vts` derives its OID
+list from the same sample. Missing or invalid VT samples return `500`.
+
+The checked-in sample contains the eight VTs referenced by
+`examples/openvasd/sample/scans/{id}/results/GET.json`, including host-detail
+source OIDs. These records were copied from
+`/opt/gvm/var/lib/openvas/plugins/vt-metadata.json`, preserving their original
+metadata and legacy `cvss_base_vector` values, except that each dependency list
+is simplified to `["gb_test.nasl"]`. gvmd accepts `cvss_base_vector` alongside
+the modern `severity_vector` field. No local feed is needed at runtime.
 
 ## Scan lifecycle
 
