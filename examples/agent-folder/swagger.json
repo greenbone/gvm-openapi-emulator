@@ -1,7 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "contact": {}
+    "title": "Agent Control API",
+    "version": "2",
+    "contact": {},
+    "x-upstream-openapi-revision": "b3367ab0648cba4e3c6c709f796cf694cd5ac1b5",
+    "x-emulator-fixture-revision": "agent-control-issue-49-v1",
+    "x-emulator-baseline-revision": "9709bd5153f466fbd181e98b8bd96af1655848dd"
   },
   "paths": {
     "/agent-control/protected/v2/api/agents/{agentid}/config": {

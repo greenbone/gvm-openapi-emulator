@@ -16,6 +16,7 @@ It is designed for **local development**, **integration testing**, and **CI envi
 
 * [Environment Variables](./docs/ENVIRONMENT_VARIABLES.md) – Configuration options
 * [Sample Placeholders](./docs/SAMPLE_PLACEHOLDERS.md) – Generate UUIDs in fixture responses
+* [Agent Control Profile](./docs/AGENT_CONTROL_PROFILE.md) – Stateful, fail-closed Agent Control contract
 
 ---
 
@@ -36,7 +37,7 @@ The repository includes a `Makefile` with helpful targets:
 ```bash
 make build         # Build the binary into ./bin/emulator
 make run           # Build and run the emulator (uses SPEC_PATH / SAMPLES_DIR defaults)
-make run-agent     # Run Agent Control examples using the generic profile
+make run-agent     # Run the stateful, fail-closed Agent Control profile
 make test          # Run all tests
 make cover         # Run tests with coverage and generate reports (coverage.html)
 
@@ -46,6 +47,7 @@ make tidy          # Run go mod tidy
 
 make docker-build  # Build Docker image (gvm-openapi-emulator:local)
 make docker-run    # Run Docker image with example volume mount
+make docker-run-agent # Run the Agent Control profile from the local image
 make compose-up    # Start via docker compose
 make compose-down  # Stop docker compose
 make clean         # Remove build and coverage artifacts
@@ -61,6 +63,7 @@ make clean         # Remove build and coverage artifacts
 * Supports **stateful APIs** using explicit `scenario.json` definitions
 * Supports **step-based** and **time-based** state progression
 * Includes a **stateful, fail-closed OpenVASD profile** for contract testing
+* Includes a distinct **stateful, fail-closed Agent Control profile** seeded by the PR #44 fixtures
 * Optionally falls back to examples defined in the OpenAPI spec
 * Can enforce basic request validation (e.g. required request body)
 
@@ -84,6 +87,16 @@ The checked-in OpenVASD example runs with `PROFILE=openvasd` through `make run`,
 request/result correlation, VT metadata, named failures, deterministic
 readiness, and authenticated reset behavior for OpenVASD client tests. See
 [OpenVASD Profile](./docs/OPENVASD_PROFILE.md) for the exact contract.
+
+## Stateful Agent Control contract backend
+
+`make run-agent` selects `PROFILE=agent-control`, the checked-in
+`examples/agent-folder` API and seed fixtures, and `FALLBACK_MODE=none`. The
+profile provides deterministic inventory pagination, atomic mutation read-back,
+scan-agent configuration updates, support bundles, agent-correlated scans,
+named failures, reset, and independently verifiable provenance. Known fixture
+gaps return `501` instead of OpenAPI-generated success. See
+[Agent Control Profile](./docs/AGENT_CONTROL_PROFILE.md) for the exact contract.
 
 ---
 

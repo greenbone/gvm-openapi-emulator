@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/greenbone/gvm-openapi-emulator/config"
+	"github.com/greenbone/gvm-openapi-emulator/internal/agentcontrol"
 	"github.com/greenbone/gvm-openapi-emulator/internal/openapi"
 	"github.com/greenbone/gvm-openapi-emulator/internal/openvasd"
 	"github.com/greenbone/gvm-openapi-emulator/internal/samples"
@@ -20,15 +21,17 @@ import (
 )
 
 type Config struct {
-	Port           string
-	SpecPath       string
-	SamplesDir     string
-	FallbackMode   config.FallbackMode
-	ValidationMode config.ValidationMode
-	Layout         config.LayoutMode
-	Profile        config.Profile
-	ResetToken     string
-	TimeoutDelay   time.Duration
+	Port                     string
+	SpecPath                 string
+	SamplesDir               string
+	FallbackMode             config.FallbackMode
+	ValidationMode           config.ValidationMode
+	Layout                   config.LayoutMode
+	Profile                  config.Profile
+	ResetToken               string
+	TimeoutDelay             time.Duration
+	AgentControlResetToken   string
+	AgentControlTimeoutDelay time.Duration
 }
 
 type Server struct {
@@ -39,8 +42,9 @@ type Server struct {
 	sampleProvider samples.ISampleProvider
 	log            *logrus.Logger
 
-	scenario samples.IScenarioResolver
-	openvasd http.Handler
+	scenario     samples.IScenarioResolver
+	openvasd     http.Handler
+	agentControl http.Handler
 }
 
 func New(cfg Config) (*Server, error) {
@@ -93,6 +97,16 @@ func New(cfg Config) (*Server, error) {
 			TimeoutDelay:   cfg.TimeoutDelay,
 			SampleProvider: s.sampleProvider,
 		})
+	case config.ProfileAgentControl:
+		s.agentControl, err = agentcontrol.New(agentcontrol.Config{
+			ResetToken:     cfg.AgentControlResetToken,
+			TimeoutDelay:   cfg.AgentControlTimeoutDelay,
+			SampleProvider: s.sampleProvider,
+			RouterProvider: s.routerProvider,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("initialize Agent Control profile: %w", err)
+		}
 	default:
 		return nil, fmt.Errorf("unsupported profile %q", cfg.Profile)
 	}
@@ -126,6 +140,10 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) handle(w http.ResponseWriter, r *http.Request) {
+	if s.agentControl != nil {
+		s.agentControl.ServeHTTP(w, r)
+		return
+	}
 	if s.openvasd != nil {
 		s.openvasd.ServeHTTP(w, r)
 		return
