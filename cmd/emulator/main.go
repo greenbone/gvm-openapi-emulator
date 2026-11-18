@@ -15,15 +15,17 @@ func main() {
 	log := logger.GetLogger()
 
 	srv, err := server.New(server.Config{
-		Port:           cfg.ServerPort,
-		SpecPath:       cfg.SpecPath,
-		SamplesDir:     cfg.SamplesDir,
-		FallbackMode:   cfg.FallbackMode,
-		ValidationMode: cfg.ValidationMode,
-		Layout:         cfg.Layout,
-		Profile:        cfg.Profile,
-		ResetToken:     cfg.ResetToken,
-		TimeoutDelay:   cfg.TimeoutDelay,
+		Port:                     cfg.ServerPort,
+		SpecPath:                 cfg.SpecPath,
+		SamplesDir:               cfg.SamplesDir,
+		FallbackMode:             cfg.FallbackMode,
+		ValidationMode:           cfg.ValidationMode,
+		Layout:                   cfg.Layout,
+		Profile:                  cfg.Profile,
+		ResetToken:               cfg.ResetToken,
+		TimeoutDelay:             cfg.TimeoutDelay,
+		AgentControlResetToken:   cfg.AgentControlResetToken,
+		AgentControlTimeoutDelay: cfg.AgentControlTimeoutDelay,
 	})
 	if err != nil {
 		log.Fatalf("failed to init server: %v", err)
