@@ -44,8 +44,9 @@ const (
 type Profile string
 
 const (
-	ProfileGeneric  Profile = "generic"
-	ProfileOpenVASD Profile = "openvasd"
+	ProfileGeneric      Profile = "generic"
+	ProfileOpenVASD     Profile = "openvasd"
+	ProfileAgentControl Profile = "agent-control"
 )
 
 type ScenarioConfig struct {
@@ -54,18 +55,20 @@ type ScenarioConfig struct {
 }
 
 type Config struct {
-	ServerPort     string
-	SpecPath       string
-	SamplesDir     string
-	LogLevel       string
-	RunningEnv     RunningEnv
-	FallbackMode   FallbackMode
-	DebugRoutes    bool
-	ValidationMode ValidationMode
-	Layout         LayoutMode
-	Profile        Profile
-	ResetToken     string
-	TimeoutDelay   time.Duration
+	ServerPort               string
+	SpecPath                 string
+	SamplesDir               string
+	LogLevel                 string
+	RunningEnv               RunningEnv
+	FallbackMode             FallbackMode
+	DebugRoutes              bool
+	ValidationMode           ValidationMode
+	Layout                   LayoutMode
+	Profile                  Profile
+	ResetToken               string
+	TimeoutDelay             time.Duration
+	AgentControlResetToken   string
+	AgentControlTimeoutDelay time.Duration
 
 	Scenario ScenarioConfig
 }
@@ -76,18 +79,20 @@ func initConfig() Config {
 	_ = godotenv.Load()
 
 	return Config{
-		ServerPort:     utils.GetEnv("SERVER_PORT", "8086"),
-		SpecPath:       utils.GetEnv("SPEC_PATH", "/work/swagger.json"),
-		SamplesDir:     utils.GetEnv("SAMPLES_DIR", "/work/sample"),
-		LogLevel:       utils.GetEnv("LOG_LEVEL", "info"),
-		RunningEnv:     RunningEnv(utils.GetEnv("RUNNING_ENV", "docker")),
-		ValidationMode: ValidationMode(utils.GetEnv("VALIDATION_MODE", "required")),
-		FallbackMode:   FallbackMode(utils.GetEnv("FALLBACK_MODE", "openapi_examples")),
-		DebugRoutes:    utils.GetEnvAsBool("DEBUG_ROUTES", false),
-		Layout:         LayoutMode(utils.GetEnv("LAYOUT_MODE", "auto")),
-		Profile:        Profile(utils.GetEnv("PROFILE", "generic")),
-		ResetToken:     utils.GetEnv("OPENVASD_RESET_TOKEN", ""),
-		TimeoutDelay:   getEnvDuration("OPENVASD_TIMEOUT_DELAY", 11*time.Second),
+		ServerPort:               utils.GetEnv("SERVER_PORT", "8086"),
+		SpecPath:                 utils.GetEnv("SPEC_PATH", "/work/swagger.json"),
+		SamplesDir:               utils.GetEnv("SAMPLES_DIR", "/work/sample"),
+		LogLevel:                 utils.GetEnv("LOG_LEVEL", "info"),
+		RunningEnv:               RunningEnv(utils.GetEnv("RUNNING_ENV", "docker")),
+		ValidationMode:           ValidationMode(utils.GetEnv("VALIDATION_MODE", "required")),
+		FallbackMode:             FallbackMode(utils.GetEnv("FALLBACK_MODE", "openapi_examples")),
+		DebugRoutes:              utils.GetEnvAsBool("DEBUG_ROUTES", false),
+		Layout:                   LayoutMode(utils.GetEnv("LAYOUT_MODE", "auto")),
+		Profile:                  Profile(utils.GetEnv("PROFILE", "generic")),
+		ResetToken:               utils.GetEnv("OPENVASD_RESET_TOKEN", ""),
+		TimeoutDelay:             getEnvDuration("OPENVASD_TIMEOUT_DELAY", 11*time.Second),
+		AgentControlResetToken:   utils.GetEnv("AGENT_CONTROL_RESET_TOKEN", ""),
+		AgentControlTimeoutDelay: getEnvDuration("AGENT_CONTROL_TIMEOUT_DELAY", 11*time.Second),
 
 		Scenario: ScenarioConfig{
 			Enabled:  utils.GetEnvAsBool("SCENARIO_ENABLED", true),

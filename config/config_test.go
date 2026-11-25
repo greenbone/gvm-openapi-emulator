@@ -22,6 +22,8 @@ func TestInitConfig_Defaults_AllFields(t *testing.T) {
 	_ = os.Unsetenv("PROFILE")
 	_ = os.Unsetenv("OPENVASD_RESET_TOKEN")
 	_ = os.Unsetenv("OPENVASD_TIMEOUT_DELAY")
+	_ = os.Unsetenv("AGENT_CONTROL_RESET_TOKEN")
+	_ = os.Unsetenv("AGENT_CONTROL_TIMEOUT_DELAY")
 	_ = os.Unsetenv("SCENARIO_ENABLED")
 	_ = os.Unsetenv("SCENARIO_FILENAME")
 
@@ -63,6 +65,12 @@ func TestInitConfig_Defaults_AllFields(t *testing.T) {
 	if cfg.TimeoutDelay.String() != "11s" {
 		t.Fatalf("TimeoutDelay: expected %q, got %q", "11s", cfg.TimeoutDelay)
 	}
+	if cfg.AgentControlResetToken != "" {
+		t.Fatalf("AgentControlResetToken: expected empty, got %q", cfg.AgentControlResetToken)
+	}
+	if cfg.AgentControlTimeoutDelay.String() != "11s" {
+		t.Fatalf("AgentControlTimeoutDelay: expected %q, got %q", "11s", cfg.AgentControlTimeoutDelay)
+	}
 
 	if cfg.Scenario.Enabled != true {
 		t.Fatalf("Scenario.Enabled: expected %v, got %v", true, cfg.Scenario.Enabled)
@@ -85,6 +93,8 @@ func TestInitConfig_Overrides_AllFields(t *testing.T) {
 	t.Setenv("PROFILE", "openvasd")
 	t.Setenv("OPENVASD_RESET_TOKEN", "test-reset-token")
 	t.Setenv("OPENVASD_TIMEOUT_DELAY", "250ms")
+	t.Setenv("AGENT_CONTROL_RESET_TOKEN", "agent-reset-token")
+	t.Setenv("AGENT_CONTROL_TIMEOUT_DELAY", "125ms")
 
 	t.Setenv("SCENARIO_ENABLED", "false")
 	t.Setenv("SCENARIO_FILENAME", "my-scenario.json")
@@ -126,6 +136,12 @@ func TestInitConfig_Overrides_AllFields(t *testing.T) {
 	}
 	if cfg.TimeoutDelay.String() != "250ms" {
 		t.Fatalf("TimeoutDelay: expected %q, got %q", "250ms", cfg.TimeoutDelay)
+	}
+	if cfg.AgentControlResetToken != "agent-reset-token" {
+		t.Fatalf("AgentControlResetToken: expected %q, got %q", "agent-reset-token", cfg.AgentControlResetToken)
+	}
+	if cfg.AgentControlTimeoutDelay.String() != "125ms" {
+		t.Fatalf("AgentControlTimeoutDelay: expected %q, got %q", "125ms", cfg.AgentControlTimeoutDelay)
 	}
 
 	if cfg.Scenario.Enabled != false {

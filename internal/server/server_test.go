@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/greenbone/gvm-openapi-emulator/config"
 )
@@ -99,6 +100,46 @@ func TestNew_OpenVASDProfileRoutesToStatefulBackend(t *testing.T) {
 	s.handle(response, httptest.NewRequest(http.MethodGet, "/vts", nil))
 	if response.Code != http.StatusOK || strings.TrimSpace(response.Body.String()) != `["1.3.6.1.4.1.25623.1.0.51662"]` {
 		t.Fatalf("expected OIDs from configured metadata, got %d: %s", response.Code, response.Body.String())
+	}
+}
+
+// TestNew_AgentControlProfileExtendsPR44WithoutGenericFallback pins the issue
+// #49 dispatch boundary: the existing fixture directory is the seed, while all
+// requests are handled by the dedicated fail-closed profile.
+func TestNew_AgentControlProfileExtendsPR44WithoutGenericFallback(t *testing.T) {
+	disableScenarioForTests()
+	base := filepath.Join("..", "..", "examples", "agent-folder")
+	s, err := New(Config{
+		Port:                     "0",
+		SpecPath:                 filepath.Join(base, "swagger.json"),
+		SamplesDir:               filepath.Join(base, "sample"),
+		FallbackMode:             config.FallbackOpenAPIExample,
+		ValidationMode:           config.ValidationRequired,
+		Layout:                   config.LayoutFolders,
+		Profile:                  config.ProfileAgentControl,
+		AgentControlResetToken:   "agent-reset-secret",
+		AgentControlTimeoutDelay: time.Millisecond,
+	})
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+
+	response := httptest.NewRecorder()
+	s.handle(response, httptest.NewRequest(http.MethodGet,
+		"/api/v1/admin/agents?page=1&per_page=2", nil))
+	if response.Code != http.StatusOK || response.Header().Get("x-total-count") != "4" {
+		t.Fatalf("expected stateful Agent Control inventory, got %d: %s", response.Code, response.Body.String())
+	}
+	response = httptest.NewRecorder()
+	s.handle(response, httptest.NewRequest(http.MethodGet,
+		"/api/v1/certificates/server-cert-fingerprint", nil))
+	if response.Code != http.StatusNotImplemented {
+		t.Fatalf("known fixture gap used generic fallback: %d: %s", response.Code, response.Body.String())
+	}
+	response = httptest.NewRecorder()
+	s.handle(response, httptest.NewRequest(http.MethodGet, "/unknown-agent-control-route", nil))
+	if response.Code != http.StatusNotFound {
+		t.Fatalf("unknown Agent Control route did not fail closed: %d", response.Code)
 	}
 }
 

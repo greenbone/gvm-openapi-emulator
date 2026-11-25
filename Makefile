@@ -26,9 +26,12 @@ SAMPLES_DIR ?= ./examples/openvasd/sample
 FALLBACK_MODE ?= openapi_examples
 VALIDATION_MODE ?= required
 DEBUG_ROUTES ?= false
+LAYOUT_MODE ?= auto
 PROFILE ?= openvasd
 OPENVASD_RESET_TOKEN ?= local-test-reset
 OPENVASD_TIMEOUT_DELAY ?= 11s
+AGENT_CONTROL_RESET_TOKEN ?= local-agent-reset
+AGENT_CONTROL_TIMEOUT_DELAY ?= 11s
 
 .PHONY: all
 all: test build
@@ -46,15 +49,20 @@ run: build
 	FALLBACK_MODE=$(FALLBACK_MODE) \
 	VALIDATION_MODE=$(VALIDATION_MODE) \
 	DEBUG_ROUTES=$(DEBUG_ROUTES) \
+	LAYOUT_MODE=$(LAYOUT_MODE) \
 	PROFILE=$(PROFILE) \
 	OPENVASD_RESET_TOKEN=$(OPENVASD_RESET_TOKEN) \
 	OPENVASD_TIMEOUT_DELAY=$(OPENVASD_TIMEOUT_DELAY) \
+	AGENT_CONTROL_RESET_TOKEN=$(AGENT_CONTROL_RESET_TOKEN) \
+	AGENT_CONTROL_TIMEOUT_DELAY=$(AGENT_CONTROL_TIMEOUT_DELAY) \
 	./$(BIN_DIR)/$(APP_NAME)
 
 .PHONY: run-agent
 run-agent: SPEC_PATH = ./examples/agent-folder/swagger.json
 run-agent: SAMPLES_DIR = ./examples/agent-folder/sample
-run-agent: PROFILE = generic
+run-agent: PROFILE = agent-control
+run-agent: FALLBACK_MODE = none
+run-agent: LAYOUT_MODE = folders
 run-agent: run
 
 .PHONY: test
@@ -113,10 +121,27 @@ docker-run:
 		-e FALLBACK_MODE=$(FALLBACK_MODE) \
 		-e VALIDATION_MODE=$(VALIDATION_MODE) \
 		-e DEBUG_ROUTES=$(DEBUG_ROUTES) \
+		-e LAYOUT_MODE=$(LAYOUT_MODE) \
 		-e PROFILE=$(PROFILE) \
 		-e OPENVASD_RESET_TOKEN=$(OPENVASD_RESET_TOKEN) \
 		-e OPENVASD_TIMEOUT_DELAY=$(OPENVASD_TIMEOUT_DELAY) \
 		-v "./examples/openvasd:/work:ro" \
+		$(IMAGE_NAME)
+
+.PHONY: docker-run-agent
+docker-run-agent:
+	@docker run --rm -p 8086:8086 \
+		-e SERVER_PORT=8086 \
+		-e SPEC_PATH=/work/swagger.json \
+		-e SAMPLES_DIR=/work/sample \
+		-e FALLBACK_MODE=none \
+		-e VALIDATION_MODE=$(VALIDATION_MODE) \
+		-e DEBUG_ROUTES=$(DEBUG_ROUTES) \
+		-e LAYOUT_MODE=folders \
+		-e PROFILE=agent-control \
+		-e AGENT_CONTROL_RESET_TOKEN=$(AGENT_CONTROL_RESET_TOKEN) \
+		-e AGENT_CONTROL_TIMEOUT_DELAY=$(AGENT_CONTROL_TIMEOUT_DELAY) \
+		-v "./examples/agent-folder:/work:ro" \
 		$(IMAGE_NAME)
 
 .PHONY: compose-up

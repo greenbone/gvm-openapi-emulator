@@ -18,7 +18,7 @@ Defaults are shown in parentheses.
 | `FALLBACK_MODE`   | `openapi_examples`   | Fallback behavior if a sample file is missing (`none`, `openapi_examples`). |
 | `DEBUG_ROUTES`    | `false`              | If `true`, prints resolved route - sample mappings on startup.              |
 | `LAYOUT_MODE`     | `auto`               | Sample file layout mode (`auto`, `folders`, `flat`).                        |
-| `PROFILE`         | `generic`            | Runtime profile (`generic`, `openvasd`).                                    |
+| `PROFILE`         | `generic`            | Runtime profile (`generic`, `openvasd`, `agent-control`).                    |
 
 ## OpenVASD Profile
 
@@ -32,6 +32,18 @@ failure injection, and an authenticated reset endpoint. See
 | ------------------------- | ------- | ------------------------------------------------------------------ |
 | `OPENVASD_RESET_TOKEN`    | empty   | Enables and authenticates `POST /_emulator/reset` when non-empty.  |
 | `OPENVASD_TIMEOUT_DELAY`  | `11s`   | Delay used by the named `timeout` failure scenario.                |
+
+## Agent Control Profile
+
+`PROFILE=agent-control` enables the stateful, fail-closed Agent Control test
+backend seeded by `examples/agent-folder`. Generic sample and OpenAPI fallback
+settings are ignored by this profile. See
+[Agent Control Profile](./AGENT_CONTROL_PROFILE.md) for its complete contract.
+
+| Variable                        | Default | Description                                                               |
+| ------------------------------- | ------- | ------------------------------------------------------------------------- |
+| `AGENT_CONTROL_RESET_TOKEN`     | empty   | Enables and authenticates `POST /_emulator/agent-control/reset`.          |
+| `AGENT_CONTROL_TIMEOUT_DELAY`   | `11s`   | Delay before the named `timeout` scenario returns HTTP `504`.             |
 
 ---
 
@@ -172,6 +184,11 @@ DEBUG_ROUTES=false
 PROFILE=openvasd
 OPENVASD_RESET_TOKEN=local-test-reset
 OPENVASD_TIMEOUT_DELAY=11s
+
+# Stateful Agent Control contract backend (use with agent-folder paths)
+# PROFILE=agent-control
+# AGENT_CONTROL_RESET_TOKEN=local-agent-reset
+# AGENT_CONTROL_TIMEOUT_DELAY=11s
 ```
 
 ---
