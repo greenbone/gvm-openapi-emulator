@@ -11,7 +11,7 @@ require (
 )
 
 require (
-	github.com/go-openapi/jsonpointer v1.0.2 // indirect
+	github.com/go-openapi/jsonpointer v1.0.3 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3 // indirect
 	github.com/stretchr/objx v0.8.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
